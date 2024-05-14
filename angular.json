@@ -7,7 +7,8 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "standalone": false
         }
       },
       "root": "",
@@ -30,7 +31,19 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              {
+                "input": "node_modules/primeng/resources/themes/lara-light-teal/theme.css",
+                "bundleName": "dark",
+                "inject": false
+              },
+              {
+                "input": "node_modules/primeng/resources/themes/lara-dark-teal/theme.css",
+                "bundleName": "light",
+                "inject": false
+              },
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css"
             ],
             "scripts": []
           },
@@ -90,7 +103,19 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              {
+                "input": "node_modules/primeng/resources/themes/lara-light-teal/theme.css",
+                "bundleName": "dark",
+                "inject": false
+              },
+              {
+                "input": "node_modules/primeng/resources/themes/lara-dark-teal/theme.css",
+                "bundleName": "light",
+                "inject": false
+              },
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css"
             ],
             "scripts": []
           }
