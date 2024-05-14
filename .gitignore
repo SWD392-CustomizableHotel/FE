@@ -404,7 +404,6 @@ FodyWeavers.xsd
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-<<<<<<< HEAD
 .history/*
 
 # Miscellaneous
@@ -415,23 +414,8 @@ FodyWeavers.xsd
 /libpeerconnection.log
 testem.log
 /typings
+/.nx
 
 # System files
 .DS_Store
 Thumbs.db
-=======
-*.code-workspace
-
-# Local History for Visual Studio Code
-.history/
-
-# Windows Installer files from build outputs
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-
-# JetBrains Rider
-*.sln.iml
->>>>>>> 492b382b45667cfc2a77f547226b2eca2fce6dfe

@@ -1,11 +1,11 @@
 <p-toolbar>
     <div *ngIf="!user" class="p-toolbar-group-start">
-        <button pRipple pButton icon="pi pi-sign-in" class="mr-2" label="Login" (click)="toLoginPage()"></button>
+        <p-button pRipple icon="pi pi-sign-in" class="mr-2" label="Login" (click)="toLoginPage()"/>
         <!-- <button pRipple pButton icon="pi pi-print" class="mr-2"></button>
         <button pRipple pButton icon="pi pi-upload"></button> -->
     </div>
     <div *ngIf="user" class="p-toolbar-group-start">
-        <button pRipple pButton icon="pi pi-sign-in" class="mr-2" label="Logout" (click)="logOut()"></button>
+        <p-button pRipple icon="pi pi-sign-in" class="mr-2" label="Logout" (click)="logOut()"/>
     </div>
     <div class="p-toolbar-group-center">
         <span class="p-input-icon-left">

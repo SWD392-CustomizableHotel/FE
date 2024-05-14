@@ -13,7 +13,7 @@ export class ThemeService {
   }
 
   setTheme(theme: string) {
-    let themeLink = document.getElementById('app-theme') as HTMLLinkElement;
+    const themeLink = document.getElementById('app-theme') as HTMLLinkElement;
 
     if(themeLink) {
       themeLink.href = theme + '.css';
