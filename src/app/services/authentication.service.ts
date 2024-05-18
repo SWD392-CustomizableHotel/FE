@@ -26,6 +26,7 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.http.post<any>(`${environment.BACKEND_API_URL}/${Auth.AUTH}/${Auth.LOGIN}`, { username, password })
     .pipe(map((user) => {
       // Store user details and JWT token in local storage to keep user logged in

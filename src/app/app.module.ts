@@ -18,6 +18,12 @@ import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
+import { MenuModule } from 'primeng/menu';
+import { AvatarGroupModule } from 'primeng/avatargroup';
+import { AvatarModule } from 'primeng/avatar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ImageModule } from 'primeng/image';
 
 
 @NgModule({
@@ -33,7 +39,13 @@ import { CardModule } from 'primeng/card';
         DividerModule,
         InputTextModule,
         FormsModule,
-        CardModule
+        CardModule,
+        MenuModule,
+        AvatarGroupModule,
+        AvatarModule,
+        ProgressSpinnerModule,
+        CheckboxModule,
+        ImageModule
     ],
     declarations: [
         AppComponent,
@@ -50,7 +62,13 @@ import { CardModule } from 'primeng/card';
         DividerModule,
         InputTextModule,
         FormsModule,
-        CardModule
+        CardModule,
+        MenuModule,
+        AvatarGroupModule,
+        AvatarModule,
+        ProgressSpinnerModule,
+        CheckboxModule,
+        ImageModule
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

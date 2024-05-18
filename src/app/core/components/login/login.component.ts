@@ -7,6 +7,8 @@ import { AuthenticationService } from '../../../services/authentication.service'
 @Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit {
     loginForm!: FormGroup;
+    registerForm!: FormGroup;
+    
     loading = false;
     submitted = false;
     error = '';
@@ -56,5 +58,9 @@ export class LoginComponent implements OnInit {
                     this.loading = false;
                 }
             });
+    }
+
+    returnHome() {
+        this.router.navigate(['/']);
     }
 }
