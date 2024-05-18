@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { Message } from 'primeng/api';
 
 @Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit {
@@ -12,6 +13,9 @@ export class LoginComponent implements OnInit {
     loading = false;
     submitted = false;
     error = '';
+    messages!: Message[];
+    userNameIsRequired!: Message[];
+    passwordIsRequired!: Message[];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -30,6 +34,25 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
+
+        this.messages = [ 
+            { severity: 'error',  
+              summary: 'Error',  
+              detail: 'Unknown error'
+            } 
+        ]; 
+        this.userNameIsRequired = [ 
+            { severity: 'error',  
+              summary: 'Invalid',  
+              detail: 'Username is required'
+            } 
+        ];
+        this.passwordIsRequired = [ 
+            { severity: 'error',  
+              summary: 'Invalid',  
+              detail: 'Password is required'
+            } 
+        ];
     }
 
     // convenience getter for easy access to form fields

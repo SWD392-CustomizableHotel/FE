@@ -24,6 +24,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ImageModule } from 'primeng/image';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from "primeng/message"; 
 
 
 @NgModule({
@@ -45,7 +47,9 @@ import { ImageModule } from 'primeng/image';
         AvatarModule,
         ProgressSpinnerModule,
         CheckboxModule,
-        ImageModule
+        ImageModule,
+        MessagesModule,
+        MessageModule
     ],
     declarations: [
         AppComponent,
@@ -68,7 +72,9 @@ import { ImageModule } from 'primeng/image';
         AvatarModule,
         ProgressSpinnerModule,
         CheckboxModule,
-        ImageModule
+        ImageModule,
+        MessagesModule,
+        MessageModule
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
