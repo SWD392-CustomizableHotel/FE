@@ -106,15 +106,16 @@
 <div
   class="flex justify-content-center align-items-center fadein animation-duration-1000 "
 >
-  <div>
+  <div class="inline-block">
     <p-image 
+    class="hidden md:block lg:block"
       src="assets/images/sheriton-hotel.jpeg" 
     alt="Image" 
-    width="930"
+    width="990"
     height="910" />
   </div>
   <p-card
-    class="flex justify-content-center align-items-center p-6 w-full h-full lg:w-6 md:flex-column"
+    class="flex justify-content-center align-items-center p-6 w-full h-full md:w-24rem lg:w-6 md:flex-column"
     [style]="{ width: '860px' }"
   >
     <p-button
@@ -140,7 +141,11 @@
         >Create today!</a
       >
     </div>
-  
+      <div>
+        <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
+          {{ error }}
+        </div>
+      </div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div>
           <div class="flex justify-content-evenly align-items-center gap-2 p-1">
