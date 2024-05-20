@@ -25,7 +25,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ImageModule } from 'primeng/image';
 import { MessagesModule } from 'primeng/messages';
-import { MessageModule } from "primeng/message"; 
+import { MessageModule } from "primeng/message";
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { NotfoundComponent } from './core/components/notfound/notfound.component'; 
+import { RouterLink, RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -49,11 +52,15 @@ import { MessageModule } from "primeng/message";
         CheckboxModule,
         ImageModule,
         MessagesModule,
-        MessageModule
+        MessageModule,
+        FloatLabelModule,
+        RouterModule,
+        RouterLink
     ],
     declarations: [
         AppComponent,
-        LoginComponent
+        LoginComponent,
+        NotfoundComponent
     ],
     exports: [
         PanelModule,
@@ -74,7 +81,10 @@ import { MessageModule } from "primeng/message";
         CheckboxModule,
         ImageModule,
         MessagesModule,
-        MessageModule
+        MessageModule,
+        FloatLabelModule,
+        RouterModule,
+        RouterLink
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

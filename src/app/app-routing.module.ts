@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './core/components/login/login.component';
 import { LayoutComponent } from './core/components/layout/layout.component';
+import { NotfoundComponent } from './core/components/notfound/notfound.component';
 
 const routes: Routes = [
     {
@@ -17,6 +18,14 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent
+    },
+    {
+        path: 'notfound',
+        component: NotfoundComponent
+    },
+    {
+        path: '**',
+        redirectTo: 'notfound'
     }
     // { path: '', component: HomeComponent },
     // { path: 'login', component: LoginComponent },

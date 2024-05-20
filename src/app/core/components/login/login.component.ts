@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../../../services/authentication.service';
@@ -9,7 +9,7 @@ import { Message } from 'primeng/api';
 export class LoginComponent implements OnInit {
     loginForm!: FormGroup;
     registerForm!: FormGroup;
-    
+
     loading = false;
     submitted = false;
     error = '';
@@ -22,43 +22,44 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService
-    ) { 
+    ) {
         // redirect to home if already logged in
-        if (this.authenticationService.userValue) { 
+        if (this.authenticationService.userValue) {
             this.router.navigate(['/']);
         }
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
 
-        this.messages = [ 
-            { severity: 'error',  
-              summary: 'Error',  
+        this.messages = [
+            { severity: 'error',
+              summary: 'Error',
               detail: 'Unknown error'
-            } 
-        ]; 
-        this.userNameIsRequired = [ 
-            { severity: 'error',  
-              summary: 'Invalid',  
-              detail: 'Username is required'
-            } 
+            }
         ];
-        this.passwordIsRequired = [ 
-            { severity: 'error',  
-              summary: 'Invalid',  
+        this.userNameIsRequired = [
+            { severity: 'error',
+              summary: 'Invalid',
+              detail: 'Username is required'
+            }
+        ];
+        this.passwordIsRequired = [
+            { severity: 'error',
+              summary: 'Invalid',
               detail: 'Password is required'
-            } 
+            }
         ];
     }
 
     // convenience getter for easy access to form fields
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     get f() { return this.loginForm.controls; }
 
-    onSubmit() {
+    onSubmit(): void {
         this.submitted = true;
 
         // stop here if form is invalid
@@ -83,7 +84,7 @@ export class LoginComponent implements OnInit {
             });
     }
 
-    returnHome() {
+    returnHome(): void {
         this.router.navigate(['/']);
     }
 }

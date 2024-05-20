@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../../../services/theme.service';
 import { Router } from '@angular/router';
@@ -13,9 +14,9 @@ export class HeaderComponent implements OnInit {
   checked: boolean = false;
   selectedTheme: string = 'dark';
   user?: User | null;
-  
+
   constructor(
-    private themeService: ThemeService, 
+    private themeService: ThemeService,
     private router: Router,
     private authService: AuthenticationService
   ) {

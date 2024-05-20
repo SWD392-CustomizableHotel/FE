@@ -5,14 +5,14 @@ import { Injectable } from '@angular/core';
 })
 export class ThemeService {
   activeTheme: string = 'dark';
-  
+
   constructor() { }
 
-  getTheme() {
+  getTheme(): string {
     return this.activeTheme;
   }
 
-  setTheme(theme: string) {
+  setTheme(theme: string): void {
     const themeLink = document.getElementById('app-theme') as HTMLLinkElement;
 
     if(themeLink) {

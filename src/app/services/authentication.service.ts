@@ -16,16 +16,16 @@ export class AuthenticationService {
   constructor(
     private router: Router,
     private http: HttpClient
-  ) { 
+  ) {
     this.userSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('user')!));
     this.user = this.userSubject.asObservable();
   }
 
-  public get userValue() {
+  public get userValue(): any {
     return this.userSubject.value;
   }
 
-  login(username: string, password: string) {
+  login(username: string, password: string): Observable<User> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.http.post<any>(`${environment.BACKEND_API_URL}/${Auth.AUTH}/${Auth.LOGIN}`, { username, password })
     .pipe(map((user) => {
@@ -38,7 +38,7 @@ export class AuthenticationService {
     }));
   }
 
-  logOut() {
+  logOut(): void {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
     this.userSubject.next(null);

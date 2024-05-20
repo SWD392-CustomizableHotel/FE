@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import { Component } from '@angular/core';
 import { User } from './interfaces/models/user';
 import { AuthenticationService } from './services/authentication.service';
@@ -15,7 +16,7 @@ export class AppComponent {
     this.authService.user.subscribe(x => this.user = x);
   }
 
-  logOut() {
+  logOut(): void {
     this.authService.logOut();
   }
 }
