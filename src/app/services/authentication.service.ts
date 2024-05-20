@@ -21,7 +21,7 @@ export class AuthenticationService {
     this.user = this.userSubject.asObservable();
   }
 
-  public get userValue(): any {
+  public get userValue(): User | null {
     return this.userSubject.value;
   }
 
