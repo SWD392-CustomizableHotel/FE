@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../assets/environments/environment';
 import { User } from '../interfaces/models/user';
 import { Auth } from '../../assets/constants/constants';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getAll() {
+  getAll(): Observable<User[]> {
     return this.http.get<User[]>(`${environment.BACKEND_API_URL}/${Auth.AUTH}/${Auth.USER}`);
   }
 }
