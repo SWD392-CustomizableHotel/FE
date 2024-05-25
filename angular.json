@@ -49,6 +49,17 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/assets/environments/environment.ts",
+                  "with": "src/assets/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
               "budgets": [
                 {
                   "type": "initial",
