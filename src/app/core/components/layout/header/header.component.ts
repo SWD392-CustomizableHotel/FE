@@ -1,22 +1,32 @@
 /* eslint-disable no-return-assign */
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ThemeService } from '../../../../services/theme.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../../services/authentication.service';
 import { User } from '../../../../interfaces/models/user';
+import { MenuItem } from 'primeng/api';
+import { LayoutService } from '../services/app.layout.service';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent implements OnInit {
   checked: boolean = false;
   selectedTheme: string = 'dark';
   user?: User | null;
 
+  items!: MenuItem[];
+
+    @ViewChild('menubutton') menuButton!: ElementRef;
+
+    @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
+
+    @ViewChild('topbarmenu') menu!: ElementRef;
+
   constructor(
     private themeService: ThemeService,
+    public layoutService: LayoutService,
     private router: Router,
     private authService: AuthenticationService
   ) {

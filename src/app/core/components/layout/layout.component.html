@@ -1,15 +1,14 @@
-<div id="wrapper" style="height: 100vh;">
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <app-header></app-header>
-        </div>
-        <div class="container-fluid">
+<div class="layout-wrapper" [ngClass]="containerClass">
+    <app-header></app-header>
+    <div class="layout-sidebar">
+        <app-sidebar></app-sidebar>
+    </div>
+    <div class="layout-main-container">
+        <div class="layout-main">
             <router-outlet></router-outlet>
         </div>
+        <app-footer></app-footer>
     </div>
-    <div class="layout-footer">
-        
-    </div>
+    <div class="layout-mask"></div>
 </div>
-
 
