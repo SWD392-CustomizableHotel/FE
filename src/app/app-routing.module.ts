@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './core/components/login/login.component';
 import { LayoutComponent } from './core/components/layout/layout.component';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
@@ -7,11 +7,15 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 const routes: Routes = [
     {
         path: '',
+        loadChildren: () => import('./core/components/home/home.module').then(m => m.HomeModule)
+    },
+    {
+        path: 'dashboard',
         component: LayoutComponent,
         children: [
-            { 
-                path: '', 
-                loadChildren: () => import('./core/components/home/home.module').then(m => m.HomeModule)
+            {
+                path: '',
+                loadChildren: () => import('./core/components/dashboard/dashboard.module').then(m => m.DashboardModule)
             },
         ],
     },
@@ -35,7 +39,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [
+        RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
+    ],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }

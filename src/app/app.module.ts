@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // used to create fake backend
 import { fakeBackendProvider } from './_helper/fake-backend';
@@ -25,10 +25,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ImageModule } from 'primeng/image';
 import { MessagesModule } from 'primeng/messages';
-import { MessageModule } from "primeng/message";
+import { MessageModule } from 'primeng/message';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { NotfoundComponent } from './core/components/notfound/notfound.component'; 
+import { NotfoundComponent } from './core/components/notfound/notfound.component';
 import { RouterLink, RouterModule } from '@angular/router';
+import { ProductService } from './services/product.service';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 
 @NgModule({
@@ -87,6 +89,8 @@ import { RouterLink, RouterModule } from '@angular/router';
         RouterLink
     ],
     providers: [
+        { provide: LocationStrategy, useClass: PathLocationStrategy },
+        ProductService,
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
