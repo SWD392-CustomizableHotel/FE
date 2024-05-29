@@ -144,7 +144,7 @@
         >Create today!</a
       >
     </div>
-    <div>
+    <div class="md:flex justify-content-evenly align-content-evenly">
       <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
         <p-messages [(value)]="messages" [enableService]="false" [closable]="false"/>
       </div>
@@ -152,20 +152,19 @@
         *ngIf="submitted && f['password'].errors"
         class="invalid-feedback flex justify-content-center align-items-center"
       >
-      <div class="flex justify-content-center align-items-center mr-4 text-sm">
+      <div class="justify-content-center align-items-center text-sm">
         <div *ngIf="f['password'].errors['required']">
           <p-messages class="text-sm" [(value)]="passwordIsRequired" [enableService]="false" [closable]="false"/>
         </div>
-      </div>
+      </div>       
+    </div>
       <div
         *ngIf="submitted && f['username'].errors"
-        class="invalid-feedback flex justify-content-center align-items-center text-sm"
+        class="invalid-feedback flex justify-content-center align-items-center"
       >
         <div *ngIf="f['username'].errors['required']">
           <p-messages class="text-sm" [(value)]="userNameIsRequired" [enableService]="false" [closable]="false"/>
         </div>
-      </div>
-        
       </div>
     </div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
