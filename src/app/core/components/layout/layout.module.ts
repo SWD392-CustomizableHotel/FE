@@ -23,6 +23,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { BadgeModule } from 'primeng/badge';
 import { ConfigModule } from './config/config.module';
 
+
 @NgModule({
     declarations: [
         HeaderComponent,

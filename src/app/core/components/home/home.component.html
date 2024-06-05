@@ -39,18 +39,51 @@
                     <button pButton pRipple label="Register" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-blue-500 text-white"></button>
                 </div>
             </div>
+            
+        </div>
+        <div class="flex justify-content-center">
+            <div class="flex justify-content-center md:justify-content-end pb-8">
+                <!-- Box 1: Choose Location -->
+                <div class="box mr-4" style="max-width: 900px;">    
+                    <p-floatLabel>
+                        <p-dropdown id="location" [options]="cities" optionLabel="name"></p-dropdown>
+                        <label for="location">Choose a location:</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 2: Start Date -->
+                <div class="box mr-4" >
+                    <p-floatLabel>
+                        <p-calendar id="startDate" formControlName="startDate"></p-calendar>
+                        <label for="startDate">Start Date</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 3: End Date -->
+                <div class="box mr-4">
+                    <p-floatLabel>
+                        <p-calendar id="endDate" formControlName="endDate"></p-calendar>
+                        <label for="endDate">End Date</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 4: Number of People -->
+                <div class="box mr-4">
+                    <p-floatLabel>
+                        <p-inputNumber inputId="integeronly" />
+                        <label for="number-input">Number of People</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 5: Booking -->
+                <div class="box">
+                    <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                </div>
+            </div>
         </div>
     
         <div id="hero" class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden" 
-            style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%); clip-path: ellipse(150% 87% at 93% 13%);">
-            <div class="mx-4 md:mx-8 mt-0 md:mt-4">
-                <h1 class="text-6xl font-bold text-gray-900 line-height-2"><span class="font-light block">Demo</span>template</h1>
-                <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">FE SWD392 </p>
-                <button pButton pRipple type="button" label="Get Started" class="p-button-rounded text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white"></button>
-            </div>
-            <div class="flex justify-content-center md:justify-content-end pb-8">
-            </div>
-        </div>
+            style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%); ">
         
         <div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
             <div class="grid justify-content-center">
@@ -315,13 +348,14 @@
                 </div>
            </div> 
         </div>
+        </div>
     
         <div class="py-4 px-4 mx-0 mt-8 lg:mx-8">
             <div class="grid justify-content-between">
                 <div class="col-12 md:col-2" style="margin-top:-1.5rem;">
-                    <a (click)="router.navigate(['/pages/landing'], {fragment: 'home'})" class="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
-                        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="footer sections" width="50" height="50" class="mr-2">
-                        <h4 class="font-medium text-3xl text-900">SAKAI</h4>
+                    <a [routerLink]="['/home']" class="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">  
+                        <img src="assets/images/logo2.png" alt="footer sections" width="100" height="100" class="mr-2">
+                        <h4 class="font-medium text-3xl text-500">Sheriton Hotel</h4>
                     </a>
                 </div>
     
@@ -333,22 +367,13 @@
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">News</a>
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Investor Relations</a>
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Careers</a>
-                            <a class="line-height-3 text-xl block cursor-pointer text-700">Media Kit</a>
-                        </div>
-                        
-                        <div class="col-12 md:col-3 mt-4 md:mt-0">
-                            <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Resources</h4>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Get Started</a>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Learn</a>
-                            <a class="line-height-3 text-xl block cursor-pointer text-700">Case Studies</a>
                         </div>
         
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Community</h4>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Discord</a>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Events<img src="assets/demo/images/landing/new-badge.svg" class="ml-2"/></a>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">FAQ</a>
-                            <a class="line-height-3 text-xl block cursor-pointer text-700">Blog</a>
+                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Facebook <i class="pi pi-facebook" style="font-size: 1.5rem"></i></a>
+                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Instagram <i class="pi pi-instagram" style="font-size: 1.5rem"></i></a>
+                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Youtube <i class="pi pi-youtube" style="font-size: 1.5rem"></i></a>
                         </div>
         
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
@@ -361,5 +386,6 @@
                 </div>
             </div>
         </div>
+        <app-footer></app-footer>
     </div>
 </div>

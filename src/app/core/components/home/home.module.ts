@@ -8,10 +8,18 @@ import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
 import { PanelModule } from 'primeng/panel';
 import { StyleClassModule } from 'primeng/styleclass';
+import { FooterComponent } from '../layout/footer/footer.component';
+import { HeaderComponent } from '../layout/header/header.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
     declarations: [
-        HomeComponent
+        HomeComponent,
+        HeaderComponent,
+        FooterComponent,
     ],
     imports: [
         CommonModule,
@@ -21,9 +29,13 @@ import { StyleClassModule } from 'primeng/styleclass';
         DividerModule,
         StyleClassModule,
         ChartModule,
-        PanelModule
+        PanelModule,
+        DropdownModule,
+        CalendarModule,
+        FloatLabelModule,
+        InputNumberModule,
     ],
     bootstrap: [HomeComponent]
 })
 
-export class HomeModule { }
+export class HomeModule {}
