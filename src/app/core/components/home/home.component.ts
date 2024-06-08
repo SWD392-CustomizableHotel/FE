@@ -5,9 +5,16 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html'
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  value: number = 5;
+  showMore = false;
+  toggleSeeMore(): void {
+    this.showMore = !this.showMore;
+  }
+
   formGroup: FormGroup;
   cities = [
     { name: 'Ho Chi Minh City' },

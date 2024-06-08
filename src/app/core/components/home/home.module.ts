@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { HomeComponent } from './home.component';
 import { CommonModule } from '@angular/common';
 import { HomeRoutingModule } from './home-routing.module';
@@ -8,18 +8,15 @@ import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
 import { PanelModule } from 'primeng/panel';
 import { StyleClassModule } from 'primeng/styleclass';
-import { FooterComponent } from '../layout/footer/footer.component';
-import { HeaderComponent } from '../layout/header/header.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
-
+import { sharedModule } from '../layout/share/shared.module';
+import { RatingModule } from 'primeng/rating';
 @NgModule({
     declarations: [
         HomeComponent,
-        HeaderComponent,
-        FooterComponent,
     ],
     imports: [
         CommonModule,
@@ -34,8 +31,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
         CalendarModule,
         FloatLabelModule,
         InputNumberModule,
+        sharedModule,
+        RatingModule,
     ],
-    bootstrap: [HomeComponent]
+    providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    bootstrap: [HomeComponent],
 })
 
 export class HomeModule {}

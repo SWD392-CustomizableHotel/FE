@@ -2,6 +2,10 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 <!-- eslint-disable @angular-eslint/template/alt-text -->
+ <head>
+    <link rel="stylesheet" href="home.component.scss">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+ </head>
 <div class="surface-0 flex justify-content-center">
     <div id="home" class="landing-wrapper overflow-hidden">
         <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3">
@@ -81,275 +85,180 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-12 mt-8 mb-8 p-2 md:p-8" style="border-radius:20px; background:linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EFE1AF 0%, #C3DCFA 100%);">
+            <div class="flex flex-column justify-content-center align-items-center text-center px-3 py-3 md:py-0">
+              <h1 class="text-gray-900 mb-2">WELCOME TO SHERITON RESTON HOTEL</h1>
+              <p class="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4 content-paragraph" style="max-width:800px;">
+                “The Sheriton Reston is proud to announce our reopening August 6th after a complete renovation.
+                <span *ngIf="!showMore">
+                  <span class="see-more-less" (click)="toggleSeeMore()">See More</span>
+                </span>
+                <span *ngIf="showMore">
+                Reston's first hotel is now its newest! Surrounded by exciting Virginia destinations, the fully renovated Hotel is an ideal home base for business and leisure travelers alike. Among our neighbors are Reston National Golf Course, Reston Town Center’s shops and restaurants and the historical sites in our nation’s capital. Those planning events in Reston will appreciate our 18,000 square feet of refreshed, modern event space for conferences and our new Courtyard for social gatherings. All guest rooms have been redesigned for a clean, contemporary look with remodeled, larger bathrooms with stand-up showers, new Sheraton Signature Beds, 55” smart TV’s and refrigerators. Additional amenities include new, state of the art 1800 sq ft gym, Media Room and Studio by Sheraton. Coming soon: spacious Club Lounge and renovated Provision outlet - a coffee shop in the morning, lunch offerings and bar in the evening"
+                  <span class="see-more-less" (click)="toggleSeeMore()">See Less</span>
+                </span>
+              </p>
+              <img src="assets/demo/images/landing/peak-logo.svg" class="mt-4" alt="Company logo">
+            </div>
+          </div>
     
-        <div id="hero" class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden" 
-            style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%); ">
-        
         <div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
             <div class="grid justify-content-center">
                 <div class="col-12 text-center mt-8 mb-4">
-                    <h2 class="text-900 font-normal mb-2">Marvelous Features</h2>
-                    <span class="text-600 text-2xl">test</span>
+                    <h2 class="text-900 font-normal mb-2">Why did you choose Sheriton?</h2>
                 </div>
-    
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(253, 228, 165, 0.2),rgba(187, 199, 205, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2),rgba(187, 199, 205, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-yellow-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-users text-2xl text-yellow-700"></i>
+        
+                <div class="col-12 md:col-6 lg:col-4 p-2">
+                    <div class="feature-card">
+                        <img src="assets/images/luxury.png" alt="Feature Image 1" class="feature-image">
+                        <div class="feature-content">
+                            <h5 class="feature-title">Luxurious place</h5>
+                            <p class="feature-description">Enjoy elegantly designed rooms and suites that offer a blend of comfort and sophistication, ensuring a memorable stay.</p>
+                            <div class="box">
+                                <button pButton pRipple type="button" label="More Detail" class="p-button-outlined"></button>
                             </div>
-                            <h5 class="mb-2 text-900">Easy to Use</h5>
-                            <span class="text-600">Posuere morbi leo urna molestie.</span>
                         </div>
                     </div>
                 </div>
         
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(145,226,237,0.2),rgba(251, 199, 145, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2), rgba(172, 180, 223, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-cyan-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-palette text-2xl text-cyan-700"></i>
+                <div class="col-12 md:col-6 lg:col-4 p-2">
+                    <div class="feature-card">
+                        <img src="assets/images/world_class.png" alt="Feature Image 2" class="feature-image">
+                        <div class="feature-content">
+                            <h5 class="feature-title">World-Class Amenities and Service</h5>
+                            <p class="feature-description">Enjoy world-class amenities and exceptional hospitality at Vinepart, with luxurious spas, gourmet dining, and personalized service that makes every guest feel special.</p>
+                            <div class="box">
+                                <button pButton pRipple type="button" label="More Detail" class="p-button-outlined"></button>
                             </div>
-                            <h5 class="mb-2 text-900">Fresh Design</h5>
-                            <span class="text-600">Semper risus in hendrerit.</span>
                         </div>
                     </div>
                 </div>
         
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pb-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(145, 226, 237, 0.2), rgba(172, 180, 223, 0.2)), linear-gradient(180deg, rgba(172, 180, 223, 0.2), rgba(246, 158, 188, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-indigo-200" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-map text-2xl text-indigo-700"></i>
+                <div class="col-12 md:col-6 lg:col-4 p-2">
+                    <div class="feature-card">
+                        <img src="assets/images/customizable_room.png" alt="Feature Image 3" class="feature-image">
+                        <div class="feature-content">
+                            <h5 class="feature-title">Customizable Room</h5>
+                            <p class="feature-description">Experience the convenience of customizable rooms tailored to meet your specific preferences and needs, enhancing your stay.</p>
+                            <div class="box">
+                                <button pButton pRipple type="button" label="More Detail" class="p-button-outlined"></button>
                             </div>
-                            <h5 class="mb-2 text-900">Well Documented</h5>
-                            <span class="text-600">Non arcu risus quis varius quam quisque.</span>
                         </div>
-                    </div>
-                </div>
-        
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(187, 199, 205, 0.2),rgba(251, 199, 145, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2),rgba(145, 210, 204, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-bluegray-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-id-card text-2xl text-bluegray-700"></i>
-                            </div>
-                            <h5 class="mb-2 text-900">Responsive Layout</h5>
-                            <span class="text-600">Nulla malesuada pellentesque elit.</span>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(187, 199, 205, 0.2),rgba(246, 158, 188, 0.2)), linear-gradient(180deg, rgba(145, 226, 237, 0.2),rgba(160, 210, 250, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-orange-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-star text-2xl text-orange-700"></i>
-                            </div>
-                            <h5 class="mb-2 text-900">Clean Code</h5>
-                            <span class="text-600">Condimentum lacinia quis vel eros.</span>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pb-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(251, 199, 145, 0.2), rgba(246, 158, 188, 0.2)), linear-gradient(180deg, rgba(172, 180, 223, 0.2), rgba(212, 162, 221, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-pink-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-moon text-2xl text-pink-700"></i>
-                            </div>
-                            <h5 class="mb-2 text-900">Dark Mode</h5>
-                            <span class="text-600">Convallis tellus id interdum velit laoreet.</span>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(145, 210, 204, 0.2), rgba(160, 210, 250, 0.2)), linear-gradient(180deg, rgba(187, 199, 205, 0.2), rgba(145, 210, 204, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-teal-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-shopping-cart text-2xl text-teal-700"></i>
-                            </div>
-                            <h5 class="mb-2 text-900">Ready to Use</h5>
-                            <span class="text-600">Mauris sit amet massa vitae.</span>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(145, 210, 204, 0.2), rgba(212, 162, 221, 0.2)), linear-gradient(180deg, rgba(251, 199, 145, 0.2), rgba(160, 210, 250, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-blue-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-globe text-2xl text-blue-700"></i>
-                            </div>
-                            <h5 class="mb-2 text-900">Modern Practices</h5>
-                            <span class="text-600">Elementum nibh tellus molestie nunc non.</span>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-12 md:col-12 lg:col-4 p-0 lg-4 mt-4 lg:mt-0">
-                    <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(160, 210, 250, 0.2), rgba(212, 162, 221, 0.2)), linear-gradient(180deg, rgba(246, 158, 188, 0.2), rgba(212, 162, 221, 0.2));">
-                        <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-purple-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-eye text-2xl text-purple-700"></i>
-                            </div>
-                            <h5 class="mb-2 text-900">Privacy</h5>
-                            <span class="text-600">Neque egestas congue quisque.</span>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-12 mt-8 mb-8 p-2 md:p-8" style="border-radius:20px; background:linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EFE1AF 0%, #C3DCFA 100%);">
-                    <div class="flex flex-column justify-content-center align-items-center text-center px-3 py-3 md:py-0">
-                        <h3 class="text-gray-900 mb-2">Joséphine Miller</h3>
-                        <span class="text-gray-600 text-2xl">Peak Interactive</span>
-                        <p class="text-gray-900 sm:line-height-2 md:line-height-4 text-2xl mt-4" style="max-width:800px;">“Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.”</p>
-                        <img src="assets/demo/images/landing/peak-logo.svg" class="mt-4" alt="Company logo">
-    
                     </div>
                 </div>
             </div>
-        </div>
-            
+        
         <div id="highlights" class="py-4 px-4 lg:px-8 mx-0 my-6 lg:mx-8">
             <div class="text-center">
-                <h2 class="text-900 font-normal mb-2">Powerful Everywhere</h2>
-                <span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
+                <h2 class="text-900 font-normal mb-2">Service</h2>
             </div>
     
             <div class="grid mt-8 pb-2 md:pb-8">
-                <div class="flex justify-content-center col-12 lg:col-6 bg-purple-100 p-0 flex-order-1 lg:flex-order-0" style="border-radius:8px;">
-                    <img src="assets/demo/images/landing/mockup.svg" class="w-11" alt="mockup mobile">
+                <div class="flex justify-content-center col-12 lg:col-6 p-0 flex-order-1 lg:flex-order-0 img-container" style="border-radius:8px;">
+                  <img src="assets/images/pool.png" class="w-11 img-fit" alt="mockup mobile">
                 </div>
-    
+              
                 <div class="col-12 lg:col-6 my-auto flex flex-column lg:align-items-end text-center lg:text-right">
                     <div class="flex align-items-center justify-content-center bg-purple-200 align-self-center lg:align-self-end" style="width:4.2rem; height:4.2rem; border-radius: 10px;">
-                        <i class="pi pi-fw pi-mobile text-5xl text-purple-700"></i>
-                    </div>
-                    <h2 class="line-height-1 text-900 text-4xl font-normal">Congue Quisque Egestas</h2>
-                    <span class="text-700 text-2xl line-height-3 ml-0 md:ml-2" style="max-width:650px;">Lectus arcu bibendum at varius vel pharetra vel turpis nunc. Eget aliquet nibh praesent tristique magna sit amet purus gravida. Sit amet mattis vulputate enim nulla aliquet.</span>
+                        <i class="fas fa-swimmer text-5xl text-purple-700"></i>
+                      </div>
+                  <h2 class="line-height-1 text-900 text-4xl font-normal">Swimming Pool</h2>
+                  <span class="text-700 text-2xl line-height-3 ml-0 md:ml-2" style="max-width:650px;">"Our pool provides a relaxing experience with its beautiful design and modern filtration system. Ideal for unwinding and fitness."</span>
                 </div>
-            </div>
+              </div>
     
-            <div class="grid my-8 pt-2 md:pt-8">
+              <div class="grid my-8 pt-2 md:pt-8">
                 <div class="col-12 lg:col-6 my-auto flex flex-column text-center lg:text-left lg:align-items-start">
                     <div class="flex align-items-center justify-content-center bg-yellow-200 align-self-center lg:align-self-start" style="width:4.2rem; height:4.2rem; border-radius:10px;">
-                        <i class="pi pi-fw pi-desktop text-5xl text-yellow-700"></i>
-                    </div>
-                    <h2 class="line-height-1 text-900 text-4xl font-normal">Celerisque Eu Ultrices</h2>
-                    <span class="text-700 text-2xl line-height-3 mr-0 md:mr-2" style="max-width:650px;">Adipiscing commodo elit at imperdiet dui. Viverra nibh cras pulvinar mattis nunc sed blandit libero. Suspendisse in est ante in. Mauris pharetra et ultrices neque ornare aenean euismod elementum nisi.</span>
+                        <i class="fas fa-dumbbell text-5xl text-yellow-700"></i>
+                      </div>
+                  <h2 class="line-height-1 text-900 text-4xl font-normal">Gym</h2>
+                  <span class="text-700 text-2xl line-height-3 mr-0 md:mr-2" style="max-width:650px;">
+                    "Our modern gym offers high-end equipment and a spacious environment. Our professional trainers are ready to assist you."
+                  </span>
                 </div>
-    
-                <div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0" style="border-radius:8px;">
-                    <img src="assets/demo/images/landing/mockup-desktop.svg" class="w-11" alt="mockup">
+              
+                <div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0 img-container" style="border-radius:10px;">
+                  <img src="assets/images/gym.png" class="w-11 img-fit" alt="mockup">
                 </div>
-            </div>
+              </div>
         </div>
     
-        <div id="pricing" class="py-4 px-4 lg:px-8 my-2 md:my-4">
+        <div class="pricing py-4 px-4 lg:px-8 my-2 md:my-4 ">
             <div class="text-center">
-                <h2 class="text-900 font-normal mb-2">Matchless Pricing</h2>
-                <span class="text-600 text-2xl">Amet consectetur adipiscing elit...</span>
+                <h2 class="heading">Popular Rooms</h2>
             </div>
-    
-           <div class="grid justify-content-between mt-8 md:mt-0">
-                <div class="col-12 lg:col-4 p-0 md:p-3">
-                    <div class="p-3 flex flex-column border-200 pricing-card cursor-pointer border-2 hover:border-primary transition-duration-300 transition-all" style="border-radius:10px">
-                        <h3 class="text-900 text-center my-5">Free</h3>
-                        <img src="assets/demo/images/landing/free.svg" class="w-10 h-10 mx-auto" alt="free">
-                        <div class="my-5 text-center">
-                            <span class="text-5xl font-bold mr-2 text-900">$0</span>
-                            <span class="text-600">per month</span>
-                            <button pButton pRipple label="Get Started" class="block mx-auto mt-4 p-button-rounded border-none ml-3 font-light line-height-2 bg-blue-500 text-white"></button>
+            <div class="grid-container ">
+                <div class="col p-0 md:p-3">
+                    <div class="feature-card-popularroom">
+                        <div class="img-container-popularroom">
+                            <img src="assets/images/luxury_room.png" alt="Luxury Room" class="feature-image">
                         </div>
-                        <p-divider class="w-full bg-surface-200"></p-divider>
-                        <ul class="my-5 list-none p-0 flex text-900 flex-column">
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Responsive Layout</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Unlimited Push Messages</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">50 Support Ticket</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Free Shipping</span>
-                            </li>
-                        </ul>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Luxury Room</h3>
+                            <div class="rating">
+                                <span>5.0</span>
+                                <p-rating [(ngModel)]="value" [readonly]="false" [cancel]="false"></p-rating>
+                                <span>(588)</span>
+                            </div>
+                            <div class="price">
+                                <span class="current-price">$599</span>
+                                <span class="original-price">$799</span>
+                            </div>
+                            <div class="box">
+                                <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="col-12 lg:col-4 p-0 md:p-3 mt-4 md:mt-0">
-                    <div class="p-3 flex flex-column border-200 pricing-card cursor-pointer border-2 hover:border-primary transition-duration-300 transition-all" style="border-radius:10px">
-                        <h3 class="text-900 text-center my-5">Startup</h3>
-                        <img src="assets/demo/images/landing/startup.svg" class="w-10 h-10 mx-auto" alt="startup">
-                        <div class="my-5 text-center">
-                            <span class="text-5xl font-bold mr-2 text-900">$1</span>
-                            <span class="text-600">per month</span>
-                            <button pButton pRipple label="Try Free" class="block mx-auto mt-4 p-button-rounded border-none ml-3 font-light line-height-2 bg-blue-500 text-white"></button>
+                <div class="col p-0 md:p-3">
+                    <div class="feature-card-popularroom">
+                        <div class="img-container-popularroom">
+                            <img src="assets/images/family_room.png" alt="Family Room" class="feature-image">
                         </div>
-                        <p-divider class="w-full bg-surface-200"></p-divider>
-                        <ul class="my-5 list-none p-0 flex text-900 flex-column">
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Responsive Layout</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Unlimited Push Messages</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">50 Support Ticket</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Free Shipping</span>
-                            </li>
-                        </ul>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Family Room</h3>
+                            <div class="rating">
+                                <span>5.0</span>
+                                <p-rating [(ngModel)]="value" [readonly]="false" [cancel]="false"></p-rating>
+                                <span>(788)</span>
+                            </div>
+                            <div class="price">
+                                <span class="current-price">$199</span>
+                                <span class="original-price">$299</span>
+                            </div>
+                            <div class="box">
+                                <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="col-12 lg:col-4 p-0 md:p-3 mt-4 md:mt-0">
-                    <div class="p-3 flex flex-column border-200 pricing-card cursor-pointer border-2 hover:border-primary transition-duration-300 transition-all" style="border-radius:10px">
-                        <h3 class="text-900 text-center my-5">Enterprise</h3>
-                        <img src="assets/demo/images/landing/enterprise.svg" class="w-10 h-10 mx-auto" alt="enterprise">
-                        <div class="my-5 text-center">
-                            <span class="text-5xl font-bold mr-2 text-900">$999</span>
-                            <span class="text-600">per month</span>
-                            <button pButton pRipple label="Get a Quote" class="block mx-auto mt-4 p-button-rounded border-none ml-3 font-light line-height-2 bg-blue-500 text-white"></button>
+                <div class="col p-0 md:p-3">
+                    <div class="feature-card-popularroom">
+                        <div class="img-container-popularroom">
+                            <img src="assets/images/standard_room.png" alt="Standard Room" class="feature-image">
                         </div>
-                        <p-divider class="w-full bg-surface-200"></p-divider>
-                        <ul class="my-5 list-none p-0 flex text-900 flex-column">
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Responsive Layout</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Unlimited Push Messages</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">50 Support Ticket</span>
-                            </li>
-                            <li class="py-2">
-                                <i class="pi pi-fw pi-check text-xl text-cyan-500 mr-2"></i>
-                                <span class="text-xl line-height-3">Free Shipping</span>
-                            </li>
-                        </ul>
+                        <div class="feature-content">
+                            <h3 class="feature-title">Standard Room</h3>
+                            <div class="rating">
+                                <span>5.0</span>
+                                <p-rating [(ngModel)]="value" [readonly]="false" [cancel]="false"></p-rating>
+                                <span>(988)</span>
+                            </div>
+                            <div class="price">
+                                <span class="current-price">$150</span>
+                                <span class="original-price">$249</span>
+                            </div>
+                            <div class="box">
+                                <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-           </div> 
+            </div>
         </div>
-        </div>
-    
+
         <div class="py-4 px-4 mx-0 mt-8 lg:mx-8">
             <div class="grid justify-content-between">
                 <div class="col-12 md:col-2" style="margin-top:-1.5rem;">
