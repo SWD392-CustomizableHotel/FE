@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { HeaderComponent } from './header/header.component';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
@@ -26,7 +25,6 @@ import { sharedModule } from './share/shared.module';
 
 @NgModule({
     declarations: [
-        HeaderComponent,
         LayoutComponent,
         SidebarComponent,
         MenuComponent,
