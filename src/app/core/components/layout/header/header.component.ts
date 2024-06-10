@@ -12,6 +12,11 @@ import { LayoutService } from '../services/app.layout.service';
   templateUrl: './header.component.html'
 })
 export class HeaderComponent implements OnInit {
+  cities: string[] = ['Ho Chi Minh City', 'Ha Noi Capital', 'Da Nang City', 'Hue City'];
+  menuItems: string[] = ['Home', 'Features', 'Highlights', 'Pricing'];
+  onMenuItemClick(item: string): void {
+    console.log(item + ' clicked');
+  }
   checked: boolean = false;
   selectedTheme: string = 'dark';
   user?: User | null;
