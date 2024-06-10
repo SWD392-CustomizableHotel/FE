@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './core/components/login/login.component';
 import { LayoutComponent } from './core/components/layout/layout.component';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
+import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 
 const routes: Routes = [
     {
@@ -26,6 +27,10 @@ const routes: Routes = [
     {
         path: 'notfound',
         component: NotfoundComponent
+    },
+    {
+        path: 'reset-password',
+        component: ResetPasswordComponent
     },
     {
         path: '**',
