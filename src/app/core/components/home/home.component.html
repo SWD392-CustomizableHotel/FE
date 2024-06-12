@@ -40,7 +40,9 @@
                 </div>
             </div>
         </div>
-    
+
+      
+
         <div id="hero" class="flex flex-column pt-4 px-4 lg:px-8 overflow-hidden" 
             style="background: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EEEFAF 0%, #C3E3FA 100%); clip-path: ellipse(150% 87% at 93% 13%);">
             <div class="mx-4 md:mx-8 mt-0 md:mt-4">
@@ -51,6 +53,24 @@
             <div class="flex justify-content-center md:justify-content-end pb-8">
             </div>
         </div>
+
+          <!-- main  -->
+          <div class="">
+            <h3 class="text-center font-bold">Popular Rooms</h3>
+            <div *ngIf="rooms && rooms.length > 0" class="flex justify-content-around align-items-center flex-wrap">
+                <div *ngFor="let room of rooms" class="border-1 border-gray-200 p-4">
+                    <img src="assets/images/Family Room image.png" alt="">
+                    <div class="px-4">
+                        <h5 class="text-center pt-2">{{ room.type }}</h5>
+                        <p>${{ room.price }}</p>
+                        <p>{{ room.description }}</p>
+                        <button class="bg-blue-400 p-2">Booking</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+            <!-- main  -->
         
         <div id="features" class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
             <div class="grid justify-content-center">
