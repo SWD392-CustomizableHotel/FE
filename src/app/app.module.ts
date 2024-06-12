@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -31,72 +31,118 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { RouterLink, RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+/*google social*/
+import {
+  GoogleLoginProvider,
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+  GoogleSigninButtonModule,
+} from '@abacritt/angularx-social-login';
+import { environment } from '../assets/environments/environment';
+/*end google login*/
+import { JwtHelperService, JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
+import { AuthenticationService } from './services/authentication.service';
 
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 
 @NgModule({
-    imports: [
-        PanelModule,
-        BrowserModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        LayoutModule,
-        RippleModule,
-        ButtonModule,
-        DividerModule,
-        InputTextModule,
-        FormsModule,
-        CardModule,
-        MenuModule,
-        AvatarGroupModule,
-        AvatarModule,
-        ProgressSpinnerModule,
-        CheckboxModule,
-        ImageModule,
-        MessagesModule,
-        MessageModule,
-        FloatLabelModule,
-        RouterModule,
-        RouterLink
-    ],
-    declarations: [
-        AppComponent,
-        LoginComponent,
-        NotfoundComponent
-    ],
-    exports: [
-        PanelModule,
-        BrowserModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        ButtonModule,
-        RippleModule,
-        DividerModule,
-        InputTextModule,
-        FormsModule,
-        CardModule,
-        MenuModule,
-        AvatarGroupModule,
-        AvatarModule,
-        ProgressSpinnerModule,
-        CheckboxModule,
-        ImageModule,
-        MessagesModule,
-        MessageModule,
-        FloatLabelModule,
-        RouterModule,
-        RouterLink
-    ],
-    providers: [
-        { provide: LocationStrategy, useClass: PathLocationStrategy },
-        ProductService,
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-
-        // provider used to create fake backend
-        fakeBackendProvider
-    ],
-    bootstrap: [AppComponent]
+  imports: [
+    PanelModule,
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    LayoutModule,
+    RippleModule,
+    ButtonModule,
+    DividerModule,
+    InputTextModule,
+    FormsModule,
+    CardModule,
+    MenuModule,
+    AvatarGroupModule,
+    AvatarModule,
+    ProgressSpinnerModule,
+    CheckboxModule,
+    ImageModule,
+    MessagesModule,
+    MessageModule,
+    FloatLabelModule,
+    RouterModule,
+    RouterLink,
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:7082'],
+        disallowedRoutes: [],
+      },
+    }),
+  ],
+  declarations: [AppComponent, LoginComponent, NotfoundComponent],
+  exports: [
+    PanelModule,
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ButtonModule,
+    RippleModule,
+    DividerModule,
+    InputTextModule,
+    FormsModule,
+    CardModule,
+    MenuModule,
+    AvatarGroupModule,
+    AvatarModule,
+    ProgressSpinnerModule,
+    CheckboxModule,
+    ImageModule,
+    MessagesModule,
+    MessageModule,
+    FloatLabelModule,
+    RouterModule,
+    RouterLink,
+    SocialLoginModule,
+    GoogleSigninButtonModule,
+  ],
+  providers: [
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    ProductService,
+    AuthenticationService,
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    // { provide: HTTP_INTERCEPTORS, useClass: ErrorHandler, multi: true },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environment.googleClientId, {
+              // scopes: 'email',
+              // plugin_name: ''
+            }),
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        },
+      } as SocialAuthServiceConfig,
+    },
+    // provider used to create fake backend
+    fakeBackendProvider,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

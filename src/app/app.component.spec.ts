@@ -20,6 +20,12 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('FE-SheritonHotel');
   });
 
+  it(`should have as title 'GoogleLogin'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('GoogleLogin');
+  });
+
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
