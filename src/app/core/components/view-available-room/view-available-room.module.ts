@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { HomeComponent } from './home.component';
+import { ViewAvailableRoomComponent } from './view-available-room.component';
 import { CommonModule } from '@angular/common';
-import { HomeRoutingModule } from './home-routing.module';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { ChartModule } from 'primeng/chart';
@@ -14,13 +13,15 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { sharedModule } from '../layout/share/shared.module';
 import { RatingModule } from 'primeng/rating';
+import { FormsModule } from '@angular/forms';
+
+
 @NgModule({
     declarations: [
-        HomeComponent,
+        ViewAvailableRoomComponent,
     ],
     imports: [
         CommonModule,
-        HomeRoutingModule,
         ButtonModule,
         RippleModule,
         DividerModule,
@@ -33,10 +34,11 @@ import { RatingModule } from 'primeng/rating';
         InputNumberModule,
         sharedModule,
         RatingModule,
+        FormsModule,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    bootstrap: [HomeComponent],
+    bootstrap: [ViewAvailableRoomComponent],
 })
 
-export class HomeModule {}
+export class ViewAvailableRoomModule {}

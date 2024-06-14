@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../../../services/authentication.service';
-import { Message } from 'primeng/api';
+import { Message, MessageService } from 'primeng/api';
 
-@Component({ templateUrl: 'login.component.html' })
+@Component({ templateUrl: 'login.component.html', providers: [MessageService] })
 export class LoginComponent implements OnInit {
     loginForm!: FormGroup;
     registerForm!: FormGroup;
@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
     loading = false;
     submitted = false;
     error = '';
+    email!: string;
     messages!: Message[];
     userNameIsRequired!: Message[];
     passwordIsRequired!: Message[];
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private messageService: MessageService
     ) {
         // redirect to home if already logged in
         if (this.authenticationService.userValue) {
@@ -36,21 +38,24 @@ export class LoginComponent implements OnInit {
         });
 
         this.messages = [
-            { severity: 'error',
-              summary: 'Error',
-              detail: 'Unknown error'
+            {
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Unknown error'
             }
         ];
         this.userNameIsRequired = [
-            { severity: 'error',
-              summary: 'Invalid',
-              detail: 'Username is required'
+            {
+                severity: 'error',
+                summary: 'Invalid',
+                detail: 'Username is required'
             }
         ];
         this.passwordIsRequired = [
-            { severity: 'error',
-              summary: 'Invalid',
-              detail: 'Password is required'
+            {
+                severity: 'error',
+                summary: 'Invalid',
+                detail: 'Password is required'
             }
         ];
     }
@@ -84,7 +89,43 @@ export class LoginComponent implements OnInit {
             });
     }
 
+    visible: boolean = false;
+
+    showDialog(): void {
+        this.visible = true;
+    }
+
+    closeDialog(): void {
+        this.visible = false;
+    }
+
     returnHome(): void {
         this.router.navigate(['/']);
+    }
+
+    resetMyPassword(): void {
+        this.loading = true;
+        if (this.email === null || this.email === undefined) {
+            this.loading = false;
+            this.messageService.add(
+                { severity: 'error', summary: 'Error', detail: 'You must enter the email.', life: 3000 }
+            );
+            return;
+        }
+        this.authenticationService.forgotPassword(this.email)
+            .subscribe((response) => {
+                if (!response.isSucceed) {
+                    this.loading = false;
+                    this.messageService.add(
+                        { severity: 'error', summary: 'Error', detail: `${response.message}`, life: 3000 }
+                    );
+                } else {
+                    this.loading = false;
+                    this.visible = false;
+                    this.messageService.add(
+                        { severity: 'success', summary: 'Success', detail: `${response.message}`, life: 6000 }
+                    );
+                }
+            });
     }
 }

@@ -1,0 +1,53 @@
+<div class="">
+  <h2 class="text-center my-6">Sheriton rooms</h2>
+  <div class="flex">
+    <div class="w-2 ml-4">
+      <h5>Search room</h5>
+      <input
+        type="text"
+        [(ngModel)]="filterText"
+        placeholder="Enter type of room"
+        (input)="filterRooms()"
+        class="px-4 py-2 border-1 border-300 mb-4"
+      /> 
+      
+      <p-dropdown
+            [options]="sortType"
+            [(ngModel)]="selectedSortType"
+            (onChange)="filterRooms()"
+            placeholder="Sort by price"
+          />
+    </div>
+
+    <div
+      *ngIf="filteredRooms && filteredRooms.length > 0"
+      class="flex-column justify-content-around align-items-center w-10"
+    >
+      <div
+        *ngFor="let room of filteredRooms"
+        class="border-1 border-500 mx-4 px-4"
+      >
+        <h5 class="text-center pt-2 font-bold text-4xl">{{ room.type }}</h5>
+        <div
+          class="flex justify-content-between align-items-center my-4 border-1 border-300"
+        >
+          <img
+            src="assets/images/Family Room image.png"
+            alt=""
+            style="width: 20%"
+          />
+          <div class="py-6">{{ room.description }}</div>
+          <div class="font-bold">${{ room.price }}</div>
+          <p-button label="View More" [link]="true" />
+          <p-button label="Booking" />
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="filteredRooms && filteredRooms.length === 0"
+      class="text-center my-6"
+    >
+      <p>No rooms found</p>
+    </div>
+  </div>
+</div>

@@ -31,6 +31,12 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { RouterLink, RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ToastModule } from 'primeng/toast';
+import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
+import { PasswordModule } from 'primeng/password';
+import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 
 
 @NgModule({
@@ -57,12 +63,18 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
         MessageModule,
         FloatLabelModule,
         RouterModule,
-        RouterLink
+        RouterLink,
+        DialogModule,
+        ProgressBarModule,
+        ToastModule,
+        PasswordModule,
+        ButtonModule
     ],
     declarations: [
         AppComponent,
         LoginComponent,
-        NotfoundComponent
+        NotfoundComponent,
+        ResetPasswordComponent
     ],
     exports: [
         PanelModule,
@@ -86,7 +98,11 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
         MessageModule,
         FloatLabelModule,
         RouterModule,
-        RouterLink
+        RouterLink,
+        DialogModule,
+        ProgressBarModule,
+        ToastModule,
+        PasswordModule
     ],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },

@@ -1,13 +1,16 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/images/logo2.png" alt="logo" width="40px" height="40px">
-        <!-- <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo"> -->
+        
         <span class="font-medium">Shertion Hotel</span>
     </a>
 
-    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
-        <i class="pi pi-bars"></i>
-    </button>
+    <ng-container *ngFor="let menuItem of menuItems">
+        <button class="p-link layout-menu-button layout-topbar-button"
+                (click)="onMenuItemClick(menuItem)">
+            {{ menuItem }}
+        </button>
+    </ng-container>
 
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
@@ -26,5 +29,49 @@
             <i class="pi pi-cog"></i>
             <span>Settings</span>
         </button>
+    </div>
+</div>
+<div class="flex justify-content-center">
+    <div class="flex justify-content-center md:justify-content-end pb-8">
+        <div class="flex justify-content-center">
+            <div class="flex justify-content-center md:justify-content-end pb-8">
+                <!-- Box 1: Choose Location -->
+                <div class="box mr-4" style="max-width: 900px;">    
+                    <p-floatLabel>
+                        <p-dropdown id="location" [options]="cities"></p-dropdown>
+                        <label for="location">Choose a location:</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 2: Start Date -->
+                <div class="box mr-4" >
+                    <p-floatLabel>
+                        <p-calendar id="startDate" formControlName="startDate"></p-calendar>
+                        <label for="startDate">Start Date</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 3: End Date -->
+                <div class="box mr-4">
+                    <p-floatLabel>
+                        <p-calendar id="endDate" formControlName="endDate"></p-calendar>
+                        <label for="endDate">End Date</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 4: Number of People -->
+                <div class="box mr-4">
+                    <p-floatLabel>
+                        <p-inputNumber inputId="integeronly" />
+                        <label for="number-input">Number of People</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 5: Booking -->
+                <div class="box">
+                    <button pButton pRipple type="button" label="Booking" class="p-button-outlined"aria-label="Book Now"></button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
