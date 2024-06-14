@@ -55,7 +55,8 @@ export class RoomsComponent implements OnInit {
       .map((room: Room) => {
         return {
           ...room,
-          roomStatus: this.roomStatusOptions.find(option => option.status === room.roomStatus)
+          roomStatus: this.roomStatusOptions.find(option => option.status === room.roomStatus),
+          roomStatusValue: room.roomStatus
         };
       });
       this.loading = false;
@@ -124,6 +125,7 @@ export class RoomsComponent implements OnInit {
         console.error('All fields must be filled out to create a room');
       }
     }
+    this.createRoomDialog = false;
     this.roomDialog = false;
     this.room = {};
   }
