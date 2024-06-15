@@ -74,7 +74,7 @@ import { ViewAvailableRoomComponent } from './core/components/view-available-roo
         AppComponent,
         LoginComponent,
         NotfoundComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
     ],
     exports: [
         PanelModule,

@@ -3,7 +3,6 @@ import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/room';
 import { LayoutService } from '../layout/services/app.layout.service';
 import { Router } from '@angular/router';
-import { CommonService } from '../../../services/common.service';
 
 
 @Component({
@@ -22,12 +21,9 @@ export class ViewAvailableRoomComponent implements OnInit {
     public layoutService: LayoutService,
     public router: Router,
     private roomService: RoomService,
-    private commonService: CommonService
   ) {}
 
   ngOnInit(): void {
-    this.commonService.removeClassFromElementById('elementId1', 'pb-8');
-    this.commonService.removeClassFromElementById('elementId2', 'pb-8');
     this.sortType = ['Price Low To High', 'Price High To Low'];
     this.roomService.getAvailableRoom().subscribe(
       (response: Room[]) => {

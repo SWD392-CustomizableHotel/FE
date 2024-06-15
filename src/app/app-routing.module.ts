@@ -8,34 +8,38 @@ import { ViewAvailableRoomComponent } from './core/components/view-available-roo
 
 const routes: Routes = [
   {
-    path: '',
-    loadChildren: () =>
-      import('./core/components/home/home.module').then((m) => m.HomeModule),
+      path: '',
+      loadChildren: () => import('./core/components/home/home.module').then(m => m.HomeModule)
   },
   {
-    path: 'dashboard',
-    component: LayoutComponent,
-    children: [
-      {
-        path: '',
-        loadChildren: () =>
-          import('./core/components/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
-          ),
-      },
-    ],
+      path: 'dashboard',
+      component: LayoutComponent,
+      children: [
+          {
+              path: '',
+              loadChildren: () => import('./core/components/dashboard/dashboard.module').then(m => m.DashboardModule)
+          },
+          {
+              path: '',
+              loadChildren: () => import('./core/components/main/main.module').then(m => m.MainModule)
+          }
+      ],
   },
   {
-    path: 'login',
-    component: LoginComponent,
+      path: 'login',
+      component: LoginComponent
   },
   {
-    path: 'notfound',
-    component: NotfoundComponent,
+      path: 'notfound',
+      component: NotfoundComponent
   },
   {
-    path: 'reset-password',
-    component: ResetPasswordComponent,
+      path: 'reset-password',
+      component: ResetPasswordComponent
+  },
+  {
+      path: '**',
+      redirectTo: 'notfound'
   },
   {
     path: 'view-available-room',
@@ -49,11 +53,7 @@ const routes: Routes = [
           ).then((m) => m.ViewAvailableRoomModule),
       },
     ],
-  },
-  {
-    path: '**',
-    redirectTo: 'notfound',
-  },
+  }
   // { path: '', component: HomeComponent },
   // { path: 'login', component: LoginComponent },
 
