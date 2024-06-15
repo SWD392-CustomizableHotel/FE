@@ -36,7 +36,6 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { PasswordModule } from 'primeng/password';
-import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 
 
 @NgModule({
@@ -74,7 +73,7 @@ import { ViewAvailableRoomComponent } from './core/components/view-available-roo
         AppComponent,
         LoginComponent,
         NotfoundComponent,
-        ResetPasswordComponent,
+        ResetPasswordComponent
     ],
     exports: [
         PanelModule,

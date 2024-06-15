@@ -38,10 +38,6 @@ const routes: Routes = [
       component: ResetPasswordComponent
   },
   {
-      path: '**',
-      redirectTo: 'notfound'
-  },
-  {
     path: 'view-available-room',
     component: ViewAvailableRoomComponent,
     children: [
@@ -53,7 +49,12 @@ const routes: Routes = [
           ).then((m) => m.ViewAvailableRoomModule),
       },
     ],
-  }
+  },
+  {
+      path: '**',
+      redirectTo: 'notfound'
+  },
+
   // { path: '', component: HomeComponent },
   // { path: 'login', component: LoginComponent },
 
