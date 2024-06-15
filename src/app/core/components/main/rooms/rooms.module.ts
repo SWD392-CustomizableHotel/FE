@@ -16,6 +16,7 @@ import { RoomsComponent } from './rooms.component';
 import { RoomsRoutingModule } from './rooms-routing.module';
 import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
+import { PaginatorModule } from 'primeng/paginator';
 @NgModule({
 	imports: [
         RoomsRoutingModule,
@@ -33,7 +34,8 @@ import { DialogModule } from 'primeng/dialog';
 		ProgressBarModule,
 		ToastModule,
 		ToolbarModule,
-		DialogModule
+		DialogModule,
+		PaginatorModule
 	],
 	declarations: [RoomsComponent]
 })

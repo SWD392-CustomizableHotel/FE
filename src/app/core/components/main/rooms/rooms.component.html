@@ -3,9 +3,10 @@
     <div class="col-12">
         <div class="card px-6 py-6">
             <p-toast></p-toast>
-            <h5>Filter Menu</h5>
-            <p-table #dt1 [value]="rooms"  [columns]="cols" dataKey=" roomId" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" paginator="true" 
-            [globalFilterFields]="['roomStatus.status','roomType']" responsiveLayout="scroll" [rowsPerPageOptions]="[5, 10, 20]">
+            <h5>Room List</h5>
+            <p-table #dt1 [value]="rooms"  [columns]="cols" dataKey=" roomId"
+            [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines"
+            [globalFilterFields]="['roomStatus.status','roomType']" responsiveLayout="scroll">
                 <ng-template pTemplate="caption">
                     
                 <div class="flex justify-content-between flex-column sm:flex-row">
@@ -21,32 +22,38 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <!-- <th style="min-width: 7rem">
-                            <div class="flex justify-content-between align-items-center">
-                                Room ID
-								
-                            </div>
-                        </th> -->
-                        <th style="min-width: 12rem">
+                        <th style="min-width: 12rem" pSortableColumn="roomNumber">
                             <div class="flex justify-content-between align-items-center">
                                 Room Number
+                                <p-sortIcon field="roomNumber"></p-sortIcon>
+                                <p-columnFilter type="text" field="roomNumber" display="menu" placeholder="Search by Room Number"></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 10rem">
+                        <th style="min-width: 10rem" pSortableColumn="roomPrice">
                             <div class="flex justify-content-between align-items-center">
                                 Room Price
+                                <p-sortIcon field="roomPrice"></p-sortIcon>
+                                <p-columnFilter type="numeric" field="roomPrice" display="menu"></p-columnFilter>
                             </div>
                         </th>
 						<th style="min-width: 12rem" pSortableColumn="roomType">
 							<div class="flex justify-content-between align-items-center">
 								Room Type
                                 <p-sortIcon field="roomType"></p-sortIcon>
+                                <p-columnFilter type="text" field="roomType" display="menu" placeholder="Search by Room Type"></p-columnFilter>
 							</div>
 						</th>
                         <th style="min-width: 12rem" pSortableColumn="roomStatus.status">
                             <div class="flex justify-content-between align-items-center">
                                 Room Status
                                 <p-sortIcon field="roomStatus"></p-sortIcon>
+                                <p-columnFilter field="roomStatus.status" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                      <p-dropdown [(ngModel)]="room.roomStatus" [options]="roomStatusOptions" optionLabel="status"
+                                        (onChange)="filter($event.value.status)" placeholder="Any" [style]="{'min-width': '12rem'}">
+                                      </p-dropdown>
+                                    </ng-template>
+                                  </p-columnFilter>
                             </div>
                         </th>
                         <th></th>
@@ -54,9 +61,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-room>
                     <tr>
-                        <!-- <td>
-                            {{room.roomId}}
-                        </td> -->
                         <td>
                             {{room.roomNumber}}
                         </td>
@@ -83,7 +87,7 @@
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
 					<tr>
-						<td colspan="8">No customers found.</td>
+						<td colspan="8">No rooms found.</td>
 					</tr>
 				</ng-template>
                 <ng-template pTemplate="loadingbody">
@@ -92,6 +96,18 @@
                     </tr>
                 </ng-template>
             </p-table>
+            <div class="flex align-items-center justify-content-en">
+                <span class="mx-1 text-color">Items per page: </span>
+                <p-dropdown [options]="options" optionLabel="label" optionValue="value" [(ngModel)]="rows" (ngModelChange)="onRowsChange($event)" />
+                <p-paginator (onPageChange)="onPageChange($event)"
+                [showCurrentPageReport]="true" 
+                [first]="first"
+                [rows]="rows"
+                [totalRecords]="totalRecords"
+                currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                [showPageLinks]="false"
+                [showFirstLastIcon]="false"></p-paginator>
+            </div>
         </div>
 
         <p-dialog [(visible)]="roomDialog" [style]="{width: '450px'}" header="Room Details" [modal]="true" class="p-fluid">
@@ -129,14 +145,15 @@
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="createRoomDialog" [style]="{width: '450px'}" header="New Room Details" [modal]="true" class="p-fluid">
+        <p-dialog [(visible)]="createRoomDialog" [style]="{width: '700px'}" header="New Room Details" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="formgrid grid flex justify-content space-between">
                     <div style="flex: 1; margin-right: 40px;">
                         <div class="field">
-                            <label for="roomType">Room Type</label>
-                            <input type="string" pInputText id="roomType" [(ngModel)]="room.roomType" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomType}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomType">Room Type is required.</small>
+                            <label for="hotelId">Hotel</label>
+                            <p-dropdown id="id"
+                            [(ngModel)]="room.hotelId" optionLabel="code" optionValue="id" [options]="hotels"></p-dropdown>
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.hotelId">Hotel is required.</small>
                         </div>
                         <div class="field">
                             <label for="roomPrice">Room Price</label>
@@ -152,18 +169,19 @@
                     <div style="flex: 1;">
                         <div class="field">
                             <label for="roomStatus">Room Status</label>
-                             <p-dropdown id="roomStatus"  placeholder="Please choose a status" required [showClear]="true"  [checkmark]="true" [(ngModel)]="selectedRoomStatus" [options]="roomStatusOptions" optionLabel="status"></p-dropdown> 
+                             <p-dropdown id="roomStatus"  placeholder="Please choose a status" required [showClear]="true"  [checkmark]="true" 
+                             [(ngModel)]="selectedRoomStatus" [options]="roomStatusOptions" optionLabel="status"></p-dropdown> 
                         </div>   
                         <div class="field">
                             <label for="roomNumber">Room Number</label>
                             <input type="string" pInputText id="roomNumber" [(ngModel)]="room.roomNumber" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomNumber}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomType">Room Number is required.</small>
-                        </div>  
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomNumber">Room Number is required.</small>
+                        </div>   
                         <div class="field">
-                            <label for="hotelId">Hotel ID</label>
-                            <input type="number" pInputText id="hotelId" [(ngModel)]="room.hotelId" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.hotelId}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.hotelId">Hotel ID is required.</small>
-                        </div>                
+                            <label for="roomType">Room Type</label>
+                            <input type="string" pInputText id="roomType" [(ngModel)]="room.roomType" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomType}">
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomType">Room Type is required.</small>
+                        </div>             
                     </div>
                 </div>
             </ng-template>
@@ -173,6 +191,5 @@
                 <p-button label="Save" icon="pi pi-check" (onClick)="saveRoom()" ></p-button>
             </ng-template>
         </p-dialog>
-
     </div>
 </div>
