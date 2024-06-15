@@ -1,53 +1,76 @@
+<app-header></app-header>
 <div class="">
-  <h2 class="text-center my-6">Sheriton rooms</h2>
-  <div class="flex">
-    <div class="w-2 ml-4">
-      <h5>Search room</h5>
+  <h2 class="text-center my-6 font-bold">Sheriton rooms</h2>
+  <div class="flex container mb-4">
+    
+    <!-- This is filter -->
+    <div class="search-room-container xl:w-2 mr-2">
+      <h5>Search & Filter Rooms</h5>
       <input
         type="text"
         [(ngModel)]="filterText"
         placeholder="Enter type of room"
         (input)="filterRooms()"
-        class="px-4 py-2 border-1 border-300 mb-4"
-      /> 
-      
+        class="search-input"
+      />
       <p-dropdown
-            [options]="sortType"
-            [(ngModel)]="selectedSortType"
-            (onChange)="filterRooms()"
-            placeholder="Sort by price"
-          />
+        [options]="sortType"
+        [(ngModel)]="selectedSortType"
+        (onChange)="filterRooms()"
+        placeholder="Sort by price"
+        class="sort-dropdown"
+      />
     </div>
+    <!-- This is filter -->
 
+    <!-- This is View Room -->
     <div
       *ngIf="filteredRooms && filteredRooms.length > 0"
-      class="flex-column justify-content-around align-items-center w-10"
+      class="flex-column justify-content-around align-items-center xl:w-9 w-full border-1 border-500 ml-auto mr-auto"
     >
       <div
         *ngFor="let room of filteredRooms"
-        class="border-1 border-500 mx-4 px-4"
+        class="border-bottom-1 mx-4 px-4 mb-4"
       >
         <h5 class="text-center pt-2 font-bold text-4xl">{{ room.type }}</h5>
         <div
-          class="flex justify-content-between align-items-center my-4 border-1 border-300"
+          class="flex justify-content-between flex-wrap align-items-center my-4 border-1 border-300 px-2"
         >
-          <img
-            src="assets/images/Family Room image.png"
-            alt=""
-            style="width: 20%"
-          />
-          <div class="py-6">{{ room.description }}</div>
-          <div class="font-bold">${{ room.price }}</div>
+          <div class="pt-1">
+            <img
+            class="room-image"
+              src="assets/images/Family Room image.png"
+              alt=""
+            />
+          </div>
+          <div class="xl:w-4 w-2 mx-4">
+            <div class="pb-4 pt-2">
+              {{room.description}} 
+            </div>
+            <div class="font-bold mb-2">${{ room.price }}</div>
+          </div>
           <p-button label="View More" [link]="true" />
-          <p-button label="Booking" />
+          <div class="flex flex-row-reverse md:flex-row gap-2 p-4">
+            <p-button icon="pi pi-heart" [outlined]="true" />
+            <p-button
+              icon="pi pi-shopping-cart"
+              class="flex-auto md:flex-initial white-space-nowrap"
+              label="Booking "
+            />
+          </div>
         </div>
       </div>
     </div>
+    <!-- This is View Room -->
+
+    <!-- This is validation -->
     <div
       *ngIf="filteredRooms && filteredRooms.length === 0"
       class="text-center my-6"
     >
       <p>No rooms found</p>
     </div>
+    <!-- This is validation -->
   </div>
+  <app-footer></app-footer>
 </div>

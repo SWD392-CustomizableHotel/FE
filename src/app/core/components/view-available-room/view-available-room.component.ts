@@ -4,6 +4,7 @@ import { Room } from '../../../interfaces/models/room';
 import { LayoutService } from '../layout/services/app.layout.service';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-view-available-room',
   templateUrl: './view-available-room.component.html',
@@ -28,7 +29,6 @@ export class ViewAvailableRoomComponent implements OnInit {
       (response: Room[]) => {
         this.rooms = response;
         this.filteredRooms = response;
-        console.log('Rooms fetched successfully', this.rooms);
       },
       (error) => {
         console.error('Error fetching data', error);

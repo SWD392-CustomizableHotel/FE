@@ -14,7 +14,11 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { sharedModule } from '../layout/share/shared.module';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
-
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
+import { DataViewModule } from 'primeng/dataview';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
     declarations: [
@@ -35,6 +39,11 @@ import { FormsModule } from '@angular/forms';
         sharedModule,
         RatingModule,
         FormsModule,
+        InputIconModule,
+        IconFieldModule,
+        InputTextModule,
+        DataViewModule,
+        TagModule,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

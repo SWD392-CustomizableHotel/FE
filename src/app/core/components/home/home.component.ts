@@ -42,7 +42,6 @@ export class HomeComponent implements OnInit {
     this.roomService.getAvailableRoom().subscribe(
       (response: Room[]) => {
         this.rooms = response;
-        console.log('Rooms fetched successfully', this.rooms);
       },
       (error) => {
         console.error('Error fetching data', error);
