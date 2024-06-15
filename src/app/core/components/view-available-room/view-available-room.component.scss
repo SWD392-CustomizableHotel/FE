@@ -60,19 +60,19 @@ $input-focus-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   height: 200px;
 }
 
-@media screen and (max-width: 1200px) {
-  .container{
-    display: flex;
-    flex-direction: column;
-  }
-  .search-room-container{
-    margin: 0 auto;
-    width: 100%;
-  }
+// @media screen and (max-width: 1200px) {
+//   .container{
+//     display: flex;
+//     flex-direction: column;
+//   }
+//   .search-room-container{
+//     margin: 0 auto;
+//     width: 100%;
+//   }
     
-    .room-image{
-      width: 150px;
-      height: 150px;
-    }
-}
+//     .room-image{
+//       width: 150px;
+//       height: 150px;
+//     }
+// }
 

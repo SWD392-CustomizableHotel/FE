@@ -9,7 +9,7 @@ import { environment } from '../../assets/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class RoomService {
 
   constructor(private http: HttpClient) { }
 

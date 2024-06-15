@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/view.room.service';
+import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/room';
 import { LayoutService } from '../layout/services/app.layout.service';
 import { Router } from '@angular/router';
+import { CommonService } from '../../../services/common.service';
 
 
 @Component({
@@ -20,21 +21,22 @@ export class ViewAvailableRoomComponent implements OnInit {
   constructor(
     public layoutService: LayoutService,
     public router: Router,
-    private roomService: ApiService
+    private roomService: RoomService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit(): void {
+    this.commonService.removeClassFromElementById('elementId1', 'pb-8');
+    this.commonService.removeClassFromElementById('elementId2', 'pb-8');
     this.sortType = ['Price Low To High', 'Price High To Low'];
     this.roomService.getAvailableRoom().subscribe(
       (response: Room[]) => {
         this.rooms = response;
         this.filteredRooms = response;
-      },
-      (error) => {
-        console.error('Error fetching data', error);
       }
     );
   }
+
 
   filterRooms(): void {
     let rooms = this.rooms || [];

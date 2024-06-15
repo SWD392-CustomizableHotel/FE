@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../layout/services/app.layout.service';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../services/view.room.service';
+import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/room';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
   ];
 
   selectedCity: any;
-  constructor(public layoutService: LayoutService, public router: Router, private roomService: ApiService, private formBuilder: FormBuilder) {
+  constructor(public layoutService: LayoutService, public router: Router, private roomService: RoomService, private formBuilder: FormBuilder) {
     this.formGroup = this.formBuilder.group({
       startDate: [''],
       endDate: ['']
