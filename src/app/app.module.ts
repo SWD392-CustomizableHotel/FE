@@ -72,7 +72,7 @@ import { PasswordModule } from 'primeng/password';
         AppComponent,
         LoginComponent,
         NotfoundComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
     ],
     exports: [
         PanelModule,
