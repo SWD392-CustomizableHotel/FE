@@ -7,125 +7,138 @@ import { Message, MessageService } from 'primeng/api';
 
 @Component({ templateUrl: 'login.component.html', providers: [MessageService] })
 export class LoginComponent implements OnInit {
-    loginForm!: FormGroup;
-    registerForm!: FormGroup;
+  loginForm!: FormGroup;
+  registerForm!: FormGroup;
 
-    loading = false;
-    submitted = false;
-    error = '';
-    email!: string;
-    messages!: Message[];
-    userNameIsRequired!: Message[];
-    passwordIsRequired!: Message[];
+  loading = false;
+  submitted = false;
+  error = '';
+  email!: string;
+  messages!: Message[];
+  userNameIsRequired!: Message[];
+  passwordIsRequired!: Message[];
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-        private authenticationService: AuthenticationService,
-        private messageService: MessageService
-    ) {
-        // redirect to home if already logged in
-        if (this.authenticationService.userValue) {
-            this.router.navigate(['/']);
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private messageService: MessageService
+  ) {
+    // redirect to home if already logged in
+    if (this.authenticationService.userValue) {
+      this.router.navigate(['/']);
+    }
+  }
+
+  ngOnInit(): void {
+    this.loginForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+    });
+
+    this.messages = [
+      {
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Unknown error',
+      },
+    ];
+    this.userNameIsRequired = [
+      {
+        severity: 'error',
+        summary: 'Invalid',
+        detail: 'Username is required',
+      },
+    ];
+    this.passwordIsRequired = [
+      {
+        severity: 'error',
+        summary: 'Invalid',
+        detail: 'Password is required',
+      },
+    ];
+  }
+
+  // convenience getter for easy access to form fields
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  get f() {
+    return this.loginForm.controls;
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.error = '';
+    this.loading = true;
+    this.authenticationService
+      .login(this.f['username'].value, this.f['password'].value)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          // get return url from route parameters or default to '/'
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+          this.router.navigate([returnUrl]);
+        },
+        error: (error) => {
+          this.error = error;
+          this.loading = false;
+        },
+      });
+  }
+
+  visible: boolean = false;
+
+  showDialog(): void {
+    this.visible = true;
+  }
+
+  closeDialog(): void {
+    this.visible = false;
+  }
+
+  returnHome(): void {
+    this.router.navigate(['/']);
+  }
+
+  resetMyPassword(): void {
+    this.loading = true;
+    if (this.email === null || this.email === undefined) {
+      this.loading = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'You must enter the email.',
+        life: 3000,
+      });
+      return;
+    }
+    this.authenticationService
+      .forgotPassword(this.email)
+      .subscribe((response) => {
+        if (!response.isSucceed) {
+          this.loading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `${response.message}`,
+            life: 3000,
+          });
+        } else {
+          this.loading = false;
+          this.visible = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `${response.message}`,
+            life: 6000,
+          });
         }
-    }
-
-    ngOnInit(): void {
-        this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required]
-        });
-
-        this.messages = [
-            {
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Unknown error'
-            }
-        ];
-        this.userNameIsRequired = [
-            {
-                severity: 'error',
-                summary: 'Invalid',
-                detail: 'Username is required'
-            }
-        ];
-        this.passwordIsRequired = [
-            {
-                severity: 'error',
-                summary: 'Invalid',
-                detail: 'Password is required'
-            }
-        ];
-    }
-
-    // convenience getter for easy access to form fields
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    get f() { return this.loginForm.controls; }
-
-    onSubmit(): void {
-        this.submitted = true;
-
-        // stop here if form is invalid
-        if (this.loginForm.invalid) {
-            return;
-        }
-
-        this.error = '';
-        this.loading = true;
-        this.authenticationService.login(this.f['username'].value, this.f['password'].value)
-            .pipe(first())
-            .subscribe({
-                next: () => {
-                    // get return url from route parameters or default to '/'
-                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-                    this.router.navigate([returnUrl]);
-                },
-                error: error => {
-                    this.error = error;
-                    this.loading = false;
-                }
-            });
-    }
-
-    visible: boolean = false;
-
-    showDialog(): void {
-        this.visible = true;
-    }
-
-    closeDialog(): void {
-        this.visible = false;
-    }
-
-    returnHome(): void {
-        this.router.navigate(['/']);
-    }
-
-    resetMyPassword(): void {
-        this.loading = true;
-        if (this.email === null || this.email === undefined) {
-            this.loading = false;
-            this.messageService.add(
-                { severity: 'error', summary: 'Error', detail: 'You must enter the email.', life: 3000 }
-            );
-            return;
-        }
-        this.authenticationService.forgotPassword(this.email)
-            .subscribe((response) => {
-                if (!response.isSucceed) {
-                    this.loading = false;
-                    this.messageService.add(
-                        { severity: 'error', summary: 'Error', detail: `${response.message}`, life: 3000 }
-                    );
-                } else {
-                    this.loading = false;
-                    this.visible = false;
-                    this.messageService.add(
-                        { severity: 'success', summary: 'Success', detail: `${response.message}`, life: 6000 }
-                    );
-                }
-            });
-    }
+      });
+  }
 }
