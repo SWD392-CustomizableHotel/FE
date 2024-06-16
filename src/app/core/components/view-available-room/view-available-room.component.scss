@@ -4,15 +4,16 @@ $background-color: #f9f9f9;
 $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 $input-focus-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 
+
+
 .search-room-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   padding: 20px;
-  border: 1px solid;
+  margin-bottom: 10px;
   background-color: $background-color;
-  width: 300px;
   box-shadow: $box-shadow;
+  height: 2 00px;
 
   h5 {
     margin-bottom: 10px;
@@ -40,6 +41,7 @@ $input-focus-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   .sort-dropdown {
     width: 100%;
     border: none;
+    margin-bottom: 15px;
 
     .p-dropdown {
       width: 100%;
@@ -55,9 +57,28 @@ $input-focus-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 }
 
-.room-image{
-  width: 200px;
-  height: 200px;
+
+.original-price {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+// .room-image{
+//   width: 200px;
+//   height: 200px;
+// }
+
+:host ::ng-deep {
+  .p-scroller-viewport {
+      flex: none;
+  }
+}
+
+.card {
+  border-radius: 0;
+}
+.view-more:hover{
+  text-decoration: underline;
 }
 
 // @media screen and (max-width: 1200px) {

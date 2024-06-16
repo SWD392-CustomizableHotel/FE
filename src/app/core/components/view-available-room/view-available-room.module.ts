@@ -19,7 +19,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
-
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 @NgModule({
     declarations: [
         ViewAvailableRoomComponent,
@@ -44,6 +44,7 @@ import { TagModule } from 'primeng/tag';
         InputTextModule,
         DataViewModule,
         TagModule,
+        ScrollPanelModule
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

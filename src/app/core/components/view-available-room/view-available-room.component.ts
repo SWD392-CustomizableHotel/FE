@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   selector: 'app-view-available-room',
   templateUrl: './view-available-room.component.html',
   styleUrls: ['./view-available-room.component.scss'],
+
 })
 export class ViewAvailableRoomComponent implements OnInit {
   rooms?: Room[];
@@ -16,6 +17,7 @@ export class ViewAvailableRoomComponent implements OnInit {
   filteredRooms?: Room[];
   sortType?: string[];
   selectedSortType?: string;
+  items!: string[];
 
   constructor(
     public layoutService: LayoutService,
