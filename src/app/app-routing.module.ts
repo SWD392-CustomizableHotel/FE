@@ -24,6 +24,13 @@ const routes: Routes = [
             (m) => m.DashboardModule
           ),
       },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/main/main.module').then(
+            (m) => m.MainModule
+          ),
+      },
     ],
   },
   {
