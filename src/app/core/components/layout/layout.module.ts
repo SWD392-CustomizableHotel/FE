@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { HeaderComponent } from './header/header.component';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RippleModule } from 'primeng/ripple';
-import { FooterComponent } from './footer/footer.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { MenuComponent } from './menu/menu.component';
 import { AppMenuitemComponent } from './menu/menuitem.component';
@@ -22,15 +20,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { SidebarModule } from 'primeng/sidebar';
 import { BadgeModule } from 'primeng/badge';
 import { ConfigModule } from './config/config.module';
+import { sharedModule } from './share/shared.module';
+
 
 @NgModule({
     declarations: [
-        HeaderComponent,
         LayoutComponent,
-        FooterComponent,
         SidebarComponent,
         MenuComponent,
-        AppMenuitemComponent
+        AppMenuitemComponent,
     ],
     imports: [
         ToolbarModule,
@@ -49,7 +47,8 @@ import { ConfigModule } from './config/config.module';
         BrowserAnimationsModule,
         RippleModule,
         RadioButtonModule,
-        ConfigModule
+        ConfigModule,
+        sharedModule,
     ],
     bootstrap: [LayoutComponent]
 })

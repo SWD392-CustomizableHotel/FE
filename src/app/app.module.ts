@@ -31,72 +31,92 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { RouterLink, RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
-
+import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ToastModule } from 'primeng/toast';
+import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
+import { PasswordModule } from 'primeng/password';
+import { RegisterComponent } from './core/components/register/register.component';
+import { MessageService } from 'primeng/api';
+import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 
 @NgModule({
-    imports: [
-        PanelModule,
-        BrowserModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        LayoutModule,
-        RippleModule,
-        ButtonModule,
-        DividerModule,
-        InputTextModule,
-        FormsModule,
-        CardModule,
-        MenuModule,
-        AvatarGroupModule,
-        AvatarModule,
-        ProgressSpinnerModule,
-        CheckboxModule,
-        ImageModule,
-        MessagesModule,
-        MessageModule,
-        FloatLabelModule,
-        RouterModule,
-        RouterLink
-    ],
-    declarations: [
-        AppComponent,
-        LoginComponent,
-        NotfoundComponent
-    ],
-    exports: [
-        PanelModule,
-        BrowserModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        ButtonModule,
-        RippleModule,
-        DividerModule,
-        InputTextModule,
-        FormsModule,
-        CardModule,
-        MenuModule,
-        AvatarGroupModule,
-        AvatarModule,
-        ProgressSpinnerModule,
-        CheckboxModule,
-        ImageModule,
-        MessagesModule,
-        MessageModule,
-        FloatLabelModule,
-        RouterModule,
-        RouterLink
-    ],
-    providers: [
-        { provide: LocationStrategy, useClass: PathLocationStrategy },
-        ProductService,
-        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  imports: [
+    PanelModule,
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    LayoutModule,
+    RippleModule,
+    ButtonModule,
+    DividerModule,
+    InputTextModule,
+    FormsModule,
+    CardModule,
+    MenuModule,
+    AvatarGroupModule,
+    AvatarModule,
+    ProgressSpinnerModule,
+    CheckboxModule,
+    ImageModule,
+    MessagesModule,
+    MessageModule,
+    FloatLabelModule,
+    RouterModule,
+    RouterLink,
+    DialogModule,
+    ProgressBarModule,
+    ToastModule,
+    PasswordModule,
+    ButtonModule
+  ],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    NotfoundComponent,
+    ResetPasswordComponent,
+    RegisterComponent,
+    VerifyEmailComponent,
+  ],
+  exports: [
+    PanelModule,
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ButtonModule,
+    RippleModule,
+    DividerModule,
+    InputTextModule,
+    FormsModule,
+    CardModule,
+    MenuModule,
+    AvatarGroupModule,
+    AvatarModule,
+    ProgressSpinnerModule,
+    CheckboxModule,
+    ImageModule,
+    MessagesModule,
+    MessageModule,
+    FloatLabelModule,
+    RouterModule,
+    RouterLink,
+    DialogModule,
+    ProgressBarModule,
+    ToastModule,
+    PasswordModule,
+  ],
+  providers: [
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    ProductService,
+    MessageService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
-        // provider used to create fake backend
-        fakeBackendProvider
-    ],
-    bootstrap: [AppComponent]
+    // provider used to create fake backend
+    fakeBackendProvider,
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

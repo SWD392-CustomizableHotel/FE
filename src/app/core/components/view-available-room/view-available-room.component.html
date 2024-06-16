@@ -1,0 +1,95 @@
+.
+<div style="height: 100px;"></div>
+<app-header>
+</app-header>
+<div class="surface-100 my-6 pt-2 ">
+  <h2 class="text-center my-6 font-bold">SHERITON ROOMS</h2>
+  <div
+    class="flex container mb-4 p-col-12 p-md-6 p-lg-4 flex-column xl:flex-row"
+  >
+    <!-- This is filter -->
+    <div class="card border-round-right">
+      <p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+        <div class="search-room-container">
+          <h5>Search & Filter Rooms</h5>
+          <input
+            type="text"
+            [(ngModel)]="filterText"
+            placeholder="Search the type of room"
+            (input)="filterRooms()"
+            class="search-input"
+          />
+          <p-dropdown
+            [options]="sortType"
+            [(ngModel)]="selectedSortType"
+            (onChange)="filterRooms()"
+            placeholder="Rooms sorted by price"
+            class="sort-dropdown"
+          />
+        </div>
+      </p-scrollPanel>
+    </div>
+    <!-- This is filter -->
+
+    <!-- This is View Room -->
+    <div
+      *ngIf="filteredRooms && filteredRooms.length > 0"
+      class="flex-column justify-content-around align-items-center xl:w-9 w-full ml-auto mr-auto"
+    >
+      <div
+        *ngFor="let room of filteredRooms"
+        class="mx-4 px-4 mb-4 bg-white-alpha-90"
+      >
+        <div
+          class="flex justify-content-between border-bottom-1 border-bluegray-200"
+        >
+          <h3 class="pt-2 font-bold text-4xl">{{ room.type }}</h3>
+          <h5 class="cursor-pointer view-more"><a href="">view more</a></h5>
+        </div>
+        <div class="flex justify-content-between flex-wrap mb-4 pb-2">
+          <div class="xl:w-3 w-2">
+            <img
+              class="room-image w-full overflow-auto"
+              src="assets/images/Family Room image.png"
+              alt=""
+            />
+          </div>
+          <div
+            class="border-bluegray-200 flex justify-content-between align-items-center xl:h-12rem h-8rem flex-1 ex:pt-6 xl:border-bottom-1 ml-4 pb-3"
+          >
+            <div class="xl:w-4 w-2 overflow-auto xl:text-xl">
+              {{ room.description }}
+            </div>
+
+            <div class="flex flex-column align-items-center">
+              <span class="original-price xl:text-xl">$799</span>
+              <span class="font-bold mb-2 xl:text-3xl mt-2"
+                >${{ room.price }}</span
+              >
+            </div>
+
+            <div class="flex flex-column text-right ">
+              <p-button icon="pi pi-heart" [outlined]="true" />
+              <p-button
+                icon="pi pi-shopping-cart"
+                class="flex-auto md:flex-initial white-space-nowrap mt-2"
+                label="Booking "
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- This is View Room -->
+
+    <!-- This is validation -->
+    <div
+      *ngIf="filteredRooms && filteredRooms.length === 0"
+      class="text-center my-6"
+    >
+      <p>No rooms found</p>
+    </div>
+    <!-- This is validation -->
+  </div>
+  <app-footer></app-footer>
+</div>

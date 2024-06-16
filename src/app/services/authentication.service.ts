@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { User } from '../interfaces/models/user';
-import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../assets/environments/environment';
-import { Auth } from '../../assets/constants/constants';
+import { User } from '../interfaces/models/user';
+import { BaseResponse } from '../interfaces/models/base-response';
+import { ResetPasswordRequest } from '../interfaces/models/reset-password-request';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthenticationService {
   private userSubject: BehaviorSubject<User | null>;
   public user: Observable<User | null>;
 
-  constructor(
-    private router: Router,
-    private http: HttpClient
-  ) {
-    this.userSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('user')!));
+  constructor(private http: HttpClient) {
+    this.userSubject = new BehaviorSubject<User | null>(
+      JSON.parse(localStorage.getItem('user')!)
+    );
     this.user = this.userSubject.asObservable();
   }
 
@@ -26,22 +26,75 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string): Observable<User> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return this.http.post<any>(`${environment.BACKEND_API_URL}/api/${Auth.AUTH}/${Auth.LOGIN}`, { username, password })
-    .pipe(map((user) => {
-      // Store user details and JWT token in local storage to keep user logged in
-      if (user.isSucceed) {
-        localStorage.setItem('user', JSON.stringify(user));
-        this.userSubject.next(user);
-        return user;
-      }
-    }));
+    return this.http
+      .post<any>(`${environment.BACKEND_API_URL}/api/Auth/login`, {
+        username,
+        password,
+      })
+      .pipe(
+        map((user) => {
+          if (user.isSucceed) {
+            localStorage.setItem('user', JSON.stringify(user));
+            this.userSubject.next(user);
+            return user;
+          }
+          throw new Error('Login failed');
+        })
+      );
+  }
+
+  register(payload: any): Observable<BaseResponse<User>> {
+    return this.http
+      .post<BaseResponse<User>>(
+        `${environment.BACKEND_API_URL}/api/Auth/register`,
+        payload
+      )
+      .pipe(
+        map((response) => {
+          if (!response.isSucceed) {
+            throw new Error(response.message);
+          }
+          return response;
+        })
+      );
   }
 
   logOut(): void {
-    // remove user from local storage to log user out
     localStorage.removeItem('user');
     this.userSubject.next(null);
-    this.router.navigate(['/login']);
+  }
+
+  forgotPassword(email: string): Observable<BaseResponse<User>> {
+    return this.http
+      .post<BaseResponse<User>>(
+        `${environment.BACKEND_API_URL}/api/Auth/forgot-password`,
+        { email }
+      )
+      .pipe(
+        map((response) => {
+          if (!response.isSucceed) {
+            throw new Error(response.message);
+          }
+          return response;
+        })
+      );
+  }
+
+  resetPassword(
+    resetPasswordRequest: ResetPasswordRequest
+  ): Observable<BaseResponse<User>> {
+    return this.http
+      .post<BaseResponse<User>>(
+        `${environment.BACKEND_API_URL}/api/Auth/reset-password`,
+        resetPasswordRequest
+      )
+      .pipe(
+        map((response) => {
+          if (!response.isSucceed) {
+            throw new Error(response.message);
+          }
+          return response;
+        })
+      );
   }
 }
