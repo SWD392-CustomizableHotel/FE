@@ -69,6 +69,7 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
     ProgressBarModule,
     ToastModule,
     PasswordModule,
+    ButtonModule
   ],
   declarations: [
     AppComponent,
