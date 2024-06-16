@@ -47,6 +47,15 @@ export class VerifyEmailComponent implements OnInit {
       next: (response: BaseResponse<any>) => {
         this.verificationMessage = response.message;
         this.loading = false;
+
+        if (response.isSucceed) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Done',
+            detail: 'Verification successful!',
+            life: 3000,
+          });
+        }
       },
       error: (error) => {
         this.verificationMessage =

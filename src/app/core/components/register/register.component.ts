@@ -46,7 +46,6 @@ export class RegisterComponent implements OnInit {
 
     if (this.registerForm.invalid) {
       console.log('Form is invalid');
-      // Kiểm tra từng trường và hiển thị thông báo lỗi cụ thể
       if (this.f['userName'].errors) {
         if (this.f['userName'].errors['required']) {
           this.messageService.add({
@@ -134,12 +133,12 @@ export class RegisterComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.log('Registration failed', error);
-        this.error = error.message;
+        console.log('Registration failed:', error);
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Registration failed: ' + error.message,
+          detail: 'Registration failed: ' + error,
         });
         this.loading = false;
       },
