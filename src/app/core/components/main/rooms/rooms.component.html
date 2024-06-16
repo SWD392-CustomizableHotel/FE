@@ -33,7 +33,7 @@
                             <div class="flex justify-content-between align-items-center">
                                 Room Price
                                 <p-sortIcon field="roomPrice"></p-sortIcon>
-                                <p-columnFilter type="numeric" field="roomPrice" display="menu"></p-columnFilter>
+                                <p-columnFilter type="numeric" field="roomPrice" display="menu" currency="USD"></p-columnFilter>
                             </div>
                         </th>
 						<th style="min-width: 12rem" pSortableColumn="roomType">
@@ -65,7 +65,7 @@
                             {{room.roomNumber}}
                         </td>
                         <td>
-                            {{room.roomPrice}}
+                            {{ room.roomPrice | currency }}
                         </td>
                         <td>    
                             {{room.roomType}}
@@ -80,7 +80,7 @@
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRoom(room)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteRoom(room)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" [disabled]="room.roomStatus.status === 'Occupied'" (click)="deleteRoom(room)"></button>
                             </div>
                         </td>
                     </tr>

@@ -26,9 +26,12 @@ interface PageEvent {
   providers: [MessageService]
 })
 export class RoomsComponent implements OnInit {
+  isEdit: boolean = false;
   roomDialog: boolean = false;
   createRoomDialog: boolean = false;
   deleteRoomDialog: boolean = false;
+  submitted: boolean = false;
+  loading: boolean = true;
   rooms: Room[] = [];
   room: Room = {};
   hotels: Hotel[] = [];
@@ -40,8 +43,9 @@ export class RoomsComponent implements OnInit {
   totalRecords: number = 0;
   totalPages: number = 0;
   rowsPerPageOptions = [5, 10, 20];
-  submitted: boolean = false;
-  loading: boolean = true;
+  searchTerm?: string;
+  roomStatus?: string;
+  roomType?: string;
   roomStatusOptions = [
     { status: 'Available' },
     { status: 'Occupied' },
@@ -56,7 +60,7 @@ export class RoomsComponent implements OnInit {
   @ViewChild('filter') filter!: ElementRef;
   constructor(private roomService : RoomService, private hotelService: HotelService, private messageService: MessageService) {}
   ngOnInit(): void {
-    this.loadRooms(1, this.rows);
+    this.loadRooms(1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
       this.cols = [
         { field: 'roomId', header: 'Room ID'},
         { field: 'roomNumber', header: 'Room Number' },
@@ -67,19 +71,24 @@ export class RoomsComponent implements OnInit {
      this.loadHotels();
   }
 
-  private loadRooms(pageNumber: number, pageSize: number): void {
+  private loadRooms(pageNumber: number, pageSize: number, roomStatus?: string, roomType?: string, searchTerm?: string): void {
     this.loading = true;
-    this.roomService.getRooms(pageNumber, pageSize).subscribe(data => {
-      this.rooms = data.data
-      .map((room: Room) => {
-        return {
-          ...room,
-          roomStatus: this.roomStatusOptions.find(option => option.status === room.roomStatus)
-        };
-      });
-      this.loading = false;
-      this.totalRecords = data.totalRecords;
-      this.totalPages = data.totalPages;
+    this.roomService.getRooms(pageNumber, pageSize, roomStatus, roomType, searchTerm).subscribe({
+      next: (data) => {
+        this.rooms = data.data.map((room: Room) => {
+          return {
+            ...room,
+            roomStatus: this.roomStatusOptions.find(option => option.status === room.roomStatus)
+          };
+        });
+        this.loading = false;
+        this.totalRecords = data.totalRecords;
+        this.totalPages = data.totalPages;
+        console.log(this.rooms);
+      },
+      error: (error) => {
+        console.error('There was an error!', error);
+      }
     });
   }
 
@@ -97,6 +106,7 @@ export class RoomsComponent implements OnInit {
 
   editRoom(room : Room) {
     this.room = {...room};
+    this.isEdit = true;
     this.roomDialog = true;
   }
 
@@ -113,22 +123,27 @@ export class RoomsComponent implements OnInit {
 
   confirmDelete() {
     this.deleteRoomDialog = false;
-    if(this.room.roomId !== undefined) {
-      this.roomService.deleteRoom(this.room.roomId).subscribe(() => {
-        this.rooms = this.rooms.filter(val => val.roomId !== this.room.roomId);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Room Deleted', life: 3000 });
-        this.room = {};
-      }, error => {
-        console.error('Error deleting room:', error);
-      });
+    if (this.room.roomId !== undefined) {
+        if (this.selectedRoomStatus?.status !== 'Occupied') {
+            this.roomService.deleteRoom(this.room.roomId).subscribe(() => {
+                this.rooms = this.rooms.filter(val => val.roomId !== this.room.roomId);
+                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Room Deleted', life: 3000 });
+                this.loadRooms(this.first / this.rows + 1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
+            }, error => {
+                console.error('Error deleting room:', error);
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error occurred while deleting the room.', life: 3000 });
+            });
+        } else {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Cannot delete an occupied room.', life: 3000 });
+        }
     } else {
-      console.error('Room ID is undefined');
+        console.error('Room ID is undefined');
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Room ID is undefined.', life: 3000 });
     }
-  }
+}
 
   saveRoom() {
     this.submitted = true;
-
     const emptyFields = this.getEmptyFields();
     if (emptyFields.length > 0) {
       this.messageService.add({
@@ -141,6 +156,7 @@ export class RoomsComponent implements OnInit {
       if(this.room.roomId !== undefined) {
         this.roomService.editRoomDetails(this.room.roomId, this.room.roomType || '', this.room.roomPrice || 0).subscribe(() => {
           this.messageService.add({severity:'success', summary: 'Successful', detail: 'Room Updated', life: 3000});
+          this.loadRooms(this.first / this.rows + 1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
         });
       } else {
         if (this.selectedRoomStatus) {
@@ -150,23 +166,18 @@ export class RoomsComponent implements OnInit {
           if (this.selectedRoomStatus) {
             this.room.roomStatus = this.selectedRoomStatus.status;
           }
-          console.log('Room Type:', this.room.roomType);
-          console.log('Room Price:', this.room.roomPrice);
-          console.log('Room Description:', this.room.roomDescription);
-          console.log('Room Status:', this.room.roomStatus);
-          console.log('Room Number:', this.room.roomNumber);
-          console.log('Hotel ID:', this.room.hotelId);
           this.roomService.createRoom(this.room.roomType,
           this.room.roomPrice, this.room.roomDescription,
           this.room.roomStatus, this.room.roomNumber, this.room.hotelId).subscribe(() => {
             this.messageService.add({severity:'success', summary: 'Successful', detail: 'Room Created', life: 3000});
+            this.loadRooms(this.first / this.rows + 1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
           },  error => {
             this.messageService.add({severity:'error', summary: 'Error', detail: error.error.message, life: 3000});
           });
         }
       }
     }
-    this.loadRooms(this.first / this.rows + 1, this.rows);
+    this.isEdit = false;
     this.createRoomDialog = false;
     this.roomDialog = false;
     this.room = {};
@@ -183,8 +194,10 @@ export class RoomsComponent implements OnInit {
     }
   }
 
-  onGlobalFilter(table: Table, event: Event) {
-    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  onGlobalFilter(dt1: any, event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    console.log(this.searchTerm);
+    this.loadRooms(1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
   }
 
   clear(table: Table) {
@@ -196,22 +209,28 @@ export class RoomsComponent implements OnInit {
     this.first = event.first || 0;
     this.rows = event.rows || 10;
     const pageNumber = this.first / this.rows + 1;
-    this.loadRooms(pageNumber, this.rows);
+    this.loadRooms(pageNumber, this.rows, this.roomStatus, this.roomType, this.searchTerm);
   }
 
   onRowsChange(newRows: number) {
     this.first = 0;
     this.rows = newRows;
-    this.loadRooms(1, this.rows);
+    this.loadRooms(1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
   }
   private getEmptyFields(): string[] {
     const emptyFields = [];
-    if (!this.room.roomType) emptyFields.push('Room Type');
-    if (!this.room.roomPrice) emptyFields.push('Room Price');
-    if (!this.room.roomDescription) emptyFields.push('Room Description');
-    if (!this.selectedRoomStatus?.status) emptyFields.push('Room Status');
-    if (!this.room.roomNumber) emptyFields.push('Room Number');
-    if (!this.room.hotelId) emptyFields.push('Hotel');
+   if(!this.isEdit) {
+      if (!this.room.roomType) emptyFields.push('Room Type');
+      if (!this.room.roomPrice) emptyFields.push('Room Price');
+      if (!this.room.roomDescription) emptyFields.push('Room Description');
+      if (!this.selectedRoomStatus?.status) emptyFields.push('Room Status');
+      if (!this.room.roomNumber) emptyFields.push('Room Number');
+      if (!this.room.hotelId) emptyFields.push('Hotel');
+   }
+    if (this.isEdit) {
+      if (this.room.roomType && !this.room.roomType.trim()) emptyFields.push('Room Type');
+      if (this.room.roomPrice && isNaN(this.room.roomPrice)) emptyFields.push('Room Price');
+    }
     return emptyFields;
   }
 }

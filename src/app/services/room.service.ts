@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../assets/environments/environment';
 @Injectable({
@@ -11,23 +11,20 @@ export class RoomService {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRooms(pageNumber: number, pageSize: number, roomStatus?: string, roomType?: string, searchTerm?: string): Observable<any> {
-    let url = `${environment.BACKEND_API_URL}/get-rooms?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-
-    if (roomStatus) {
-      url += `&RoomStatus=${roomStatus}`;
-    }
-
-    if (roomType) {
-      url += `&RoomType=${roomType}`;
-    }
-
-    if (searchTerm) {
-      url += `&searchTerm=${searchTerm}`;
-    }
-
-    return this.http.get(url);
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+      if (roomStatus && roomStatus !== '') {
+        params = params.set('RoomStatus', roomStatus);
+      }
+      if (roomType && roomType !== '') {
+        params = params.set('RoomType', roomType);
+      }
+      if (searchTerm && searchTerm !== '') {
+        params = params.set('searchTerm', searchTerm);
+      }
+      return this.http.get(`${environment.BACKEND_API_URL}/get-rooms`, { params });
   }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRoomDetails(roomId: number): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/get-room-details/${roomId}`;
