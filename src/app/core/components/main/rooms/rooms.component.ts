@@ -203,6 +203,8 @@ export class RoomsComponent implements OnInit {
   clear(table: Table) {
     table.clear();
     this.filter.nativeElement.value = '';
+    this.searchTerm = undefined;
+    this.loadRooms(1, this.rows, this.roomStatus, this.roomType, this.searchTerm);
   }
 
   onPageChange(event: PageEvent) {
