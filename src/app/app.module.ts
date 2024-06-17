@@ -39,6 +39,7 @@ import { PasswordModule } from 'primeng/password';
 import { RegisterComponent } from './core/components/register/register.component';
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+// import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 
 @NgModule({
   imports: [
@@ -113,6 +114,7 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
     MessageService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    // { provide: HTTP_INTERCEPTORS, useClass: KebabCaseInterceptor, multi: true },
 
     // provider used to create fake backend
     fakeBackendProvider,

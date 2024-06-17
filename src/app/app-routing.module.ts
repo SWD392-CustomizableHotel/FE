@@ -5,6 +5,7 @@ import { LayoutComponent } from './core/components/layout/layout.component';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
+import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
       path: 'reset-password',
       component: ResetPasswordComponent
+  },
+  {
+    path: 'verify-email',
+    component: VerifyEmailComponent,
   },
   {
     path: 'view-available-room',
