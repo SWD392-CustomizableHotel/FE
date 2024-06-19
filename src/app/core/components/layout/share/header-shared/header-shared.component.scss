@@ -1,24 +1,31 @@
-/* component.css */
 .layout-topbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background-color: #ffffff;
-    flex-wrap: wrap; /* Allow flex items to wrap */
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #fff;
 }
 
 .layout-topbar-logo {
     display: flex;
     align-items: center;
+    color: #000;
+}
+
+.layout-menu-button {
+    display: none;
+    color: #000;
+    background: none;
+    border: none;
+    font-size: 24px;
 }
 
 .topbar-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-grow: 1;
-    flex-wrap: wrap; /* Allow flex items to wrap */
+    width: 100%;
+    color: #000;
 }
 
 .topbar-nav {
@@ -29,17 +36,16 @@
 }
 
 .topbar-nav li {
-    margin-left: 1rem;
+    margin-right: 20px;
 }
 
-.nav-link {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
+.topbar-nav li a {
     color: #000;
-    font-weight: 500;
-    cursor: pointer;
+    text-decoration: none;
+}
+
+.topbar-nav li a:hover {
+    text-decoration: underline;
 }
 
 .topbar-actions {
@@ -48,38 +54,43 @@
 }
 
 @media (max-width: 768px) {
-    .layout-topbar {
-        flex-direction: column;
-        align-items: flex-start;
+    .layout-menu-button {
+        display: inline-block;
     }
 
     .topbar-content {
+        display: none;
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
+        background-color: #fff;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .topbar-content.topbar-content-visible {
+        display: flex;
     }
 
     .topbar-nav {
         flex-direction: column;
-        align-items: flex-start;
         width: 100%;
-        margin-top: 1rem;
     }
 
     .topbar-nav li {
-        margin-left: 0;
-        margin-top: 0.5rem;
+        margin-right: 0;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
     }
 
     .topbar-actions {
         flex-direction: column;
-        align-items: flex-start;
         width: 100%;
-        margin-top: 1rem;
-    }
-
-    .topbar-actions button {
-        margin-left: 0;
-        margin-top: 0.5rem;
+        text-align: center;
+        margin-top: 10px;
     }
 }

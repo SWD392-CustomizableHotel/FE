@@ -4,34 +4,15 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/images/logo2.png" alt="logo" width="40px" height="40px">
-        <span class="font-medium">Shertion Hotel</span>
+        <span class="font-medium">Sheriton Hotel</span>
     </a>
 
-    <div class="topbar-content">
-        <ul class="topbar-nav">
-            <li>
-                <a (click)="navigateTo('home')" (keydown.enter)="navigateTo('home')" pRipple class="nav-link">
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a (click)="navigateTo('features')" (keydown.enter)="navigateTo('features')" pRipple class="nav-link">
-                    <span>Features</span>
-                </a>
-            </li>
-            <li>
-                <a (click)="navigateTo('highlights')" (keydown.enter)="navigateTo('highlights')" pRipple class="nav-link">
-                    <span>Highlights</span>
-                </a>
-            </li>
-            <li>
-                <a (click)="navigateTo('pricing')" (keydown.enter)="navigateTo('pricing')" pRipple class="nav-link">
-                    <span>Pricing</span>
-                </a>
-            </li>
-            <li>
-                <a (click)="router.navigate(['/view-available-room'], { fragment: 'view-available-room' })" pRipple class="nav-link">
-                    <span>View Available Room</span>
+    <button pButton icon="pi pi-bars" class="layout-menu-button" (click)="menuVisible = !menuVisible"></button>
+    <div class="topbar-content" [ngClass]="{'topbar-content-visible': menuVisible}">
+        <ul class="topbar-nav"> 
+            <li *ngFor="let menuItem of menuItems">
+                <a (click)="navigateTo(menuItem['route'])" (keydown.enter)="navigateTo(menuItem['route'])" pRipple class="nav-link">
+                    <span>{{ menuItem.label }}</span>
                 </a>
             </li>
         </ul>
@@ -41,4 +22,3 @@
         </div>
     </div>
 </div>
-    

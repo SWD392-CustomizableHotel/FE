@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { HeaderSharedComponent } from './header-shared/header-shared.component';
 import { FooterSharedComponent } from './footer-shared/footer-shared.component';
+import { MatMenuModule } from '@angular/material/menu';
 @NgModule({
 
     declarations: [
@@ -27,6 +28,7 @@ import { FooterSharedComponent } from './footer-shared/footer-shared.component';
          InputNumberModule,
          ButtonModule,
          DropdownModule,
+         MatMenuModule,
     ],
 
     exports: [
