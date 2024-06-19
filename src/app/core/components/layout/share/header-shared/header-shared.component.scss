@@ -1,20 +1,85 @@
-.booking-container {
+/* component.css */
+.layout-topbar {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding-left: 300px;
+    padding: 1rem;
+    background-color: #ffffff;
+    flex-wrap: wrap; /* Allow flex items to wrap */
 }
 
-.box {
-    flex: 1;
-    min-width: 200px;
-    margin-bottom: 16px;
+.layout-topbar-logo {
+    display: flex;
+    align-items: center;
 }
 
-/* Media Queries for Responsive Design */
+.topbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    flex-wrap: wrap; /* Allow flex items to wrap */
+}
+
+.topbar-nav {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.topbar-nav li {
+    margin-left: 1rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+}
+
 @media (max-width: 768px) {
-    .box {
-        flex: 1 1 100%;
-        margin-right: 0;
+    .layout-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .topbar-content {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .topbar-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .topbar-nav li {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+
+    .topbar-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .topbar-actions button {
+        margin-left: 0;
+        margin-top: 0.5rem;
     }
 }

@@ -12,44 +12,46 @@
 <div class="surface-0 flex justify-content-center">
   <div id="home" class="landing-wrapper overflow-hidden">
       <div class="flex justify-content-center">
-          <div class="flex justify-content-center md:justify-content-end pb-8">
-              <!-- Box 1: Choose Location -->
-              <div class="box mr-4" style="max-width: 900px;">    
-                  <p-floatLabel>
-                      <p-dropdown id="location" [options]="cities" optionLabel="name"></p-dropdown>
-                      <label for="location">Choose a location:</label>
-                  </p-floatLabel>
-              </div>
-      
-              <!-- Box 2: Start Date -->
-              <div class="box mr-4" >
-                  <p-floatLabel>
-                      <p-calendar id="startDate" formControlName="startDate"></p-calendar>
-                      <label for="startDate">Start Date</label>
-                  </p-floatLabel>
-              </div>
-      
-              <!-- Box 3: End Date -->
-              <div class="box mr-4">
-                  <p-floatLabel>
-                      <p-calendar id="endDate" formControlName="endDate"></p-calendar>
-                      <label for="endDate">End Date</label>
-                  </p-floatLabel>
-              </div>
-      
-              <!-- Box 4: Number of People -->
-              <div class="box mr-4">
-                  <p-floatLabel>
-                      <p-inputNumber inputId="integeronly" />
-                      <label for="number-input">Number of People</label>
-                  </p-floatLabel>
-              </div>
-      
-              <!-- Box 5: Booking -->
-              <div class="box">
-                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
-              </div>
-          </div>
+          <<div class="form-container">
+            <div class="form-box">
+                <!-- Box 1: Choose Location -->
+                <div class="box">
+                    <p-floatLabel>
+                        <p-dropdown id="location" [options]="cities" optionLabel="name"></p-dropdown>
+                        <label for="location">Choose a location:</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 2: Start Date -->
+                <div class="box">
+                    <p-floatLabel>
+                        <p-calendar id="startDate" formControlName="startDate"></p-calendar>
+                        <label for="startDate">Start Date</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 3: End Date -->
+                <div class="box">
+                    <p-floatLabel>
+                        <p-calendar id="endDate" formControlName="endDate"></p-calendar>
+                        <label for="endDate">End Date</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 4: Number of People -->
+                <div class="box">
+                    <p-floatLabel>
+                        <p-inputNumber inputId="integeronly" />
+                        <label for="number-input">Number of People</label>
+                    </p-floatLabel>
+                </div>
+        
+                <!-- Box 5: Booking -->
+                <div class="box">
+                    <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                </div>
+            </div>
+        </div>
       </div>
 
       <div class="col-12 mt-8 mb-8 p-2 md:p-8" style="border-radius:20px; background:linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EFE1AF 0%, #C3DCFA 100%);">

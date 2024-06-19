@@ -169,3 +169,40 @@ app-header-shared {
   z-index: 1; /* Ensure it is below the header */
   position: relative;
 }
+
+/* component.css */
+.form-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+  width: 100%;
+}
+
+.form-box {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap */
+  justify-content: center; /* Center items */
+  max-width: 1800px;
+}
+
+.box {
+  margin-right: 1rem;
+  flex: 1 1 200px; /* Flex grow, shrink and basis for responsive behavior */
+  min-width: 200px;
+  margin-bottom: 1rem;
+}
+
+.box:last-child {
+  margin-right: 0;
+}
+
+@media (max-width: 768px) {
+  .form-box {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .box {
+      margin-right: 0;
+  }
+}
