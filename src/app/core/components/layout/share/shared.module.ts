@@ -8,11 +8,15 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { HeaderSharedComponent } from './header-shared/header-shared.component';
+import { FooterSharedComponent } from './footer-shared/footer-shared.component';
 @NgModule({
 
     declarations: [
-         FooterComponent,
-          HeaderComponent,
+        FooterComponent,
+        HeaderComponent,
+        HeaderSharedComponent,
+        FooterSharedComponent,
     ],
 
     imports: [
@@ -28,6 +32,8 @@ import { DropdownModule } from 'primeng/dropdown';
     exports: [
         FooterComponent,
         HeaderComponent,
+        HeaderSharedComponent,
+        FooterSharedComponent,
     ],
 })
 
