@@ -4,6 +4,8 @@ import { environment } from '../../assets/environments/environment';
 import { User } from '../interfaces/models/user';
 import { Auth } from '../../assets/constants/constants';
 import { Observable } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ import { Observable } from 'rxjs';
 export class UserService {
   apiUrl = 'https://localhost:7082';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthenticationService) { }
 
   getAll(): Observable<User[]> {
     return this.http.get<User[]>(`${environment.BACKEND_API_URL}/${Auth.AUTH}/${Auth.USER}`);

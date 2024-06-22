@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -31,7 +31,8 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { RouterLink, RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StyleClassModule } from 'primeng/styleclass';
+
 /*google social*/
 import {
   GoogleLoginProvider,
@@ -41,8 +42,14 @@ import {
 } from '@abacritt/angularx-social-login';
 import { environment } from '../assets/environments/environment';
 /*end google login*/
-import { JwtHelperService, JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
+
+import { JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
 import { AuthenticationService } from './services/authentication.service';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ToastModule } from 'primeng/toast';
+import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
+import { PasswordModule } from 'primeng/password';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -75,7 +82,6 @@ export function tokenGetter() {
     RouterLink,
     BrowserModule,
     HttpClientModule,
-    BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
     JwtModule.forRoot({
@@ -85,8 +91,19 @@ export function tokenGetter() {
         disallowedRoutes: [],
       },
     }),
+    ToastModule,
+    PasswordModule,
+    DialogModule,
+    ProgressBarModule,
+    StyleClassModule,
+    GoogleSigninButtonModule 
   ],
-  declarations: [AppComponent, LoginComponent, NotfoundComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    NotfoundComponent,
+    ResetPasswordComponent,
+  ],
   exports: [
     PanelModule,
     BrowserModule,
@@ -112,6 +129,12 @@ export function tokenGetter() {
     RouterLink,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    DialogModule,
+    ProgressBarModule,
+    ToastModule,
+    PasswordModule,
+    StyleClassModule,
+    GoogleSigninButtonModule 
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
@@ -120,7 +143,6 @@ export function tokenGetter() {
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: ErrorHandler, multi: true },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -128,10 +150,7 @@ export function tokenGetter() {
         providers: [
           {
             id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(environment.googleClientId, {
-              // scopes: 'email',
-              // plugin_name: ''
-            }),
+            provider: new GoogleLoginProvider(environment.googleClientId, {}),
           },
         ],
         onError: (err) => {

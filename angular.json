@@ -148,6 +148,6 @@
       "@angular-eslint/schematics",
       "@angular-eslint/schematics"
     ],
-    "analytics": false
+    "analytics": "f6a6fe04-7737-40dc-8d54-8ab5fe82f0f9"
   }
 }

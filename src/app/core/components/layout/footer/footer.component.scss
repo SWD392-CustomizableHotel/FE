@@ -1,0 +1,87 @@
+/* Ensure body and html are full height */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Flexbox for page container */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Grow the content to fill available space */
+.content-container {
+    flex: 1;
+}
+
+/* Footer styles */
+.layout-footer {
+    background-color: white;
+    width: 100%;
+    padding: 2rem 0;
+    text-align: center;
+    box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer-content {
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.footer-links > div {
+    flex: 1 1 auto;
+    min-width: 150px;
+    margin-bottom: 1rem;
+}
+
+.footer-links h4 {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.footer-links a {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: #007bff;
+}
+
+.footer-bottom {
+    margin-top: 2rem;
+    color: #555;
+}
+
+.footer-bottom .font-medium {
+    margin: 0.5rem 0;
+    text-decoration: none;
+    color: #007bff;
+}
+
+@media (min-width: 768px) {
+    .footer-links > div {
+        margin-bottom: 0;
+    }
+}
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.col-12 {
+    flex: 0 0 auto; /* Reset flex property for each column */
+    max-width: none; /* Reset max-width */
+    width: auto; /* Allow columns to grow based on content */
+    margin-bottom: 0; /* Remove bottom margin */
+}

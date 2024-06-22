@@ -3,9 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { User } from './interfaces/models/user';
 import { AuthenticationService } from './services/authentication.service';
 import { PrimeNGConfig } from 'primeng/api';
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { environment } from '../assets/environments/environment';
 
 @Component({
   selector: 'app-root',
