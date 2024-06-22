@@ -4,8 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Third-party imports
-import { SocialLoginModule, GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { SocialLoginModule, GoogleLoginProvider, SocialAuthServiceConfig} from '@abacritt/angularx-social-login';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Assuming needed for animations
 
 // Components and services
@@ -87,7 +87,6 @@ export function tokenGetter() {
     PasswordModule,
     BrowserAnimationsModule, // Include BrowserAnimationsModule if needed
     SocialLoginModule, // Import SocialLoginModule
-    GoogleSigninButtonModule, 
   ],
   exports: [
     BrowserModule,
@@ -115,7 +114,6 @@ export function tokenGetter() {
     ToastModule,
     PasswordModule,
     SocialLoginModule,
-    GoogleSigninButtonModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
