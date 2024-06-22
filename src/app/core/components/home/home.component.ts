@@ -1,24 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable @angular-eslint/use-lifecycle-interface */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { Component } from '@angular/core';
 import { LayoutService } from '../layout/services/app.layout.service';
 import { Router } from '@angular/router';
-import { RoomService } from '../../../services/view.room.service';
-import { Room } from '../../../interfaces/models/room';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Room } from '../../../interfaces/models/room';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  styleUrls: ['./home.component.scss'],
+  providers: [MessageService],
 })
-
-export class HomeComponent implements OnInit {
+export class HomeComponent {
+  NumberOfRoom: number;
+  NumberOfAdult: number;
+  NumberOfChildren: number;
   rooms?: Room[];
+  rangeDates: Date[];
+  selectedCity: any;
   value: number = 5;
   showMore = false;
-  toggleSeeMore(): void {
-    this.showMore = !this.showMore;
-  }
   formGroup: FormGroup;
+  showSliders: boolean = false;
+
   cities = [
     { name: 'Ho Chi Minh City' },
     { name: 'Hue City' },
@@ -26,27 +32,40 @@ export class HomeComponent implements OnInit {
     { name: 'Ha Noi Capital' }
   ];
 
-  selectedCity: any;
-  constructor(public layoutService: LayoutService, public router: Router, private roomService: RoomService, private formBuilder: FormBuilder) {
+  constructor(public layoutService: LayoutService, public router: Router, private formBuilder: FormBuilder, private messageService: MessageService) {
     this.formGroup = this.formBuilder.group({
-      startDate: [''],
-      endDate: ['']
+      numberOfPeople: [null]
     });
+    this.rangeDates = [];
+    this.NumberOfAdult = 1;
+    this.NumberOfChildren = 0;
+    this.NumberOfRoom = 1;
   }
 
-  navigateToViewAvailableRoom(): void {
-    this.router.navigate(['/view-available-room'], { fragment: 'view-available-room' });
+  toggleSeeMore(): void {
+    this.showMore = !this.showMore;
   }
 
-  ngOnInit(): void {
-    this.roomService.getAvailableRoom().subscribe(
-      (response: Room[]) => {
-        this.rooms = response;
-      },
-      (error) => {
-        console.error('Error fetching data', error);
-      }
-    );
+  toggleSliders(): void {
+    this.showSliders = !this.showSliders;
+  }
+
+  onSubmit() {
+    const startDate = this.rangeDates ? this.rangeDates[0] : null;
+    const endDate = this.rangeDates ? this.rangeDates[1] : null;
+    console.log('Start Date:', startDate);
+    console.log('End Date:', endDate);
+  }
+
+  checkPeopleCount() {
+    if (this.NumberOfAdult + this.NumberOfChildren > 8) {
+      this.messageService.clear('peopleCount');
+      this.messageService.add({
+        key: 'peopleCount',
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Adult + Children must be smaller than 8'
+      });
+    }
   }
 }
-

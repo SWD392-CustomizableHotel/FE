@@ -1,0 +1,20 @@
+.booking-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 300px;
+}
+
+.box {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 16px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .box {
+        flex: 1 1 100%;
+        margin-right: 0;
+    }
+}
