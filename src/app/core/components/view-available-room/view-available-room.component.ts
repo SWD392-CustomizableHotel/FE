@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   selector: 'app-view-available-room',
   templateUrl: './view-available-room.component.html',
   styleUrls: ['./view-available-room.component.scss'],
-
 })
 export class ViewAvailableRoomComponent implements OnInit {
   rooms?: Room[];
@@ -18,6 +17,9 @@ export class ViewAvailableRoomComponent implements OnInit {
   sortType?: string[];
   selectedSortType?: string;
   items!: string[];
+  displayModal: boolean = false;
+  selectedRoomId?: number;
+  selectedRoom?: Room;
 
   constructor(
     public layoutService: LayoutService,
@@ -53,5 +55,16 @@ export class ViewAvailableRoomComponent implements OnInit {
     }
 
     this.filteredRooms = rooms;
+  }
+
+  openModal(id: number | undefined): void {
+    this.selectedRoomId = id;
+    this.selectedRoom = this.rooms?.find(room => room.id === id);
+    this.displayModal = true;
+  }
+
+  closeModal(): void {
+    this.displayModal = false;
+    this.selectedRoom = undefined;
   }
 }

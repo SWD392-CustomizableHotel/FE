@@ -6,7 +6,7 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
-
+import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
 const routes: Routes = [
   {
       path: '',
@@ -52,6 +52,19 @@ const routes: Routes = [
           import(
             './core/components/view-available-room/view-available-room.module'
           ).then((m) => m.ViewAvailableRoomModule),
+      },
+    ],
+  },
+  {
+    path: 'booking-room',
+    component: BookingRoomComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/booking-room/booking-room.module'
+          ).then((m) => m.BookingRoomModule),
       },
     ],
   },

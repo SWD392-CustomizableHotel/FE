@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { ViewAvailableRoomComponent } from './view-available-room.component';
+import { BookingRoomComponent } from './booking-room.component';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -22,7 +22,7 @@ import { TagModule } from 'primeng/tag';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 @NgModule({
     declarations: [
-        ViewAvailableRoomComponent,
+        BookingRoomComponent,
     ],
     imports: [
         CommonModule,
@@ -48,7 +48,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    bootstrap: [ViewAvailableRoomComponent],
+    bootstrap: [BookingRoomComponent],
 })
 
-export class ViewAvailableRoomModule {}
+export class BookingRoomModule {}

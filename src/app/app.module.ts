@@ -39,6 +39,7 @@ import { PasswordModule } from 'primeng/password';
 import { RegisterComponent } from './core/components/register/register.component';
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 
 @NgModule({
@@ -70,7 +71,8 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
     ProgressBarModule,
     ToastModule,
     PasswordModule,
-    ButtonModule
+    ButtonModule,
+    BrowserAnimationsModule
   ],
   declarations: [
     AppComponent,
