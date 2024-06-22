@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <!-- eslint-disable @angular-eslint/template/elements-content -->
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
@@ -21,36 +22,52 @@
                         <label for="location">Choose a location:</label>
                     </p-floatLabel>
                 </div>
-        
-                <!-- Box 2: Start Date -->
+
+                <!-- Box 3: StartDate & EndDate -->
                 <div class="box">
-                    <p-floatLabel>
-                        <p-calendar id="startDate" formControlName="startDate"></p-calendar>
-                        <label for="startDate">Start Date</label>
-                    </p-floatLabel>
+                  <p-floatLabel>
+                      <p-calendar id="dateRange" [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                      <label for="dateRange">Checkin -> CheckOut</label>
+                  </p-floatLabel>
+              </div>
+              
+              <!-- Box 4: Number of People -->
+              <div class="box">
+                <div class="number-of-people-box" (click)="toggleSliders()">
+                  <input
+                    type="text"
+                    readonly
+                    [value]="
+                      NumberOfRoom + ' rooms, ' + NumberOfAdult + ' adults, ' + NumberOfChildren + ' children'
+                    "
+                  />
+                  <div *ngIf="showSliders" class="slider-container">
+                    <div class="slider-title">Number of People</div>
+                    <div class="slider-item">
+                      <label>Rooms</label>
+                      <p-slider [(ngModel)]="NumberOfRoom" [max]="8" [min]="1" [step]="1"></p-slider>
+                      <span>{{ NumberOfRoom }}</span>
+                    </div>
+                    <p-toast key="peopleCount"/>
+                    <div class="slider-item">
+                      <label>Adults</label>
+                      <p-slider [(ngModel)]="NumberOfAdult" [max]="10" [min]="1" [step]="1" (onChange)="checkPeopleCount()"></p-slider>
+                      <span>{{ NumberOfAdult }}</span>
+                    </div>
+                    <div class="slider-item">
+                      <label>Children</label>
+                      <p-slider [(ngModel)]="NumberOfChildren" [max]="10" [min]="0" [step]="1" (onChange)="checkPeopleCount()"></p-slider>
+                      <span>{{ NumberOfChildren }}</span>
+                    </div>
+                  </div>
                 </div>
+              </div>
         
-                <!-- Box 3: End Date -->
-                <div class="box">
-                    <p-floatLabel>
-                        <p-calendar id="endDate" formControlName="endDate"></p-calendar>
-                        <label for="endDate">End Date</label>
-                    </p-floatLabel>
-                </div>
-        
-                <!-- Box 4: Number of People -->
-                <div class="box">
-                    <p-floatLabel>
-                        <p-inputNumber inputId="integeronly" />
-                        <label for="number-input">Number of People</label>
-                    </p-floatLabel>
-                </div>
-        
-                <!-- Box 5: Booking -->
-                <div class="box">
-                    <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
-                </div>
-            </div>
+              <!-- Box 5: Booking -->
+              <div class="box">
+                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+              </div>
+          </div>
         </div>
       </div>
 

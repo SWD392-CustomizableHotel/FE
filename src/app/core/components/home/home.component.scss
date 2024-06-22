@@ -182,14 +182,15 @@ app-header-shared {
   display: flex;
   flex-wrap: wrap; /* Allow items to wrap */
   justify-content: center; /* Center items */
-  max-width: 1800px;
+  max-width: 2500px;
+
 }
 
 .box {
   margin-right: 1rem;
-  flex: 1 1 200px; /* Flex grow, shrink and basis for responsive behavior */
+  flex: 1; /* Flex grow, shrink and basis for responsive behavior */
   min-width: 200px;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 }
 
 .box:last-child {
@@ -205,4 +206,63 @@ app-header-shared {
   .box {
       margin-right: 0;
   }
+}
+
+.number-of-people-box {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 200px;
+  height: 40px;
+  background-color: white;
+}
+
+.number-of-people-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  flex: 1;
+}
+
+.slider-container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.slider-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.slider-item {
+  margin-bottom: 15px;
+}
+
+.slider-item label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.slider-item span {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.slider-container p-slider {
+  width: 100%;
 }
