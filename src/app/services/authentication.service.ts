@@ -29,7 +29,7 @@ export class AuthenticationService {
   public socialUserSubject = new BehaviorSubject<SocialUser | null>(null);
 
   public isExternalAuth?: boolean;
-  private loggedIn = new BehaviorSubject<boolean>(true);
+  private loggedIn = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -42,14 +42,22 @@ export class AuthenticationService {
     );
 
     this.user = this.userSubject.asObservable();
+    // this.loggedIn.next(!!localStorage.getItem('user'));
 
     this.externalAuthService.authState.subscribe((user) => {
-      this.extAuthChangeSub.next(user);
-      this.isExternalAuth = true;
-      this.handleSocialUserLogin(user);
+      if (user && user.idToken) {
+        this.loggedIn.next(true);
+        localStorage.setItem('socialUser', JSON.stringify(user));
+      } else {
+        this.loggedIn.next(false);
+      }
     });
 
-     this.loggedIn.next(!!this.userSubject.value);
+    const storedSocialUser = JSON.parse(localStorage.getItem('socialUser')!);
+    if (storedSocialUser) {
+      this.handleSocialUserLogin(storedSocialUser);
+    }
+
     this.checkAdditionalInfoFormState();
   }
 
@@ -58,9 +66,13 @@ export class AuthenticationService {
   }
 
   private checkAdditionalInfoFormState(): void {
-    const storedUser = JSON.parse(localStorage.getItem('user')!);
+    const storedUser = JSON.parse(localStorage.getItem('socialUser')!);
     if (storedUser && this.loggedIn.value) {
-      if (storedUser.firstName && storedUser.lastName && storedUser.phoneNumber) {
+      if (
+        storedUser.firstName &&
+        storedUser.lastName &&
+        storedUser.phoneNumber
+      ) {
         this.showAdditionalInfoForm.next(false);
       } else {
         this.showAdditionalInfoForm.next(true);
@@ -74,9 +86,23 @@ export class AuthenticationService {
     return this.userSubject.value;
   }
 
-  public updateUser(user: User): void {
-    localStorage.setItem('user', JSON.stringify(user));
-    this.userSubject.next(user);
+  public get userSocialValue(): SocialUser | null {
+    return this.socialUserSubject.value;
+  }
+
+  public updateUser(user: SocialUser): void {
+    const userToUpdate: User = {
+      email: user.email,
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      token: user.idToken,
+      phoneNumber: '',
+      user: user.name, 
+      isSucceed: true
+    };
+    localStorage.setItem('socialUser', JSON.stringify(userToUpdate));
+    this.userSubject.next(userToUpdate);
+    this.socialUserSubject.next(user);
   }
 
   login(username: string, password: string): Observable<User> {
@@ -91,7 +117,7 @@ export class AuthenticationService {
           if (user.isSucceed) {
             localStorage.setItem('user', JSON.stringify(user));
             this.userSubject.next(user);
-            this.loggedIn.next(false);
+            this.loggedIn.next(true);
           }
           return user;
         })
@@ -106,7 +132,7 @@ export class AuthenticationService {
     this.signOutExternal();
     this.sendAuthStateChangeNotification(false);
     this.resetAdditionalInfoFormState();
-    this.loggedIn.next(true);
+    this.loggedIn.next(false);
   }
 
   //start login with google
@@ -121,7 +147,9 @@ export class AuthenticationService {
         (isRegistered) => {
           if (isRegistered) {
             this.updateUser(user as any);
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('socialUser', JSON.stringify(user));
+            this.showAdditionalInfoForm.next(false); 
+            this.loggedIn.next(true);
             this.router.navigate(['/']);
           } else {
             this.socialUserSubject.next(user);
@@ -187,6 +215,25 @@ export class AuthenticationService {
     return this.http.post<any>(
       `${this.envUrl.baseUrl}/api/${Auth.AUTH}/${Auth.REGISTER_ADDITIONAL_INFO}`,
       registerInfo
+    ).pipe(
+      map((res) => {
+        if (res.isSucceed) {
+          // Cập nhật localStorage với thông tin người dùng mới
+          const user = this.userSubject.value;
+          if (user) {
+            user.firstName = additionalInfo.firstName;
+            user.lastName = additionalInfo.lastName;
+            user.phoneNumber = additionalInfo.phoneNumber;
+            localStorage.setItem('socialUser', JSON.stringify(user));
+            this.userSubject.next(user);
+            this.loggedIn.next(true);
+            this.socialUserSubject.next(socialUser);
+          }
+          // localStorage.setItem('socialUser', JSON.stringify(socialUser));
+          this.sendAuthStateChangeNotification(true);
+        }
+        return res;
+      })
     );
   }
 

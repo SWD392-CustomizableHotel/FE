@@ -103,7 +103,7 @@
     </p-card>
   </div>
 </div> -->
-
+<script src="https://accounts.google.com/gsi/client" async></script>
 <p-toast />
 <p-dialog
   [(visible)]="visible"
@@ -281,13 +281,13 @@
                 ariaLabel="loading"
               />
             </button>
+            <asl-google-signin-button
+              type="standard"
+              size="medium"
+              (click)="externalLogin()"
+            >
+            </asl-google-signin-button>
           </div>
-          <asl-google-signin-button
-            type="standard"
-            size="large"
-            class="w-full mt-2"
-            (click)="externalLogin()"
-          ></asl-google-signin-button>
         </div>
       </form>
     </div>
@@ -307,12 +307,11 @@
               formControlName="firstName"
               class="form-control"
               [ngClass]="{
-                'is-invalid':
-                  submitted && f2['firstName'].errors
+                'is-invalid': submitted && f2['firstName'].errors
               }"
             />
             <div
-              *ngIf="submitted &&  f2['firstName'].errors"
+              *ngIf="submitted && f2['firstName'].errors"
               class="invalid-feedback"
             >
               <p-messages
@@ -330,8 +329,7 @@
               formControlName="lastName"
               class="form-control"
               [ngClass]="{
-                'is-invalid':
-                  submitted && f2['lastName'].errors
+                'is-invalid': submitted && f2['lastName'].errors
               }"
             />
             <div
@@ -353,8 +351,7 @@
               formControlName="phoneNumber"
               class="form-control"
               [ngClass]="{
-                'is-invalid':
-                  submitted && f2['phoneNumber'].errors
+                'is-invalid': submitted && f2['phoneNumber'].errors
               }"
             />
             <div
@@ -377,7 +374,6 @@
         ></button>
       </form>
     </div>
-
     <ng-template pTemplate="footer">
       <div class="flex justify-content-center gap-3 mt-1">
         <div class="font-medium text-900 mb-2 underline">

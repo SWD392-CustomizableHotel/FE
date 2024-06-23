@@ -3,6 +3,7 @@ import { AuthenticationService } from '../../../../../services/authentication.se
 import { User } from '../../../../../interfaces/models/user';
 import { MenuItem } from 'primeng/api';
 import { Component } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-header-shared',
   templateUrl: './header-shared.component.html',
@@ -10,7 +11,7 @@ import { Component } from '@angular/core';
 })
 export class HeaderSharedComponent {
   menuVisible: boolean = false;
-  isLoggedIn: boolean = true;
+  isLoggedIn: boolean = false;
   user?: User | null;
   menuItems: MenuItem[] = [
     { label: 'Home', route: 'home' },
@@ -24,6 +25,22 @@ export class HeaderSharedComponent {
     public router: Router,
     private authService: AuthenticationService
   ) {
+    this.authService.isLoggedIn.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+      if (loggedIn) {
+        this.user = this.authService.userValue;
+      } else {
+        this.user = null; 
+      }
+    });
+    const storedSocialUser = JSON.parse(localStorage.getItem('socialUser')!);
+    if (storedSocialUser) {
+      this.authService.handleSocialUserLogin(storedSocialUser);
+    }
+
+    this.authService.isLoggedIn.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+    });
     this.authService.user.subscribe((x) => {
       this.user = x;
     });
@@ -47,12 +64,11 @@ export class HeaderSharedComponent {
     this.authService.resetAdditionalInfoFormState();
   }
 
-  ngOnInit(): void {
-    this.authService.isLoggedIn.subscribe((loggedIn: boolean) => {
-      this.isLoggedIn = loggedIn;
-    });
-    this.resetShowAdditionalInfoFormState();
-  }
+  // ngOnInit(): void {
+  //   this.authService.isLoggedIn.subscribe((loggedIn) => {
+  //     this.isLoggedIn = loggedIn;
+  //   });
+  // }
 
   logout(): void {
     this.authService.logOut();

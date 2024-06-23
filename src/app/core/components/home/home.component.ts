@@ -52,17 +52,6 @@ export class HomeComponent {
     this.showSliders = !this.showSliders;
   }
 
-  resetShowAdditionalInfoFormState(): void {
-    this.authenticationService.resetAdditionalInfoFormState();
-  }
-
-  ngOnInit(): void {
-    this.authenticationService.isLoggedIn.subscribe((loggedIn: boolean) => {
-      this.isLoggedIn = loggedIn;
-    });
-    this.resetShowAdditionalInfoFormState();
-  }
-
   onSubmit() {
     const startDate = this.rangeDates ? this.rangeDates[0] : null;
     const endDate = this.rangeDates ? this.rangeDates[1] : null;

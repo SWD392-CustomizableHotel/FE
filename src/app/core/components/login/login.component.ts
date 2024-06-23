@@ -7,6 +7,7 @@ import { Message, MessageService } from 'primeng/api';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ExternalAuthDto } from '../../../interfaces/models/externalAuthDto';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,7 @@ export class LoginComponent implements OnInit {
   errorMessage: string = '';
   showAdditionalInfoForm = false; // Toggle for showing additional info form
   socialUser!: SocialUser;
-  isLoggedin!: boolean;
+  private isLoggedIn = new BehaviorSubject<boolean>(false);
   visible: boolean = false;
 
   constructor(
@@ -45,6 +46,7 @@ export class LoginComponent implements OnInit {
   ) {
     // redirect to home if already logged in
     if (this.authenticationService.userValue) {
+      this.isLoggedIn.next(true);
       this.router.navigate(['/']);
     }
   }
@@ -61,10 +63,21 @@ export class LoginComponent implements OnInit {
       phoneNumber: ['', Validators.required],
     });
 
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn === 'true') {
+      this.isLoggedIn.next(true);
+    }
+
     this.socialAuthService.authState.subscribe((user) => {
       this.socialUser = user;
       if (user && user.idToken) {
         this.checkUserRegistrationStatus(user.idToken);
+      } else {
+        const storedSocialUser = localStorage.getItem('socialUser');
+        if (storedSocialUser) {
+          this.socialUser = JSON.parse(storedSocialUser);
+          this.showAdditionalInfoForm = true;
+        }
       }
     });
 
@@ -73,10 +86,10 @@ export class LoginComponent implements OnInit {
     });
 
     this.authenticationService.isLoggedIn.subscribe((isLoggedIn) => {
-    if (!isLoggedIn) {
-      this.showAdditionalInfoForm = false;
-    }
-  });
+      if (!isLoggedIn) {
+        this.showAdditionalInfoForm = false;
+      }
+    });
 
     this.messages = [
       { severity: 'error', summary: 'Error', detail: 'Unknown error' },
@@ -88,13 +101,21 @@ export class LoginComponent implements OnInit {
       { severity: 'error', summary: 'Invalid', detail: 'Password is required' },
     ];
     this.firstNameIsRequired = [
-      { severity: 'error', summary: 'Invalid', detail: 'Firstname is required' },
+      {
+        severity: 'error',
+        summary: 'Invalid',
+        detail: 'Firstname is required',
+      },
     ];
     this.lastNameIsRequired = [
       { severity: 'error', summary: 'Invalid', detail: 'Password is required' },
     ];
     this.phoneNumberIsRequired = [
-      { severity: 'error', summary: 'Invalid', detail: 'Phonenumnber is required' },
+      {
+        severity: 'error',
+        summary: 'Invalid',
+        detail: 'Phonenumnber is required',
+      },
     ];
   }
 
@@ -123,6 +144,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           // get return url from route parameters or default to '/'
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+          this.isLoggedIn.next(true);
           this.router.navigate([returnUrl]);
         },
         error: (error) => {
@@ -135,6 +157,7 @@ export class LoginComponent implements OnInit {
   logout() {
     this.authenticationService.logOut();
     this.showAdditionalInfoForm = false;
+    this.isLoggedIn.next(true);
     localStorage.removeItem('showAdditionalInfoForm');
   }
 
@@ -156,12 +179,11 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (res) => {
           localStorage.setItem('token', res.token);
-          const user = this.authenticationService.userValue;
+          const user = this.authenticationService.userSocialValue;
           if (user) {
             user.firstName = additionalInfo.firstName;
             user.lastName = additionalInfo.lastName;
-            user.phoneNumber = additionalInfo.phoneNumber;
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('socialUser', JSON.stringify(user));
           }
           this.authenticationService.sendAuthStateChangeNotification(true);
           this.router.navigate(['/']);
@@ -181,28 +203,31 @@ export class LoginComponent implements OnInit {
     this.showError = false;
     this.authenticationService.signInWithGoogle();
 
-    this.authenticationService.extAuthChanged.subscribe( user => {
+    this.authenticationService.extAuthChanged.subscribe((user) => {
       const externalAuth: ExternalAuthDto = {
         provider: user.provider,
-        idToken: user.idToken
-      }
+        idToken: user.idToken,
+      };
       this.validateExternalAuth(externalAuth);
-    })
+    });
   }
 
   private validateExternalAuth(externalAuth: ExternalAuthDto) {
-    this.authenticationService.externalLogin('/api/Auth/ExternalLogin', externalAuth)
+    this.authenticationService
+      .externalLogin('/api/Auth/ExternalLogin', externalAuth)
       .subscribe({
         next: (res) => {
-            localStorage.setItem("token", res.token);
-            this.authenticationService.sendAuthStateChangeNotification(res.isAuthSuccessful);
-            this.router.navigate(['/']);
-      },
+          localStorage.setItem('token', res.token);
+          this.authenticationService.sendAuthStateChangeNotification(
+            res.isAuthSuccessful
+          );
+          this.router.navigate(['/']);
+        },
         error: (err: HttpErrorResponse) => {
           this.errorMessage = err.message;
           this.showError = true;
           this.authenticationService.signOutExternal();
-        }
+        },
       });
   }
 
