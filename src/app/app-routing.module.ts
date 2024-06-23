@@ -56,7 +56,7 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'booking-room',
+    path: 'booking-room/:id',
     component: BookingRoomComponent,
     children: [
       {

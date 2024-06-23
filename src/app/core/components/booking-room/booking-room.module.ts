@@ -11,7 +11,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { sharedModule } from '../layout/share/shared.module';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { InputIconModule } from 'primeng/inputicon';
@@ -36,7 +35,6 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
         CalendarModule,
         FloatLabelModule,
         InputNumberModule,
-        sharedModule,
         RatingModule,
         FormsModule,
         InputIconModule,

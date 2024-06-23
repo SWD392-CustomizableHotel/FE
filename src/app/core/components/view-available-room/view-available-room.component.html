@@ -1,7 +1,6 @@
-.
-<div style="height: 100px"></div>
-<app-header> </app-header>
-<div class="surface-100 my-6 pt-2">
+<div style="height: 100px;"></div>
+<app-header-shared></app-header-shared>
+<div class="surface-100 my-6 pt-2 ">
   <h2 class="text-center my-6 font-bold">SHERITON ROOMS</h2>
   <div
     class="flex container mb-4 p-col-12 p-md-6 p-lg-4 flex-column xl:flex-row"
@@ -58,7 +57,7 @@
               </div>
               <div class="flex flex-column text-right">
                 <p-button icon="pi pi-heart" [outlined]="true"></p-button>
-                <p-button  (click)="openModal(room.id)" (keyup.enter)="openModal(room.id)" icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap mt-2" label="Booking "/>
+                <p-button  (click)="toBookingPage(room.id)" (keyup.enter)="toBookingPage(room.id)" icon="pi pi-shopping-cart" class="flex-auto md:flex-initial white-space-nowrap mt-2" label="Booking "/>
               </div>
             </div>
           </div>
@@ -96,5 +95,5 @@
     </div>
     <!-- This is validation -->
   </div>
-  <app-footer></app-footer>
+  <app-footer-shared></app-footer-shared>
 </div>

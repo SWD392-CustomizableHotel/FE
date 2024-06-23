@@ -19,4 +19,10 @@ export class RoomService {
         map(response => response?.result || [])
       );
   }
+  getRoomDetails(roomId: number): Observable<any> {
+    return this.http.get<BaseResponse<Room>>(`${environment.BACKEND_API_URL}/get-room-details/${roomId}`)
+      .pipe(
+        map(response => response?.data || [])
+      );
+  }
 }

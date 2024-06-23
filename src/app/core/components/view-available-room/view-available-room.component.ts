@@ -16,7 +16,6 @@ export class ViewAvailableRoomComponent implements OnInit {
   filteredRooms?: Room[];
   sortType?: string[];
   selectedSortType?: string;
-  items!: string[];
   displayModal: boolean = false;
   selectedRoomId?: number;
   selectedRoom?: Room;
@@ -66,5 +65,11 @@ export class ViewAvailableRoomComponent implements OnInit {
   closeModal(): void {
     this.displayModal = false;
     this.selectedRoom = undefined;
+  }
+
+  toBookingPage(id?: number): void {
+    this.selectedRoomId = id;
+    this.selectedRoom = this.rooms?.find(room => room.id === id);
+    this.router.navigate(['/booking-room', id]);
   }
 }

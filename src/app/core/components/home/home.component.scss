@@ -154,3 +154,115 @@
   text-decoration: line-through;
   color: #aaa;
 }
+
+app-header-shared {
+  z-index: 1000; /* Adjust if necessary */
+  position: relative;
+}
+
+/* Ensure the content starts below the header */
+.landing-wrapper {
+  margin-top: 100px; /* Adjust this value to ensure no overlap */
+}
+
+.surface-0 {
+  z-index: 1; /* Ensure it is below the header */
+  position: relative;
+}
+
+/* component.css */
+.form-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+  width: 100%;
+}
+
+.form-box {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap */
+  justify-content: center; /* Center items */
+  max-width: 2500px;
+
+}
+
+.box {
+  margin-right: 1rem;
+  flex: 1; /* Flex grow, shrink and basis for responsive behavior */
+  min-width: 200px;
+  margin-bottom: 16px;
+}
+
+.box:last-child {
+  margin-right: 0;
+}
+
+@media (max-width: 768px) {
+  .form-box {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .box {
+      margin-right: 0;
+  }
+}
+
+.number-of-people-box {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 200px;
+  height: 40px;
+  background-color: white;
+}
+
+.number-of-people-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  flex: 1;
+}
+
+.slider-container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.slider-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.slider-item {
+  margin-bottom: 15px;
+}
+
+.slider-item label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.slider-item span {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.slider-container p-slider {
+  width: 100%;
+}
