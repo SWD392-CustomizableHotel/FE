@@ -44,7 +44,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
         InputTextModule,
         DataViewModule,
         TagModule,
-        ScrollPanelModule,
+        ScrollPanelModule
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

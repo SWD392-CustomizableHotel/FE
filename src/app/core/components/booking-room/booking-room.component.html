@@ -1,14 +1,56 @@
-<p>booking-room works!</p>
+<app-header-shared></app-header-shared>
 
+<div class="room-container surface-100 my-6 pt-2">
+  <!--Room Information -->
+  <h2 class="text-center my-6 font-bold">Guest Information</h2>
+  <div class="card flex flex-column md:flex-row gap-3">
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-user"></i>
+      </p-inputGroupAddon>
+      <input pInputText placeholder="Firstname" />
+    </p-inputGroup>
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-user"></i>
+      </p-inputGroupAddon>
+      <input pInputText placeholder="Lastname" />
+    </p-inputGroup>
+    <p-inputGroup>
+      <p-inputGroupAddon>
+        <i class="pi pi-phone"></i>
+      </p-inputGroupAddon>
+      <input pInputText placeholder="PhoneNumber" />
+    </p-inputGroup>
+  </div>
+  <!--Room Information -->
 
-
-<!-- This is View Room -->
-<div *ngIf="room" class="">
-  <h1>{{room.roomId}}</h1>
-  <h1>{{room.roomDescription}}</h1>
-  <h1>{{room.roomType}}</h1>
-  <h1>{{room.roomPrice}}</h1>
-  <h1>{{room.roomNumber}}</h1>
+  <!--Room Information -->
+  <h2 class="text-center my-6 font-bold">Room Information</h2>
+  <div *ngIf="room" class="room-details">
+    <div class="room-info">
+      <h2>Room Number: {{ room.roomNumber }}</h2>
+    </div>
+    <div class="room-info">
+      <h2>Description: {{ room.roomDescription }}</h2>
+    </div>
+    <div class="room-info">
+      <h2>Type: {{ room.roomType }}</h2>
+    </div>
+    <div class="room-info">
+      <h2>Price: ${{ room.roomPrice }}</h2>
+    </div>
+    <div class="room-image-container xl:w-3 w-2">
+      <img class="room-image" [src]="room.image" alt="Room Image" />
+    </div>
+    <div class="room-info">
+      <h2>Number Of People: {{ room.numberOfPeople }}</h2>
+    </div>
+    <div class="card flex justify-content-center">
+      <p-button label="Book Now" />
+    </div>
+  </div>
+  <!--Room Information -->
 </div>
 
- <!-- This is View Room -->
+<app-footer-shared></app-footer-shared>

@@ -1,11 +1,13 @@
 /* eslint-disable @angular-eslint/use-lifecycle-interface */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../layout/services/app.layout.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Room } from '../../../interfaces/models/room';
 import { MessageService } from 'primeng/api';
+import { RoomService } from '../../../services/view.room.service';
+import { Hotel } from '../../../interfaces/models/hotels';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +15,7 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./home.component.scss'],
   providers: [MessageService],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   NumberOfRoom: number;
   NumberOfAdult: number;
   NumberOfChildren: number;
@@ -24,6 +26,7 @@ export class HomeComponent {
   showMore = false;
   formGroup: FormGroup;
   showSliders: boolean = false;
+  hotels?: Hotel[];
 
   cities = [
     { name: 'Ho Chi Minh City' },
@@ -32,7 +35,12 @@ export class HomeComponent {
     { name: 'Ha Noi Capital' }
   ];
 
-  constructor(public layoutService: LayoutService, public router: Router, private formBuilder: FormBuilder, private messageService: MessageService) {
+  constructor(
+    public layoutService: LayoutService,
+    public router: Router,
+    private formBuilder: FormBuilder,
+    private messageService: MessageService,
+    private roomService: RoomService) {
     this.formGroup = this.formBuilder.group({
       numberOfPeople: [null]
     });
@@ -40,6 +48,19 @@ export class HomeComponent {
     this.NumberOfAdult = 1;
     this.NumberOfChildren = 0;
     this.NumberOfRoom = 1;
+  }
+
+  ngOnInit(): void {
+    this.roomService.getAvailableRoom().subscribe(
+      (response: Room[]) => {
+        this.rooms = response;
+      }
+    );
+    this.roomService.getHotel().subscribe(
+      (response: Hotel[]) => {
+        this.hotels = response;
+      }
+    );
   }
 
   toggleSeeMore(): void {
@@ -67,5 +88,8 @@ export class HomeComponent {
         detail: 'Adult + Children must be smaller than 8'
       });
     }
+  }
+  toAvailableRoomPage(): void {
+    this.router.navigate(['/view-available-room']);
   }
 }

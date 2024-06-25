@@ -19,6 +19,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { sharedModule } from '../layout/share/shared.module';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 @NgModule({
     declarations: [
         BookingRoomComponent,
@@ -43,6 +46,9 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
         DataViewModule,
         TagModule,
         ScrollPanelModule,
+        sharedModule,
+        InputGroupModule,
+        InputGroupAddonModule
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

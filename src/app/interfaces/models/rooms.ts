@@ -7,4 +7,6 @@ export interface Room {
     isDeleted?: boolean;
     roomDescription?: string;
     hotelId? : number,
+    image?: string;
+    numberOfPeople?: number;
 }

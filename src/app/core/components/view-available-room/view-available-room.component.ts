@@ -23,7 +23,7 @@ export class ViewAvailableRoomComponent implements OnInit {
   constructor(
     public layoutService: LayoutService,
     public router: Router,
-    private roomService: RoomService,
+    private roomService: RoomService
   ) {}
 
   ngOnInit(): void {

@@ -18,7 +18,7 @@
                 <!-- Box 1: Choose Location -->
                 <div class="box">
                     <p-floatLabel>
-                        <p-dropdown id="location" [options]="cities" optionLabel="name"></p-dropdown>
+                        <p-dropdown id="location" [options]="hotels" optionLabel="address"></p-dropdown>
                         <label for="location">Choose a location:</label>
                     </p-floatLabel>
                 </div>
@@ -65,7 +65,7 @@
         
               <!-- Box 5: Booking -->
               <div class="box">
-                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined" (click)="toAvailableRoomPage()"></button>
               </div>
           </div>
         </div>
