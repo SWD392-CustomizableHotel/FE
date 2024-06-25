@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { Message, MessageService } from 'primeng/api';
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ExternalAuthDto } from '../../../interfaces/models/externalAuthDto';
 import { BehaviorSubject } from 'rxjs';
+import { GoogleCommonService } from '../../../services/google-common.service';
+import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -28,10 +29,9 @@ export class LoginComponent implements OnInit {
   lastNameIsRequired!: Message[];
   phoneNumberIsRequired!: Message[];
 
-  //properties for google
   showError?: boolean;
   errorMessage: string = '';
-  showAdditionalInfoForm = false; // Toggle for showing additional info form
+  showAdditionalInfoForm = false;
   socialUser!: SocialUser;
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   visible: boolean = false;
@@ -41,10 +41,10 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
+    private googleCommonService: GoogleCommonService,
     private socialAuthService: SocialAuthService,
     private messageService: MessageService
   ) {
-    // redirect to home if already logged in
     if (this.authenticationService.userValue) {
       this.isLoggedIn.next(true);
       this.router.navigate(['/']);
@@ -81,12 +81,12 @@ export class LoginComponent implements OnInit {
       }
     });
 
-    this.authenticationService.showAdditionalInfoForm.subscribe((show) => {
+    this.googleCommonService.showAdditionalInfoForm.subscribe((show) => {
       this.showAdditionalInfoForm = show;
     });
 
-    this.authenticationService.isLoggedIn.subscribe((isLoggedIn) => {
-      if (!isLoggedIn) {
+    this.googleCommonService._isLoggedIn.subscribe((loggedIn) => {
+      if (!loggedIn) {
         this.showAdditionalInfoForm = false;
       }
     });
@@ -119,19 +119,20 @@ export class LoginComponent implements OnInit {
     ];
   }
 
-  // convenience getter for easy access to form fields
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  get f() {
+  loginWithGoogle(): void {
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
+  }
+
+  get f(): any {
     return this.loginForm.controls;
   }
 
-  get f2() {
+  get f2(): any {
     return this.additionalInfoForm.controls;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
@@ -142,7 +143,6 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          // get return url from route parameters or default to '/'
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.isLoggedIn.next(true);
           this.router.navigate([returnUrl]);
@@ -154,15 +154,14 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  logout() {
+  logout(): void {
     this.authenticationService.logOut();
+    this.socialAuthService.signOut();
     this.showAdditionalInfoForm = false;
     this.isLoggedIn.next(true);
     localStorage.removeItem('showAdditionalInfoForm');
   }
 
-  //Start login-google
-  // Handle additional info form submission
   onAdditionalInfoSubmit(): void {
     this.submitted = true;
 
@@ -174,18 +173,18 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     const additionalInfo = this.additionalInfoForm.value;
 
-    this.authenticationService
+    this.googleCommonService
       .registerAdditionalInfo(this.socialUser, additionalInfo)
       .subscribe({
         next: (res) => {
           localStorage.setItem('token', res.token);
-          const user = this.authenticationService.userSocialValue;
+          const user = this.googleCommonService.userSocialValue;
           if (user) {
             user.firstName = additionalInfo.firstName;
             user.lastName = additionalInfo.lastName;
             localStorage.setItem('socialUser', JSON.stringify(user));
           }
-          this.authenticationService.sendAuthStateChangeNotification(true);
+          this.googleCommonService.sendAuthStateChangeNotification(true);
           this.router.navigate(['/']);
         },
         error: (err: HttpErrorResponse) => {
@@ -201,9 +200,9 @@ export class LoginComponent implements OnInit {
 
   externalLogin(): void {
     this.showError = false;
-    this.authenticationService.signInWithGoogle();
+    this.googleCommonService.signInWithGoogle();
 
-    this.authenticationService.extAuthChanged.subscribe((user) => {
+    this.googleCommonService.extAuthChanged.subscribe((user) => {
       const externalAuth: ExternalAuthDto = {
         provider: user.provider,
         idToken: user.idToken,
@@ -212,13 +211,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private validateExternalAuth(externalAuth: ExternalAuthDto) {
-    this.authenticationService
+  private validateExternalAuth(externalAuth: ExternalAuthDto): void {
+    this.googleCommonService
       .externalLogin('/api/Auth/ExternalLogin', externalAuth)
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           localStorage.setItem('token', res.token);
-          this.authenticationService.sendAuthStateChangeNotification(
+          this.googleCommonService.sendAuthStateChangeNotification(
             res.isAuthSuccessful
           );
           this.router.navigate(['/']);
@@ -226,13 +225,13 @@ export class LoginComponent implements OnInit {
         error: (err: HttpErrorResponse) => {
           this.errorMessage = err.message;
           this.showError = true;
-          this.authenticationService.signOutExternal();
+          this.googleCommonService.signOutExternal();
         },
       });
   }
 
   private checkUserRegistrationStatus(idToken: string): void {
-    this.authenticationService.checkUserRegistrationStatus(idToken).subscribe({
+    this.googleCommonService.checkUserRegistrationStatus(idToken).subscribe({
       next: (isRegistered) => {
         if (isRegistered) {
           this.router.navigate(['/']);
@@ -245,8 +244,6 @@ export class LoginComponent implements OnInit {
       },
     });
   }
-
-  //end login-google
 
   showDialog(): void {
     this.visible = true;
@@ -262,7 +259,7 @@ export class LoginComponent implements OnInit {
 
   resetMyPassword(): void {
     this.loading = true;
-    if (this.email === null || this.email === undefined) {
+    if (!this.email) {
       this.loading = false;
       this.messageService.add({
         severity: 'error',
@@ -275,8 +272,8 @@ export class LoginComponent implements OnInit {
     this.authenticationService
       .forgotPassword(this.email)
       .subscribe((response) => {
+        this.loading = false;
         if (!response.isSucceed) {
-          this.loading = false;
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -284,7 +281,6 @@ export class LoginComponent implements OnInit {
             life: 3000,
           });
         } else {
-          this.loading = false;
           this.visible = false;
           this.messageService.add({
             severity: 'success',

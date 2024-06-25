@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <!-- <div class="overflow-visible pt-8">
   <div
     class="bg-cover md:bg-contain bg-center bg-no-repeat border-round"
@@ -281,13 +283,15 @@
                 ariaLabel="loading"
               />
             </button>
-            <asl-google-signin-button
-              type="standard"
-              size="medium"
+          </div>
+          <p-divider align="center">OR</p-divider>
+          <asl-google-signin-button
+              type="icon"
+              size="large"
+              class="flex justify-content-center align-items-center"
               (click)="externalLogin()"
             >
-            </asl-google-signin-button>
-          </div>
+          </asl-google-signin-button>
         </div>
       </form>
     </div>

@@ -2,14 +2,15 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../../../services/authentication.service';
 import { User } from '../../../../../interfaces/models/user';
 import { MenuItem } from 'primeng/api';
-import { Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { GoogleCommonService } from '../../../../../services/google-common.service';
+
 @Component({
   selector: 'app-header-shared',
   templateUrl: './header-shared.component.html',
   styleUrls: ['./header-shared.component.scss'],
 })
-export class HeaderSharedComponent {
+export class HeaderSharedComponent implements OnInit {
   menuVisible: boolean = false;
   isLoggedIn: boolean = false;
   user?: User | null;
@@ -23,28 +24,21 @@ export class HeaderSharedComponent {
 
   constructor(
     public router: Router,
-    private authService: AuthenticationService
-  ) {
-    this.authService.isLoggedIn.subscribe((loggedIn) => {
-      this.isLoggedIn = loggedIn;
-      if (loggedIn) {
-        this.user = this.authService.userValue;
-      } else {
-        this.user = null; 
-      }
-    });
-    const storedSocialUser = JSON.parse(localStorage.getItem('socialUser')!);
-    if (storedSocialUser) {
-      this.authService.handleSocialUserLogin(storedSocialUser);
-    }
+    private authService: AuthenticationService,
+    private googleCommonService: GoogleCommonService
+  ) {}
 
-    this.authService.isLoggedIn.subscribe((loggedIn) => {
+  ngOnInit(): void {
+    this.googleCommonService._isLoggedIn.subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
+      this.user = loggedIn ? this.authService.userValue : null;
     });
+
     this.authService.user.subscribe((x) => {
       this.user = x;
     });
   }
+
   onMenuItemClick(route: string): void {
     console.log(route + ' clicked');
     this.router.navigate([route]);
@@ -59,16 +53,6 @@ export class HeaderSharedComponent {
       this.router.navigate(['/landing'], { fragment: route });
     }
   }
-
-  resetShowAdditionalInfoFormState(): void {
-    this.authService.resetAdditionalInfoFormState();
-  }
-
-  // ngOnInit(): void {
-  //   this.authService.isLoggedIn.subscribe((loggedIn) => {
-  //     this.isLoggedIn = loggedIn;
-  //   });
-  // }
 
   logout(): void {
     this.authService.logOut();

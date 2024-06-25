@@ -1,10 +1,10 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // Third-party imports
-import { SocialLoginModule, GoogleLoginProvider, SocialAuthServiceConfig} from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, GoogleSigninButtonModule, SocialAuthServiceConfig, SocialLoginModule} from '@abacritt/angularx-social-login';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Assuming needed for animations
 
@@ -19,7 +19,6 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
-import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 import { AvatarGroupModule } from 'primeng/avatargroup';
@@ -46,7 +45,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
 
-export function tokenGetter() {
+export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
 
@@ -85,8 +84,9 @@ export function tokenGetter() {
     ProgressBarModule,
     ToastModule,
     PasswordModule,
-    BrowserAnimationsModule, // Include BrowserAnimationsModule if needed
-    SocialLoginModule, // Import SocialLoginModule
+    BrowserAnimationsModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule
   ],
   exports: [
     BrowserModule,
