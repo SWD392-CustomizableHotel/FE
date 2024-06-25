@@ -7,6 +7,7 @@ import { Auth } from '../../assets/constants/constants';
 import { BaseResponse } from '../interfaces/models/base-response';
 import { ResetPasswordRequest } from '../interfaces/models/reset-password-request';
 import { environment } from '../../assets/environments/environment';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class AuthenticationService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private socialAuthService: SocialAuthService
   ) {
     this.userSubject = new BehaviorSubject(
       JSON.parse(localStorage.getItem('user')!)
@@ -69,6 +71,7 @@ export class AuthenticationService {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
     this.userSubject.next(null);
+    this.socialAuthService.signOut();
     this.router.navigate(['/login']);
   }
 

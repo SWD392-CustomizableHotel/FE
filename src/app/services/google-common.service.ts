@@ -22,7 +22,8 @@ export class GoogleCommonService {
   private authStateSubject = new BehaviorSubject<boolean>(false);
   public authState = this.authStateSubject.asObservable();
 
-  private isLoggedIn = new BehaviorSubject<boolean>(false);
+  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  public isLoggedIn = this.isLoggedInSubject.asObservable();
 
   constructor(
     private externalAuthService: SocialAuthService,
@@ -40,14 +41,11 @@ export class GoogleCommonService {
 
   signOutExternal(): void {
     this.externalAuthService.signOut();
+    this.setLoggedIn(false);
   }
 
   public get userSocialValue(): User | null {
     return this.userSocialSubject.value;
-  }
-
-  get _isLoggedIn(): Observable<boolean> {
-    return this.isLoggedIn.asObservable();
   }
 
   externalLogin(route: string, externalAuth: ExternalAuthDto): Observable<any> {
@@ -55,6 +53,7 @@ export class GoogleCommonService {
       map((res) => {
         if (res.token) {
           this.saveSocialUser(res);
+          this.setLoggedIn(true);
         }
         return res;
       }),
@@ -73,7 +72,7 @@ export class GoogleCommonService {
       token: res.token,
     };
     localStorage.setItem('socialUser', JSON.stringify(socialUser));
-    localStorage.setItem('token', res.token);
+    localStorage.setItem('user', res);
     this.userSocialSubject.next(socialUser);
   }
 
@@ -83,7 +82,10 @@ export class GoogleCommonService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${socialUser.token}`,
     });
-    const body = JSON.stringify(additionalInfo);
+    const body = {
+        ...additionalInfo,
+        UserName: socialUser.email
+    };
 
     return this.http.post<any>(url, body, { headers });
   }
@@ -92,8 +94,12 @@ export class GoogleCommonService {
     this.authStateSubject.next(isAuthenticated);
   }
 
-  checkUserRegistrationStatus(idToken: string): Observable<boolean> {
+  checkUserRegistrationStatus(idToken: string): Observable<User | null> {
     const url = `${environment.BACKEND_API_URL}/api/Auth/CheckUserRegistrationStatus?idToken=` + idToken;
-    return this.http.get<boolean>(url);
+    return this.http.get<User>(url);
+  }
+
+  setLoggedIn(loggedIn: boolean): void {
+    this.isLoggedInSubject.next(loggedIn);
   }
 }

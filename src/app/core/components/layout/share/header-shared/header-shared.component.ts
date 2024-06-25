@@ -2,17 +2,17 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../../../services/authentication.service';
 import { User } from '../../../../../interfaces/models/user';
 import { MenuItem } from 'primeng/api';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { GoogleCommonService } from '../../../../../services/google-common.service';
-
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-header-shared',
   templateUrl: './header-shared.component.html',
   styleUrls: ['./header-shared.component.scss'],
 })
-export class HeaderSharedComponent implements OnInit {
+export class HeaderSharedComponent {
   menuVisible: boolean = false;
-  isLoggedIn: boolean = false;
+  private isLoggedIn = new BehaviorSubject<boolean>(false);
   user?: User | null;
   menuItems: MenuItem[] = [
     { label: 'Home', route: 'home' },
@@ -26,21 +26,26 @@ export class HeaderSharedComponent implements OnInit {
     public router: Router,
     private authService: AuthenticationService,
     private googleCommonService: GoogleCommonService
-  ) {}
-
-  ngOnInit(): void {
-    this.googleCommonService._isLoggedIn.subscribe((loggedIn) => {
-      this.isLoggedIn = loggedIn;
-      this.user = loggedIn ? this.authService.userValue : null;
+  ) {
+    this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
+      this.isLoggedIn.next(loggedIn);
+      if (loggedIn) {
+        this.user = this.authService.userValue;
+      } else {
+        this.user = null;
+      }
     });
-
+    this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
+      this.isLoggedIn.next(loggedIn);
+    });
     this.authService.user.subscribe((x) => {
       this.user = x;
+      if (this.user) {
+        this.setLoggedIn(true);
+      }
     });
   }
-
   onMenuItemClick(route: string): void {
-    console.log(route + ' clicked');
     this.router.navigate([route]);
   }
 
@@ -53,6 +58,20 @@ export class HeaderSharedComponent implements OnInit {
       this.router.navigate(['/landing'], { fragment: route });
     }
   }
+
+  getIsLoggedIn(): boolean {
+    return this.isLoggedIn.value;
+  }
+
+  setLoggedIn(value: boolean): void {
+    this.isLoggedIn.next(value);
+  }
+
+  // ngOnInit(): void {
+  //   this.authService.isLoggedIn.subscribe((loggedIn) => {
+  //     this.isLoggedIn = loggedIn;
+  //   });
+  // }
 
   logout(): void {
     this.authService.logOut();

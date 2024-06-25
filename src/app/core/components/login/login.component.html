@@ -369,13 +369,23 @@
             </div>
           </div>
         </div>
-        <button
-          pButton
-          label="Submit"
-          icon="pi pi-check"
-          type="submit"
-          [disabled]="loading"
-        ></button>
+        <div class="form-group">
+          <button
+            pButton
+            pRipple
+            label="Finish"
+            icon="pi pi-user"
+            class="w-full"
+            [disabled]="loading"
+          >
+            <p-progressSpinner
+              *ngIf="loading"
+              styleClass="h-1rem w-1rem"
+              strokeWidth="6"
+              ariaLabel="loading"
+            />
+          </button>
+        </div>
       </form>
     </div>
     <ng-template pTemplate="footer">

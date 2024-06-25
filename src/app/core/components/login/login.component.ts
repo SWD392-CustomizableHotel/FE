@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ExternalAuthDto } from '../../../interfaces/models/externalAuthDto';
 import { BehaviorSubject } from 'rxjs';
 import { GoogleCommonService } from '../../../services/google-common.service';
-import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -63,9 +63,10 @@ export class LoginComponent implements OnInit {
       phoneNumber: ['', Validators.required],
     });
 
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn === 'true') {
+    const isLoggedIn = localStorage.getItem('user');
+    if (isLoggedIn) {
       this.isLoggedIn.next(true);
+      this.router.navigate(['/']);
     }
 
     this.socialAuthService.authState.subscribe((user) => {
@@ -85,7 +86,7 @@ export class LoginComponent implements OnInit {
       this.showAdditionalInfoForm = show;
     });
 
-    this.googleCommonService._isLoggedIn.subscribe((loggedIn) => {
+    this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
       if (!loggedIn) {
         this.showAdditionalInfoForm = false;
       }
@@ -117,10 +118,6 @@ export class LoginComponent implements OnInit {
         detail: 'Phonenumnber is required',
       },
     ];
-  }
-
-  loginWithGoogle(): void {
-    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
   }
 
   get f(): any {
@@ -177,7 +174,8 @@ export class LoginComponent implements OnInit {
       .registerAdditionalInfo(this.socialUser, additionalInfo)
       .subscribe({
         next: (res) => {
-          localStorage.setItem('token', res.token);
+          this.isLoggedIn.next(true);
+          localStorage.setItem('user', JSON.stringify(res));
           const user = this.googleCommonService.userSocialValue;
           if (user) {
             user.firstName = additionalInfo.firstName;
@@ -215,11 +213,12 @@ export class LoginComponent implements OnInit {
     this.googleCommonService
       .externalLogin('/api/Auth/ExternalLogin', externalAuth)
       .subscribe({
-        next: (res: any) => {
-          localStorage.setItem('token', res.token);
+        next: (res) => {
+          localStorage.setItem('user', res);
           this.googleCommonService.sendAuthStateChangeNotification(
             res.isAuthSuccessful
           );
+          this.googleCommonService.setLoggedIn(true);
           this.router.navigate(['/']);
         },
         error: (err: HttpErrorResponse) => {
@@ -232,8 +231,10 @@ export class LoginComponent implements OnInit {
 
   private checkUserRegistrationStatus(idToken: string): void {
     this.googleCommonService.checkUserRegistrationStatus(idToken).subscribe({
-      next: (isRegistered) => {
-        if (isRegistered) {
+      next: (res) => {
+        if (res?.isSucceed) {
+          localStorage.setItem('user', JSON.stringify(res));
+          this.googleCommonService.setLoggedIn(true);
           this.router.navigate(['/']);
         } else {
           this.showAdditionalInfoForm = true;
@@ -254,6 +255,7 @@ export class LoginComponent implements OnInit {
   }
 
   returnHome(): void {
+    this.isLoggedIn.next(false);
     this.router.navigate(['/']);
   }
 
