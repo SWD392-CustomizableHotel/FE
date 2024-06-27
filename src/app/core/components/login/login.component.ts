@@ -69,6 +69,8 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/']);
     }
 
+    this.googleCommonService.setShowAdditionalInfoForm(false);
+
     this.socialAuthService.authState.subscribe((user) => {
       this.socialUser = user;
       if (user && user.idToken) {
@@ -77,7 +79,14 @@ export class LoginComponent implements OnInit {
         const storedSocialUser = localStorage.getItem('socialUser');
         if (storedSocialUser) {
           this.socialUser = JSON.parse(storedSocialUser);
-          this.showAdditionalInfoForm = true;
+          this.googleCommonService.checkUserRegistrationStatus(this.socialUser.idToken)
+          .subscribe((res) => {
+            if(res && res.isSucceed) {
+              this.showAdditionalInfoForm = false;
+            } else {
+              this.showAdditionalInfoForm = true;
+            }
+          });
         }
       }
     });
@@ -87,8 +96,11 @@ export class LoginComponent implements OnInit {
     });
 
     this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
-      if (!loggedIn) {
-        this.showAdditionalInfoForm = false;
+      if (loggedIn) {
+        const user = this.googleCommonService.userSocialValue;
+        if (user && user.firstName && user.lastName && user.phoneNumber) {
+          this.showAdditionalInfoForm = false;
+        }
       }
     });
 
@@ -153,10 +165,8 @@ export class LoginComponent implements OnInit {
 
   logout(): void {
     this.authenticationService.logOut();
-    this.socialAuthService.signOut();
-    this.showAdditionalInfoForm = false;
-    this.isLoggedIn.next(true);
-    localStorage.removeItem('showAdditionalInfoForm');
+    this.googleCommonService.signOutExternal(); 
+    this.googleCommonService.setShowAdditionalInfoForm(false);
   }
 
   onAdditionalInfoSubmit(): void {
@@ -180,9 +190,10 @@ export class LoginComponent implements OnInit {
           if (user) {
             user.firstName = additionalInfo.firstName;
             user.lastName = additionalInfo.lastName;
+            user.phoneNumber = additionalInfo.phoneNumber;
             localStorage.setItem('socialUser', JSON.stringify(user));
           }
-          this.googleCommonService.sendAuthStateChangeNotification(true);
+          this.googleCommonService.sendAuthStateChangeNotification(true, res.role);
           this.router.navigate(['/']);
         },
         error: (err: HttpErrorResponse) => {
@@ -214,9 +225,9 @@ export class LoginComponent implements OnInit {
       .externalLogin('/api/Auth/ExternalLogin', externalAuth)
       .subscribe({
         next: (res) => {
-          localStorage.setItem('user', res);
+          localStorage.setItem('socialUser', res);
           this.googleCommonService.sendAuthStateChangeNotification(
-            res.isAuthSuccessful
+            res.isAuthSuccessful, res.role
           );
           this.googleCommonService.setLoggedIn(true);
           this.router.navigate(['/']);
@@ -233,7 +244,7 @@ export class LoginComponent implements OnInit {
     this.googleCommonService.checkUserRegistrationStatus(idToken).subscribe({
       next: (res) => {
         if (res?.isSucceed) {
-          localStorage.setItem('user', JSON.stringify(res));
+          localStorage.setItem('socialUser', JSON.stringify(res));
           this.googleCommonService.setLoggedIn(true);
           this.router.navigate(['/']);
         } else {

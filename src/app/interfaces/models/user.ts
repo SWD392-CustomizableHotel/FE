@@ -6,4 +6,5 @@ export interface User {
     token?: string;
     phoneNumber?: string;
     email?: string;
+    role?: string;
 }

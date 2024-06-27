@@ -3,4 +3,5 @@ export interface AuthResponseDto {
     errorMessage: string;
     token: string;
     provider: string;
+    role?: string; 
 }

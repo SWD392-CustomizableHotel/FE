@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { ExternalAuthDto } from '../interfaces/models/externalAuthDto';
-import { BehaviorSubject, Observable, Subject, catchError, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, map, tap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../interfaces/models/user';
 import { environment } from '../../assets/environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,8 @@ export class GoogleCommonService {
 
   constructor(
     private externalAuthService: SocialAuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router 
   ) {
     this.userSocialSubject = new BehaviorSubject<User | null>(
       JSON.parse(localStorage.getItem('socialUser')!)
@@ -42,10 +44,23 @@ export class GoogleCommonService {
   signOutExternal(): void {
     this.externalAuthService.signOut();
     this.setLoggedIn(false);
+    this.setShowAdditionalInfoForm(false);
+    this.clearLocalStorage();
+    this.router.navigate(['/login']); 
+  }
+
+  public clearLocalStorage(): void {
+    localStorage.removeItem('socialUser');
+    localStorage.removeItem('user');
+    localStorage.removeItem('showAdditionalInfoForm');
   }
 
   public get userSocialValue(): User | null {
     return this.userSocialSubject.value;
+  }
+
+  setShowAdditionalInfoForm(show: boolean = false): void {
+    this.showAdditionalInfoForm.next(false);
   }
 
   externalLogin(route: string, externalAuth: ExternalAuthDto): Observable<any> {
@@ -54,6 +69,7 @@ export class GoogleCommonService {
         if (res.token) {
           this.saveSocialUser(res);
           this.setLoggedIn(true);
+          this.sendAuthStateChangeNotification(true, res.role); 
         }
         return res;
       }),
@@ -69,10 +85,12 @@ export class GoogleCommonService {
       email: res.email,
       firstName: res.firstName,
       lastName: res.lastName,
+      phoneNumber: res.phoneNumber, 
       token: res.token,
+      role: res.role 
     };
     localStorage.setItem('socialUser', JSON.stringify(socialUser));
-    localStorage.setItem('user', res);
+    localStorage.setItem('user', JSON.stringify(res));
     this.userSocialSubject.next(socialUser);
   }
 
@@ -83,20 +101,50 @@ export class GoogleCommonService {
       Authorization: `Bearer ${socialUser.token}`,
     });
     const body = {
-        ...additionalInfo,
-        UserName: socialUser.email
+      ...additionalInfo,
+      UserName: socialUser.email
     };
-
-    return this.http.post<any>(url, body, { headers });
+  
+    return this.http.post<any>(url, body, { headers }).pipe(
+      tap((res) => {
+        this.setLoggedIn(true);
+        this.sendAuthStateChangeNotification(true, res.role); 
+      })
+    );
   }
 
-  sendAuthStateChangeNotification(isAuthenticated: boolean): void {
+  sendAuthStateChangeNotification(isAuthenticated: boolean, role: string): void {
     this.authStateSubject.next(isAuthenticated);
+    this.isLoggedInSubject.next(isAuthenticated);
+    this.setShowAdditionalInfoForm(false);
+    if (isAuthenticated) {
+      if (role === 'ADMIN' || role === 'STAFF') {
+        window.location.href = 'http://localhost:4200/dashboard';
+      } else {
+        this.router.navigate(['/']);
+      }
+    }
   }
 
-  checkUserRegistrationStatus(idToken: string): Observable<User | null> {
-    const url = `${environment.BACKEND_API_URL}/api/Auth/CheckUserRegistrationStatus?idToken=` + idToken;
-    return this.http.get<User>(url);
+  checkUserRegistrationStatus(idToken: string): Observable<any> {
+    const url = `${environment.BACKEND_API_URL}/api/Auth/CheckUserRegistrationStatus?idToken=${idToken}`;
+    return this.http.get<any>(url).pipe(
+      map((res: any) => {
+        if (res && res.isSucceed) {
+          this.saveSocialUser(res); // Lưu trữ thông tin người dùng vào localStorage
+          this.setLoggedIn(true);
+          this.setShowAdditionalInfoForm(false); // Ẩn form thông tin bổ sung
+          this.sendAuthStateChangeNotification(true, res.role); // Gửi role để điều hướng
+        } else {
+          this.setShowAdditionalInfoForm(true); // Hiển thị form thông tin bổ sung
+        }
+        return res;
+      }),
+      catchError((error) => {
+        console.error('Check registration status error:', error);
+        throw error;
+      })
+    );
   }
 
   setLoggedIn(loggedIn: boolean): void {
