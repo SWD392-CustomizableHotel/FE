@@ -113,6 +113,7 @@ export class GoogleCommonService {
     );
   }
 
+  //navigate when login with role Admin or Staff
   sendAuthStateChangeNotification(isAuthenticated: boolean, role: string): void {
     this.authStateSubject.next(isAuthenticated);
     this.isLoggedInSubject.next(isAuthenticated);
