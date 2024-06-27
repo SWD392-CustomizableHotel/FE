@@ -1,7 +1,7 @@
 import { Role } from './role';
 
 export interface Account {
-    id?: string;
+    id: string;
     firstName?: string;
     lastName?: string;
     isActived?: boolean;

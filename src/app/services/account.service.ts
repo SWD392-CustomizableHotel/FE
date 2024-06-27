@@ -17,7 +17,7 @@ export class AccountService {
     userName?: string,
     email?: string,
     searchTerm?: string
-  ): Observable<BaseResponse<Account>> {
+  ): Observable<any> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
@@ -30,7 +30,7 @@ export class AccountService {
     if (searchTerm && searchTerm !== '') {
       params = params.set('searchTerm', searchTerm);
     }
-    return this.http.get<BaseResponse<Account>>(
+    return this.http.get<any>(
       `${environment.BACKEND_API_URL}/api/Account`,
       { params }
     );

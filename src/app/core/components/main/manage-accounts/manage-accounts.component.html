@@ -1,1 +1,127 @@
-<p>manage-accounts works!</p>
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<div class="grid">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+        <h5>Account List</h5>
+        <p-table #dt1 [value]="accounts" [columns]="cols" dataKey="accountId"
+                 [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines"
+                 [globalFilterFields]="['userName','email','roles']" responsiveLayout="scroll">
+          <ng-template pTemplate="caption">
+            <div class="flex justify-content-between flex-column sm:flex-row">
+              <div class="flex">
+                <button pButton label="Clear" class="p-button-outlined mr-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+              </div>
+              <span class="p-input-icon-left mb-2">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="min-width: 12rem" pSortableColumn="userName">
+                <div class="flex justify-content-between align-items-center">
+                  User Name
+                  <p-sortIcon field="userName"></p-sortIcon>
+                  <p-columnFilter type="text" field="userName" display="menu" placeholder="Search by User Name"></p-columnFilter>
+                </div>
+              </th>
+              <th style="min-width: 12rem" pSortableColumn="email">
+                <div class="flex justify-content-between align-items-center">
+                  Email
+                  <p-sortIcon field="email"></p-sortIcon>
+                  <p-columnFilter type="text" field="email" display="menu" placeholder="Search by Email"></p-columnFilter>
+                </div>
+              </th>
+              <th style="min-width: 10rem" pSortableColumn="roles">
+                <div class="flex justify-content-between align-items-center">
+                  Role
+                  <p-sortIcon field="roles"></p-sortIcon>
+                  <p-columnFilter type="text" field="roles" display="menu" placeholder="Search by Role"></p-columnFilter>
+                </div>
+              </th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-account>
+            <tr>
+              <td>{{ account.userName }}</td>
+              <td>{{ account.email }}</td>
+              <td>{{ account.roles[0] }}</td>
+              <td>
+                <div class="flex">
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editAccount(account)"></button>
+                  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="confirmDelete(account)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4">No accounts found.</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="loadingbody">
+            <tr>
+              <td colspan="4">Loading account data. Please wait.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="flex align-items-center justify-content-end">
+          <span class="mx-1 text-color">Items per page: </span>
+          <p-dropdown [options]="options" optionLabel="label" optionValue="value" [(ngModel)]="rows" (ngModelChange)="onRowsChange($event)" />
+          <p-paginator (onPageChange)="onPageChange($event)"
+                       [showCurrentPageReport]="true" 
+                       [first]="first"
+                       [rows]="rows"
+                       [totalRecords]="totalRecords"
+                       currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                       [showPageLinks]="false"
+                       [showFirstLastIcon]="false"></p-paginator>
+        </div>
+      </div>
+  
+      <!-- Account Details Dialog -->
+      <p-dialog [(visible)]="accountDialog" [style]="{width: '450px'}" header="Account Details" [modal]="true" class="p-fluid">
+        <ng-template pTemplate="content">
+          <div class="formgrid grid flex justify-content space-between">
+            <div style="flex: 1; margin-right: 40px;">
+              <div class="field">
+                <label for="userName">User Name</label>
+                <input type="text" pInputText id="userName" [(ngModel)]="account.userName" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !account.userName}">
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !account.userName">User Name is required.</small>
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input type="email" pInputText id="email" [(ngModel)]="account.email" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !account.email}">
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && !account.email">Email is required.</small>
+              </div>
+              <div class="field">
+                <label for="role">Role</label>
+                <p-dropdown id="role" [options]="roleOptions" [(ngModel)]="selectedRole" optionLabel="name"></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+  
+        <ng-template pTemplate="footer">
+          <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="hideDialog()"></p-button>
+          <p-button label="Save" icon="pi pi-check" (onClick)="saveAccount()"></p-button>
+        </ng-template>
+      </p-dialog>
+  
+      <!-- Delete Account Confirmation Dialog -->
+      <p-dialog [(visible)]="deleteAccountDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+          <span *ngIf="account">Are you sure you want to delete account <b>{{ account.userName }}</b>?</span>
+        </div>
+        <ng-template pTemplate="footer">
+          <p-button icon="pi pi-times" severity="secondary" label="No" (click)="deleteAccountDialog = false"></p-button>
+          <p-button icon="pi pi-check" label="Yes" (click)="confirmDeleteAccount()"></p-button>
+        </ng-template>
+      </p-dialog>
+    </div>
+  </div>
+  
