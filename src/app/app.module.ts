@@ -39,6 +39,7 @@ import { PasswordModule } from 'primeng/password';
 import { RegisterComponent } from './core/components/register/register.component';
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 
 @NgModule({
@@ -79,6 +80,7 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
     ResetPasswordComponent,
     RegisterComponent,
     VerifyEmailComponent,
+    BookingHistoryComponent,
   ],
   exports: [
     PanelModule,

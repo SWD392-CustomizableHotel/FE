@@ -1,0 +1,30 @@
+<div>
+    <h2>Booking History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Room ID</th>
+          <th>Rating</th>
+          <th>Services</th>
+          <th>Amenities</th>
+          <th>Payments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of bookings">
+          <td>{{ booking.bookingId }}</td>
+          <td>{{ booking.roomId }}</td>
+          <td>{{ booking.rating }}</td>
+          <td>{{ booking.services.join(', ') }}</td>
+          <td>{{ booking.amenities.join(', ') }}</td>
+          <td>{{ booking.payments.join(', ') }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <button [disabled]="pageNumber <= 1" (click)="onPageChange(pageNumber - 1)">Previous</button>
+      <button [disabled]="pageNumber >= totalPages" (click)="onPageChange(pageNumber + 1)">Next</button>
+    </div>
+  </div>
+  

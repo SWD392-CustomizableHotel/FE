@@ -16,7 +16,8 @@ export class HeaderSharedComponent {
         { label: 'Features', route: 'features' },
         { label: 'Highlights', route: 'highlights' },
         { label: 'Pricing', route: 'pricing' },
-        { label: 'View Available Room', route: 'view-available-room' }
+        { label: 'View Available Room', route: 'view-available-room' },
+        { label: 'Booking History', route: 'booking-history'}
     ];
 
     constructor(
@@ -35,7 +36,9 @@ export class HeaderSharedComponent {
     navigateTo(route: string): void {
       if (route === 'view-available-room') {
           this.router.navigate(['/view-available-room'], { fragment: 'view-available-room' });
-      } else {
+      }if (route === 'booking-history') {
+        this.router.navigate(['/booking-history'], {fragment: 'booking-history'});
+      }else {
           this.router.navigate(['/landing'], { fragment: route });
       }
     }
