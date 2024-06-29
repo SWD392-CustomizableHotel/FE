@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <!-- <div class="overflow-visible pt-8">
   <div
     class="bg-cover md:bg-contain bg-center bg-no-repeat border-round"
@@ -103,6 +105,7 @@
     </p-card>
   </div>
 </div> -->
+<script src="https://accounts.google.com/gsi/client" async></script>
 <p-toast />
 <p-dialog
   [(visible)]="visible"
@@ -180,7 +183,6 @@
       >
       <a
         class="font-medium no-underline ml-2 text-blue-500 cursor-pointer hover:text-cyan-700"
-        [routerLink]="'/register'"
         >Create today!</a
       >
     </div>
@@ -207,6 +209,7 @@
           </div>
         </div>
       </div>
+
       <div
         *ngIf="submitted && f['username'].errors"
         class="invalid-feedback flex justify-content-center align-items-center"
@@ -221,65 +224,170 @@
         </div>
       </div>
     </div>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div>
-        <div class="flex justify-content-evenly align-items-center gap-2 p-1">
-          <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-          <label class="block text-900 font-medium mb-2">Username</label>
-          <input
-            pInputText
-            type="text"
-            formControlName="username"
-            class="form-control w-full mb-3"
-            [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
-          />
-        </div>
 
-        <div class="flex justify-content-evenly align-items-center gap-2 p-1">
-          <label for="password" class="block text-900 font-medium mb-2"
-            >Password</label
+    <div *ngIf="!showAdditionalInfoForm">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div>
+          <div class="flex justify-content-evenly align-items-center gap-2 p-1">
+            <label class="block text-900 font-medium mb-2">Username</label>
+            <input
+              pInputText
+              type="text"
+              formControlName="username"
+              class="form-control w-full mb-3"
+              [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
+            />
+          </div>
+
+          <div class="flex justify-content-evenly align-items-center gap-2 p-1">
+            <label for="password" class="block text-900 font-medium mb-2"
+              >Password</label
+            >
+            <input
+              pInputText
+              id="password"
+              type="password"
+              formControlName="password"
+              class="form-control w-full mb-3"
+              [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+            />
+          </div>
+
+          <div class="flex align-items-center justify-content-between mb-4">
+            <div class="flex align-items-center">
+              <p-checkbox
+                id="rememberme"
+                [binary]="true"
+                styleClass="mr-2"
+              ></p-checkbox>
+              <label for="rememberme1">Remember me</label>
+            </div>
+            <div aria-hidden="true">
+              <a (click)="showDialog()">Forgot password?</a>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button
+              pButton
+              pRipple
+              label="Sign In"
+              icon="pi pi-user"
+              class="w-full"
+              [disabled]="loading"
+            >
+              <p-progressSpinner
+                *ngIf="loading"
+                styleClass="h-1rem w-1rem"
+                strokeWidth="6"
+                ariaLabel="loading"
+              />
+            </button>
+          </div>
+          <p-divider align="center">OR</p-divider>
+          <asl-google-signin-button
+              type="icon"
+              size="large"
+              class="flex justify-content-center align-items-center"
+              (click)="externalLogin()"
+            >
+          </asl-google-signin-button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="showAdditionalInfoForm" class="additional-info-form">
+      <form
+        [formGroup]="additionalInfoForm"
+        (ngSubmit)="onAdditionalInfoSubmit()"
+      >
+        <div class="p-fluid">
+          <div class="p-field" style="margin-bottom: 1rem">
+            <label for="firstName">First Name</label>
+            <input
+              id="firstName"
+              type="text"
+              pInputText
+              formControlName="firstName"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid': submitted && f2['firstName'].errors
+              }"
+            />
+            <div
+              *ngIf="submitted && f2['firstName'].errors"
+              class="invalid-feedback"
+            >
+              <p-messages
+                [value]="firstNameIsRequired"
+                [closable]="false"
+              ></p-messages>
+            </div>
+          </div>
+          <div class="p-field" style="margin-bottom: 1rem">
+            <label for="lastName">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              pInputText
+              formControlName="lastName"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid': submitted && f2['lastName'].errors
+              }"
+            />
+            <div
+              *ngIf="submitted && f2['lastName'].errors"
+              class="invalid-feedback"
+            >
+              <p-messages
+                [value]="lastNameIsRequired"
+                [closable]="false"
+              ></p-messages>
+            </div>
+          </div>
+          <div class="p-field" style="margin-bottom: 1rem">
+            <label for="phoneNumber">Phone Number</label>
+            <input
+              id="phoneNumber"
+              type="text"
+              pInputText
+              formControlName="phoneNumber"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid': submitted && f2['phoneNumber'].errors
+              }"
+            />
+            <div
+              *ngIf="submitted && f2['phoneNumber'].errors"
+              class="invalid-feedback"
+            >
+              <p-messages
+                [value]="phoneNumberIsRequired"
+                [closable]="false"
+              ></p-messages>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button
+            pButton
+            pRipple
+            label="Finish"
+            icon="pi pi-user"
+            class="w-full"
+            [disabled]="loading"
           >
-          <input
-            pInputText
-            id="password"
-            type="password"
-            formControlName="password"
-            class="form-control w-full mb-3"
-            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
-          />
+            <p-progressSpinner
+              *ngIf="loading"
+              styleClass="h-1rem w-1rem"
+              strokeWidth="6"
+              ariaLabel="loading"
+            />
+          </button>
         </div>
-
-        <div class="flex align-items-center justify-content-between mb-4">
-          <div class="flex align-items-center">
-            <p-checkbox
-              id="rememberme"
-              [binary]="true"
-              styleClass="mr-2"
-            ></p-checkbox>
-            <label for="rememberme1">Remember me</label>
-          </div>
-          <div aria-hidden="true">
-            <a (click)="showDialog()">Forgot password?</a>
-          </div>
-        </div>
-
-        <button
-          pButton
-          pRipple
-          label="Sign In"
-          icon="pi pi-user"
-          class="w-full"
-          [disabled]="loading"
-        >
-          <p-progressSpinner
-            *ngIf="loading"
-            styleClass="h-1rem w-1rem"
-            strokeWidth="6"
-            ariaLabel="loading"
-          />
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
     <ng-template pTemplate="footer">
       <div class="flex justify-content-center gap-3 mt-1">
         <div class="font-medium text-900 mb-2 underline">
