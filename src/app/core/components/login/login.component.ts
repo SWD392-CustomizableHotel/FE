@@ -4,29 +4,49 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { Message, MessageService } from 'primeng/api';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ExternalAuthDto } from '../../../interfaces/models/externalAuthDto';
+import { BehaviorSubject } from 'rxjs';
+import { GoogleCommonService } from '../../../services/google-common.service';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
-@Component({ templateUrl: 'login.component.html', providers: [MessageService] })
+@Component({
+  selector: 'app-login',
+  templateUrl: 'login.component.html',
+  providers: [MessageService],
+})
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  registerForm!: FormGroup;
-
+  additionalInfoForm!: FormGroup;
   loading = false;
   submitted = false;
   error = '';
-  email!: string;
   messages!: Message[];
+  email!: string;
   userNameIsRequired!: Message[];
   passwordIsRequired!: Message[];
+  firstNameIsRequired!: Message[];
+  lastNameIsRequired!: Message[];
+  phoneNumberIsRequired!: Message[];
+
+  showError?: boolean;
+  errorMessage: string = '';
+  showAdditionalInfoForm = false;
+  socialUser!: SocialUser;
+  private isLoggedIn = new BehaviorSubject<boolean>(false);
+  visible: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
+    private googleCommonService: GoogleCommonService,
+    private socialAuthService: SocialAuthService,
     private messageService: MessageService
   ) {
-    // redirect to home if already logged in
     if (this.authenticationService.userValue) {
+      this.isLoggedIn.next(true);
       this.router.navigate(['/']);
     }
   }
@@ -37,43 +57,94 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required],
     });
 
+    this.additionalInfoForm = this.formBuilder.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+    });
+
+    const isLoggedIn = localStorage.getItem('user');
+    if (isLoggedIn) {
+      this.isLoggedIn.next(true);
+      this.router.navigate(['/']);
+    }
+
+    this.googleCommonService.setShowAdditionalInfoForm(false);
+
+    this.socialAuthService.authState.subscribe((user) => {
+      this.socialUser = user;
+      if (user && user.idToken) {
+        this.checkUserRegistrationStatus(user.idToken);
+      } else {
+        const storedSocialUser = localStorage.getItem('socialUser');
+        if (storedSocialUser) {
+          this.socialUser = JSON.parse(storedSocialUser);
+          this.googleCommonService.checkUserRegistrationStatus(this.socialUser.idToken)
+          .subscribe((res) => {
+            if(res && res.isSucceed) {
+              this.showAdditionalInfoForm = false;
+            } else {
+              this.showAdditionalInfoForm = true;
+            }
+          });
+        }
+      }
+    });
+
+    this.googleCommonService.showAdditionalInfoForm.subscribe((show) => {
+      this.showAdditionalInfoForm = show;
+    });
+
+    this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
+      if (loggedIn) {
+        const user = this.googleCommonService.userSocialValue;
+        if (user && user.firstName && user.lastName && user.phoneNumber) {
+          this.showAdditionalInfoForm = false;
+        }
+      }
+    });
+
     this.messages = [
-      {
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Unknown error',
-      },
+      { severity: 'error', summary: 'Error', detail: 'Unknown error' },
     ];
     this.userNameIsRequired = [
-      {
-        severity: 'error',
-        summary: 'Invalid',
-        detail: 'Username is required',
-      },
+      { severity: 'error', summary: 'Invalid', detail: 'Username is required' },
     ];
     this.passwordIsRequired = [
+      { severity: 'error', summary: 'Invalid', detail: 'Password is required' },
+    ];
+    this.firstNameIsRequired = [
       {
         severity: 'error',
         summary: 'Invalid',
-        detail: 'Password is required',
+        detail: 'First Name is required',
+      },
+    ];
+    this.lastNameIsRequired = [
+      { severity: 'error', summary: 'Invalid', detail: 'Password is required' },
+    ];
+    this.phoneNumberIsRequired = [
+      {
+        severity: 'error',
+        summary: 'Invalid',
+        detail: 'Phone Number is required',
       },
     ];
   }
 
-  // convenience getter for easy access to form fields
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  get f() {
+  get f(): any {
     return this.loginForm.controls;
+  }
+
+  get f2(): any {
+    return this.additionalInfoForm.controls;
   }
 
   onSubmit(): void {
     this.submitted = true;
-
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
-
     this.error = '';
     this.loading = true;
     this.authenticationService
@@ -81,8 +152,8 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: () => {
-          // get return url from route parameters or default to '/'
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+          this.isLoggedIn.next(true);
           this.router.navigate([returnUrl]);
         },
         error: (error) => {
@@ -92,7 +163,109 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  visible: boolean = false;
+  navigateInRole(role: string): void {
+    if (role === 'ADMIN') {
+      this.router.navigate(['', 'dashboard']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  logout(): void {
+    this.authenticationService.logOut();
+    this.googleCommonService.signOutExternal(); 
+    this.googleCommonService.setShowAdditionalInfoForm(false);
+    this.isLoggedIn.next(false);
+  }
+
+  onAdditionalInfoSubmit(): void {
+    this.submitted = true;
+
+    if (this.additionalInfoForm.invalid) {
+      return;
+    }
+
+    this.error = '';
+    this.loading = true;
+    const additionalInfo = this.additionalInfoForm.value;
+
+    this.googleCommonService
+      .registerAdditionalInfo(this.socialUser, additionalInfo)
+      .subscribe({
+        next: (res) => {
+          this.isLoggedIn.next(true);
+          localStorage.setItem('user', JSON.stringify(res));
+          localStorage.setItem('socialUser', JSON.stringify(res));
+          const user = this.googleCommonService.userSocialValue;
+          if (user) {
+            user.firstName = additionalInfo.firstName;
+            user.lastName = additionalInfo.lastName;
+            user.phoneNumber = additionalInfo.phoneNumber;
+          }
+          this.googleCommonService.sendAuthStateChangeNotification(true, res.role);
+          this.router.navigate(['/']);
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 400) {
+            console.error('Bad Request:', err.error);
+          } else {
+            this.error = err.message || 'Unknown error occurred.';
+          }
+          this.loading = false;
+        },
+      });
+  }
+
+  externalLogin(): void {
+    this.showError = false;
+    this.googleCommonService.signInWithGoogle();
+
+    this.googleCommonService.extAuthChanged.subscribe((user) => {
+      const externalAuth: ExternalAuthDto = {
+        provider: user.provider,
+        idToken: user.idToken,
+      };
+      this.validateExternalAuth(externalAuth);
+    });
+  }
+
+  private validateExternalAuth(externalAuth: ExternalAuthDto): void {
+    this.googleCommonService
+      .externalLogin('/api/Auth/ExternalLogin', externalAuth)
+      .subscribe({
+        next: (res) => {
+          localStorage.setItem('socialUser', res);
+          this.googleCommonService.sendAuthStateChangeNotification(
+            res.isAuthSuccessful, res.role
+          );
+          this.googleCommonService.setLoggedIn(true);
+          this.router.navigate(['/']);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.errorMessage = err.message;
+          this.showError = true;
+          this.googleCommonService.signOutExternal();
+        },
+      });
+  }
+
+  private checkUserRegistrationStatus(idToken: string): void {
+    this.googleCommonService.checkUserRegistrationStatus(idToken).subscribe({
+      next: (res) => {
+        if (res?.isSucceed) {
+          localStorage.setItem('socialUser', JSON.stringify(res));
+          this.googleCommonService.setLoggedIn(true);
+          const role = res.role;
+          this.navigateInRole(role);
+        } else {
+          this.showAdditionalInfoForm = true;
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error = err.message || 'Unknown error';
+      },
+    });
+  }
 
   showDialog(): void {
     this.visible = true;
@@ -103,12 +276,13 @@ export class LoginComponent implements OnInit {
   }
 
   returnHome(): void {
+    this.isLoggedIn.next(false);
     this.router.navigate(['/']);
   }
 
   resetMyPassword(): void {
     this.loading = true;
-    if (this.email === null || this.email === undefined) {
+    if (!this.email) {
       this.loading = false;
       this.messageService.add({
         severity: 'error',
@@ -121,8 +295,8 @@ export class LoginComponent implements OnInit {
     this.authenticationService
       .forgotPassword(this.email)
       .subscribe((response) => {
+        this.loading = false;
         if (!response.isSucceed) {
-          this.loading = false;
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -130,7 +304,6 @@ export class LoginComponent implements OnInit {
             life: 3000,
           });
         } else {
-          this.loading = false;
           this.visible = false;
           this.messageService.add({
             severity: 'success',
