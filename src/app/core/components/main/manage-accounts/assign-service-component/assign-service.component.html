@@ -1,8 +1,8 @@
 <p-table [value]="services" responsiveLayout="scroll" [rows]="8" [responsive]="true">
     <ng-template pTemplate="header">
         <tr>
-            <th pSortableColumn="code">Code</th>
             <th pSortableColumn="name">Name</th>
+            <th pSortableColumn="userName">Staff Serving</th>
             <th pSortableColumn="description">Description</th>
             <th pSortableColumn="price">Price ($)</th>
             <th pSortableColumn="startDate">Start Date</th>
@@ -13,8 +13,8 @@
     </ng-template>
     <ng-template pTemplate="body" let-service>
         <tr>
-            <td>{{ service.code }}</td>
             <td>{{ service.name }}</td>
+            <td>{{ service.userName }}</td>
             <td>{{ service.description }}</td>
             <td>{{ service.price }}</td>
             <td>{{ service.startDate }}</td>

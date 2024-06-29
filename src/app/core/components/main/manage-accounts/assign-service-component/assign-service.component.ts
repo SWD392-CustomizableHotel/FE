@@ -42,7 +42,6 @@ export class AssignServiceComponent implements OnInit {
   }
 
   selectProduct(value: Service): void {
-    console.log(value);
     this.ref.close(value);
   }
 

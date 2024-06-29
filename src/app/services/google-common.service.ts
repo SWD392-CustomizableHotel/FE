@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@angular/core';
 import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { ExternalAuthDto } from '../interfaces/models/externalAuthDto';
@@ -29,7 +30,7 @@ export class GoogleCommonService {
   constructor(
     private externalAuthService: SocialAuthService,
     private http: HttpClient,
-    private router: Router 
+    private router: Router
   ) {
     this.userSocialSubject = new BehaviorSubject<User | null>(
       JSON.parse(localStorage.getItem('socialUser')!)
@@ -46,7 +47,7 @@ export class GoogleCommonService {
     this.setLoggedIn(false);
     // this.setShowAdditionalInfoForm(false);
     this.clearLocalStorage();
-    this.router.navigate(['/login']); 
+    this.router.navigate(['/login']);
   }
 
   public clearLocalStorage(): void {
@@ -69,7 +70,7 @@ export class GoogleCommonService {
         if (res.token) {
           this.saveSocialUser(res);
           this.setLoggedIn(true);
-          this.sendAuthStateChangeNotification(true, res.role); 
+          this.sendAuthStateChangeNotification(true, res.role);
         }
         return res;
       }),
@@ -85,9 +86,9 @@ export class GoogleCommonService {
       email: res.email,
       firstName: res.firstName,
       lastName: res.lastName,
-      phoneNumber: res.phoneNumber, 
+      phoneNumber: res.phoneNumber,
       token: res.token,
-      role: res.role 
+      role: res.role
     };
     localStorage.setItem('socialUser', JSON.stringify(socialUser));
     localStorage.setItem('user', JSON.stringify(res));
@@ -104,11 +105,11 @@ export class GoogleCommonService {
       ...additionalInfo,
       UserName: socialUser.email
     };
-  
+
     return this.http.post<any>(url, body, { headers }).pipe(
       tap((res) => {
         this.setLoggedIn(true);
-        this.sendAuthStateChangeNotification(true, res.role); 
+        this.sendAuthStateChangeNotification(true, res.role);
       })
     );
   }
@@ -125,12 +126,12 @@ export class GoogleCommonService {
     return this.http.get<any>(url).pipe(
       map((res: any) => {
         if (res && res.isSucceed) {
-          this.saveSocialUser(res); 
+          this.saveSocialUser(res);
           this.setLoggedIn(true);
-          this.setShowAdditionalInfoForm(false); 
-          this.sendAuthStateChangeNotification(true, res.role); 
+          this.setShowAdditionalInfoForm(false);
+          this.sendAuthStateChangeNotification(true, res.role);
         } else {
-          this.setShowAdditionalInfoForm(true); 
+          this.setShowAdditionalInfoForm(true);
         }
         return res;
       }),

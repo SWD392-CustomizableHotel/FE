@@ -58,13 +58,13 @@ export class AccountService {
     );
   }
 
-  assignService(accountId: string, serviceId: number): Observable<BaseResponse<any>> {
+  assignService(accountId: string, serviceId: number): Observable<any> {
     const body = {
-      'accountId': accountId,
+      'UserId': accountId,
       'serviceId': serviceId
     };
-    return this.http.post<BaseResponse<any>>(
-      `${environment.BACKEND_API_URL}/api/AssignService/AssignServiceToStaff`, { body }
+    return this.http.post<any>(
+      `${environment.BACKEND_API_URL}/api/AssignService/AssignServiceToStaff`, body
     );
   }
 }

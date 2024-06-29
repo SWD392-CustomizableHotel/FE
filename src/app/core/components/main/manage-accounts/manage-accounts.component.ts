@@ -48,7 +48,7 @@ export class ManageAccountsComponent implements OnInit {
     this.accountService.getAccounts(this.first / this.rows, this.rows).subscribe({
       next: (data) => {
         this.accounts = data.data.filter((account: Account) => {
-          return !account.roles?.includes('ADMIN');
+          return !account.roles?.includes('ADMIN') && account.isActive;
         });
         this.totalRecords = this.accounts.length;
         this.loading = false;
@@ -89,28 +89,25 @@ export class ManageAccountsComponent implements OnInit {
     });
 
     this.ref.onClose.subscribe((data: any) => {
-      let service;
       if (data) {
-          const buttonType = data?.buttonType;
-          this.accountService.assignService(account.id, data.serviceId).subscribe(
+          this.accountService.assignService(account.id, data.id).subscribe(
             {
               next: (response) => {
-                if(response.isSucceed && buttonType) {
-                  service = { summary: 'Service Assigned', detail: data?.name };
+                if (response.isSucceeded) {
+                  this.messageService.add({ severity: 'success', summary: 'Service Assigned', detail: response.message, life: 3000 });
                 } else {
-                  service = { summary: 'Assigned Failed' };
+                  this.messageService.add({ severity: 'info', summary: 'Failed', detail: response.message, life: 3000 });
                 }
               },
               error: (error) => {
-                service = { summary: 'Error', detail: error };
+                this.messageService.add({ severity: 'danger', summary: 'Error', detail: error.error, life: 3000 });
               }
             }
           );
       } else {
-          service = { summary: 'No Service Selected', detail: '' };
+        this.messageService.add({ severity: 'info', summary: 'No Service Selected', detail: '', life: 3000 });
       }
-      this.messageService.add({ severity: 'info', ...service, life: 3000 });
-  });
+    });
   }
 
   editAccount(account: Account): void {

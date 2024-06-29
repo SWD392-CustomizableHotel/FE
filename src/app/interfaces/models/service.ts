@@ -10,4 +10,5 @@ export interface Service {
     endDate?: Date;
     createdBy?: string;
     isDeleted?: boolean;
+    userName?: string;
 }
