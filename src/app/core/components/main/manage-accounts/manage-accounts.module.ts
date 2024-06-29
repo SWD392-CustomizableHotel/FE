@@ -17,9 +17,12 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TagModule } from 'primeng/tag';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { AssignServiceComponent } from './assign-service-component/assign-service.component';
 
 @NgModule({
-  declarations: [ManageAccountsComponent],
+  declarations: [ManageAccountsComponent, AssignServiceComponent],
   imports: [
     AccountsRoutingModule,
     CommonModule,
@@ -38,6 +41,8 @@ import { ToolbarModule } from 'primeng/toolbar';
     ToolbarModule,
     DialogModule,
     PaginatorModule,
+    TagModule,
+    DynamicDialogModule
   ],
 })
 export class ManageAccountsModule {}

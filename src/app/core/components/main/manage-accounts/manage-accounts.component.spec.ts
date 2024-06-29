@@ -11,7 +11,6 @@ describe('ManageAccountsComponent', () => {
       declarations: [ManageAccountsComponent]
     })
     .compileComponents();
-    
     fixture = TestBed.createComponent(ManageAccountsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
