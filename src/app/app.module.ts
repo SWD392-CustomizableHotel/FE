@@ -44,11 +44,11 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
-
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
-
+import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
+// import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +57,7 @@ export function tokenGetter(): any {
     ResetPasswordComponent,
     RegisterComponent,
     VerifyEmailComponent,
+    BookingHistoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +87,8 @@ export function tokenGetter(): any {
     PasswordModule,
     BrowserAnimationsModule,
     SocialLoginModule,
-    GoogleSigninButtonModule
+    GoogleSigninButtonModule,
+    ButtonModule,
   ],
   exports: [
     BrowserModule,

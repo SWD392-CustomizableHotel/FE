@@ -58,6 +58,9 @@ export class HomeComponent {
     console.log('Start Date:', startDate);
     console.log('End Date:', endDate);
   }
+  goToBookingHistory() {
+    this.router.navigate(['/booking-history']);
+  }
 
   checkPeopleCount() {
     if (this.NumberOfAdult + this.NumberOfChildren > 8) {

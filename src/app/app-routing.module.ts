@@ -6,6 +6,7 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
 
 const routes: Routes = [
   {
@@ -55,6 +56,21 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'booking-history',
+    component: BookingHistoryComponent,
+    // children: [
+    //   {
+    //     path: '',
+    //     loadChildren: () =>
+    //       import(
+    //         './core/components/booking-history/booking-history.component'
+    //       ).then((m) => m.BookingHistoryComponent),
+    //   },
+    // ]
+  },
+
+
   {
       path: '**',
       redirectTo: 'notfound'
