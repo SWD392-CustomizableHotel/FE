@@ -117,7 +117,7 @@ export class LoginComponent implements OnInit {
       {
         severity: 'error',
         summary: 'Invalid',
-        detail: 'Firstname is required',
+        detail: 'First Name is required',
       },
     ];
     this.lastNameIsRequired = [
@@ -127,7 +127,7 @@ export class LoginComponent implements OnInit {
       {
         severity: 'error',
         summary: 'Invalid',
-        detail: 'Phonenumnber is required',
+        detail: 'Phone Number is required',
       },
     ];
   }
