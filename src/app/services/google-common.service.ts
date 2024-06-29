@@ -44,7 +44,7 @@ export class GoogleCommonService {
   signOutExternal(): void {
     this.externalAuthService.signOut();
     this.setLoggedIn(false);
-    this.setShowAdditionalInfoForm(false);
+    // this.setShowAdditionalInfoForm(false);
     this.clearLocalStorage();
     this.router.navigate(['/login']); 
   }
@@ -59,8 +59,8 @@ export class GoogleCommonService {
     return this.userSocialSubject.value;
   }
 
-  setShowAdditionalInfoForm(show: boolean = false): void {
-    this.showAdditionalInfoForm.next(false);
+  setShowAdditionalInfoForm(show: boolean): void {
+    this.showAdditionalInfoForm.next(show);
   }
 
   externalLogin(route: string, externalAuth: ExternalAuthDto): Observable<any> {
@@ -118,13 +118,6 @@ export class GoogleCommonService {
     this.authStateSubject.next(isAuthenticated);
     this.isLoggedInSubject.next(isAuthenticated);
     this.setShowAdditionalInfoForm(false);
-    if (isAuthenticated) {
-      if (role === 'ADMIN' || role === 'STAFF') {
-        window.location.href = 'http://localhost:4200/dashboard';
-      } else {
-        this.router.navigate(['/']);
-      }
-    }
   }
 
   checkUserRegistrationStatus(idToken: string): Observable<any> {
@@ -132,12 +125,12 @@ export class GoogleCommonService {
     return this.http.get<any>(url).pipe(
       map((res: any) => {
         if (res && res.isSucceed) {
-          this.saveSocialUser(res); // Lưu trữ thông tin người dùng vào localStorage
+          this.saveSocialUser(res); 
           this.setLoggedIn(true);
-          this.setShowAdditionalInfoForm(false); // Ẩn form thông tin bổ sung
-          this.sendAuthStateChangeNotification(true, res.role); // Gửi role để điều hướng
+          this.setShowAdditionalInfoForm(false); 
+          this.sendAuthStateChangeNotification(true, res.role); 
         } else {
-          this.setShowAdditionalInfoForm(true); // Hiển thị form thông tin bổ sung
+          this.setShowAdditionalInfoForm(true); 
         }
         return res;
       }),

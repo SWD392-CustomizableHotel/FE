@@ -163,10 +163,19 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  navigateInRole(role: string): void {
+    if (role === 'ADMIN') {
+      this.router.navigate(['', 'dashboard']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
   logout(): void {
     this.authenticationService.logOut();
     this.googleCommonService.signOutExternal(); 
     this.googleCommonService.setShowAdditionalInfoForm(false);
+    this.isLoggedIn.next(false);
   }
 
   onAdditionalInfoSubmit(): void {
@@ -186,12 +195,12 @@ export class LoginComponent implements OnInit {
         next: (res) => {
           this.isLoggedIn.next(true);
           localStorage.setItem('user', JSON.stringify(res));
+          localStorage.setItem('socialUser', JSON.stringify(res));
           const user = this.googleCommonService.userSocialValue;
           if (user) {
             user.firstName = additionalInfo.firstName;
             user.lastName = additionalInfo.lastName;
             user.phoneNumber = additionalInfo.phoneNumber;
-            localStorage.setItem('socialUser', JSON.stringify(user));
           }
           this.googleCommonService.sendAuthStateChangeNotification(true, res.role);
           this.router.navigate(['/']);
@@ -246,7 +255,8 @@ export class LoginComponent implements OnInit {
         if (res?.isSucceed) {
           localStorage.setItem('socialUser', JSON.stringify(res));
           this.googleCommonService.setLoggedIn(true);
-          this.router.navigate(['/']);
+          const role = res.role;
+          this.navigateInRole(role);
         } else {
           this.showAdditionalInfoForm = true;
         }

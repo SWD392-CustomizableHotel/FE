@@ -13,6 +13,7 @@ import { BehaviorSubject } from 'rxjs';
 export class HeaderSharedComponent {
   menuVisible: boolean = false;
   private isLoggedIn = new BehaviorSubject<boolean>(false);
+  private role = new BehaviorSubject<string>('');
   user?: User | null;
   menuItems: MenuItem[] = [
     { label: 'Home', route: 'home' },
@@ -49,6 +50,19 @@ export class HeaderSharedComponent {
     this.router.navigate([route]);
   }
 
+  getRole(): string {
+    return this.user?.role || '';
+  }
+
+  navigateInRole(route: string): void {
+    const role = this.getRole();
+    if (role === 'ADMIN') {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate([route]);
+    }
+  }
+
   navigateTo(route: string): void {
     if (route === 'view-available-room') {
       this.router.navigate(['/view-available-room'], {
@@ -74,6 +88,7 @@ export class HeaderSharedComponent {
   // }
 
   logout(): void {
+    this.authService.logOut();
     this.googleCommonService.signOutExternal();
     // this.googleCommonService.setShowAdditionalInfoForm(false); 
   }
