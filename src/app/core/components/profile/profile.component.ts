@@ -14,6 +14,7 @@ export class ProfileComponent implements OnInit {
   loading = false;
   editable = false;
   selectedFile: File | null = null;
+  user?: any;
 
   constructor(
     private fb: FormBuilder,
@@ -35,12 +36,14 @@ export class ProfileComponent implements OnInit {
 
   getProfile(): void {
     this.loading = true;
-    const userId = this.authService.getUserId();
-    if (userId) {
-      this.userService.getProfile(userId).subscribe({
+    const email = this.authService.userValue?.email;
+    console.log(`User Email: ${email}`); // Log the user email
+    if (email) {
+      this.userService.getProfile(email).subscribe({
         next: (response: any) => {
           if (response.isSucceed) {
             this.profileForm.patchValue(response.result);
+            this.user = response.result; // Store the user information
           }
           this.loading = false;
         },
@@ -50,7 +53,7 @@ export class ProfileComponent implements OnInit {
         },
       });
     } else {
-      console.error('User ID not found');
+      console.error('User email not found');
       this.loading = false;
     }
   }

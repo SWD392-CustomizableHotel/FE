@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../assets/environments/environment';
 import { User } from '../interfaces/models/user';
@@ -18,21 +18,13 @@ export class UserService {
     );
   }
 
-  updateProfile(profileData: any): Observable<BaseResponse<any>> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-    return this.http.post<BaseResponse<any>>(
-      `${environment.BACKEND_API_URL}/api/User/update-profile`,
-      profileData,
-      { headers }
-    );
+  getProfile(email: string): Observable<BaseResponse<User>> {
+    const url = `${environment.BACKEND_API_URL}/api/Auth/profile/${email}`;
+    return this.http.get<BaseResponse<User>>(url);
   }
 
-  getProfile(userId: string): Observable<any> {
-    return this.http.get<any>(
-      `${environment.BACKEND_API_URL}/api/User/profile/${userId}`
-    );
+  updateProfile(profileData: any): Observable<BaseResponse<any>> {
+    const url = `${environment.BACKEND_API_URL}/api/Auth/update-profile`;
+    return this.http.post<BaseResponse<any>>(url, profileData);
   }
 }

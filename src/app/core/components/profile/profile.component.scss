@@ -1,24 +1,17 @@
-.form-grid {
-    display: flex;
-    justify-content: space-between;
-  
-    .form-group {
-      flex: 1;
-      margin-right: 10px;
-  
-      &:last-child {
-        margin-right: 0;
-      }
-    }
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .button-group {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-  
-    button {
-      margin-left: 10px;
-    }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}

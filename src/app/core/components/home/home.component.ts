@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Room } from '../../../interfaces/models/room';
 import { MessageService } from 'primeng/api';
+import { AuthenticationService } from '../../../services/authentication.service';
 
 @Component({
   selector: 'app-home',
@@ -24,17 +25,24 @@ export class HomeComponent {
   showMore = false;
   formGroup: FormGroup;
   showSliders: boolean = false;
+  isLoggedIn: boolean = true;
 
   cities = [
     { name: 'Ho Chi Minh City' },
     { name: 'Hue City' },
     { name: 'Da Nang City' },
-    { name: 'Ha Noi Capital' }
+    { name: 'Ha Noi Capital' },
   ];
 
-  constructor(public layoutService: LayoutService, public router: Router, private formBuilder: FormBuilder, private messageService: MessageService) {
+  constructor(
+    public layoutService: LayoutService,
+    public router: Router,
+    private formBuilder: FormBuilder,
+    private messageService: MessageService,
+    public authenticationService: AuthenticationService
+  ) {
     this.formGroup = this.formBuilder.group({
-      numberOfPeople: [null]
+      numberOfPeople: [null],
     });
     this.rangeDates = [];
     this.NumberOfAdult = 1;
@@ -64,8 +72,11 @@ export class HomeComponent {
         key: 'peopleCount',
         severity: 'error',
         summary: 'Error',
-        detail: 'Adult + Children must be smaller than 8'
+        detail: 'Adult + Children must be smaller than 8',
       });
     }
+  }
+  logout(): void {
+    this.authenticationService.logOut();
   }
 }

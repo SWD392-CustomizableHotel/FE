@@ -1,40 +1,46 @@
-<div class="profile-container">
-  <h2>My Profile</h2>
+<div class="profile-container p-fluid p-card">
+  <h2 class="p-card-title">My Profile</h2>
 
   <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" formControlName="firstName" class="form-control" />
+    <div class="p-grid">
+      <div class="p-col-12 p-md-6">
+        <div class="p-field">
+          <label for="firstName">First Name</label>
+          <input pInputText type="text" id="firstName" formControlName="firstName" />
+        </div>
       </div>
-      <div class="form-group col-md-6">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" formControlName="lastName" class="form-control" />
+      <div class="p-col-12 p-md-6">
+        <div class="p-field">
+          <label for="lastName">Last Name</label>
+          <input pInputText type="text" id="lastName" formControlName="lastName" />
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="p-field">
       <label for="phoneNumber">Phone Number</label>
-      <input type="text" id="phoneNumber" formControlName="phoneNumber" class="form-control" />
+      <input pInputText type="text" id="phoneNumber" formControlName="phoneNumber" />
     </div>
 
-    <div class="form-group">
+    <div class="p-field">
       <label for="address">Address</label>
-      <input type="text" id="address" formControlName="address" class="form-control" />
+      <input pInputText type="text" id="address" formControlName="address" />
     </div>
 
-    <div class="form-group">
+    <div class="p-field">
       <label for="dob">Date of Birth</label>
-      <input type="date" id="dob" formControlName="dob" class="form-control" />
+      <input pInputText type="date" id="dob" formControlName="dob" />
     </div>
 
-    <div class="form-group" *ngIf="editable">
+    <div class="p-field" *ngIf="editable && user?.role === 'STAFF'">
       <label for="certificate">Certificate</label>
       <input type="file" id="certificate" (change)="onFileSelected($event)" />
     </div>
 
-    <button type="button" class="btn btn-secondary" (click)="enableEditing()" *ngIf="!editable">Edit</button>
-    <button type="submit" class="btn btn-primary" *ngIf="editable">Save</button>
-    <button type="button" class="btn btn-secondary" (click)="disableEditing()" *ngIf="editable">Cancel</button>
+    <div class="p-d-flex p-jc-end p-mt-3">
+      <button pButton type="button" label="Edit" icon="pi pi-pencil" (click)="enableEditing()" *ngIf="!editable" class="p-button-text p-mr-2"> </button>
+      <button pButton type="submit" label="Save" icon="pi pi-check" *ngIf="editable" class="p-button-primary p-mr-2"> </button>
+      <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="disableEditing()" *ngIf="editable" class="p-button-secondary"> </button>
+    </div>
   </form>
 </div>
