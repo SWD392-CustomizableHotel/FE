@@ -97,4 +97,44 @@ export class AuthenticationService {
         })
       );
   }
+
+  updateUserProfile(
+    userId: string,
+    profileData: any
+  ): Observable<BaseResponse<any>> {
+    const url = `${environment.BACKEND_API_URL}/api/Auth/updateProfile`;
+    const updateProfileCommand = {
+      userId,
+      userProfile: profileData,
+    };
+    return this.http.post<BaseResponse<any>>(url, updateProfileCommand);
+  }
+
+  getUserId(): string | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = this.decodeToken(token);
+      return decodedToken?.sub || null; // Assuming 'sub' contains the user ID
+    }
+    return null;
+  }
+
+  private decodeToken(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error('Error decoding token', e);
+      return null;
+    }
+  }
 }
