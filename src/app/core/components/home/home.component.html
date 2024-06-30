@@ -18,7 +18,7 @@
                 <!-- Box 1: Choose Location -->
                 <div class="box">
                     <p-floatLabel>
-                        <p-dropdown id="location" [options]="hotels" optionLabel="address"></p-dropdown>
+                        <p-dropdown id="location" [options]="hotels" optionLabel="address" (ngModelChange)="onLocationChange($event)" [(ngModel)]="location"></p-dropdown>
                         <label for="location">Choose a location:</label>
                     </p-floatLabel>
                 </div>
@@ -41,6 +41,7 @@
                       NumberOfRoom + ' rooms, ' + NumberOfAdult + ' adults, ' + NumberOfChildren + ' children'
                     "
                   />
+
                   <div *ngIf="showSliders" class="slider-container">
                     <div class="slider-title">Number of People</div>
                     <div class="slider-item">
@@ -60,6 +61,7 @@
                       <span>{{ NumberOfChildren }}</span>
                     </div>
                   </div>
+                  
                 </div>
               </div>
         

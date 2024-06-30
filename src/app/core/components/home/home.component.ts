@@ -8,7 +8,7 @@ import { Room } from '../../../interfaces/models/room';
 import { MessageService } from 'primeng/api';
 import { RoomService } from '../../../services/view.room.service';
 import { Hotel } from '../../../interfaces/models/hotels';
-
+import { UserBookingService } from '../../../services/user-booking.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -19,23 +19,18 @@ export class HomeComponent implements OnInit {
   NumberOfRoom: number;
   NumberOfAdult: number;
   NumberOfChildren: number;
+  location?: string;
+  realLocation?:string;
   rooms?: Room[];
   rangeDates: Date[];
-  selectedCity: any;
   value: number = 5;
   showMore = false;
   formGroup: FormGroup;
   showSliders: boolean = false;
   hotels?: Hotel[];
 
-  cities = [
-    { name: 'Ho Chi Minh City' },
-    { name: 'Hue City' },
-    { name: 'Da Nang City' },
-    { name: 'Ha Noi Capital' }
-  ];
-
   constructor(
+    private userDataService: UserBookingService,
     public layoutService: LayoutService,
     public router: Router,
     private formBuilder: FormBuilder,
@@ -89,7 +84,20 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+  onLocationChange(event: any) {
+    this.location = event.address;
+    this.realLocation = this.location;
+  }
+
   toAvailableRoomPage(): void {
+    this.userDataService.getLocation(this.realLocation);
+    this.userDataService.getRangeDates(this.rangeDates);
+    this.userDataService.getPeopleCount({
+      rooms: this.NumberOfRoom,
+      adults: this.NumberOfAdult,
+      children: this.NumberOfChildren
+    });
     this.router.navigate(['/view-available-room']);
   }
+
 }

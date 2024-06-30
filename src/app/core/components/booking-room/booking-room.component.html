@@ -18,9 +18,9 @@
     </p-inputGroup>
     <p-inputGroup>
       <p-inputGroupAddon>
-        <i class="pi pi-phone"></i>
+        <i class="pi pi-user"></i>
       </p-inputGroupAddon>
-      <input pInputText placeholder="PhoneNumber" />
+      <input pInputText placeholder="Email" />
     </p-inputGroup>
   </div>
   <!--Room Information -->
@@ -47,7 +47,13 @@
       <h2>Number Of People: {{ room.numberOfPeople }}</h2>
     </div>
     <div class="card flex justify-content-center">
-      <p-button label="Book Now" />
+      <p-button
+        (click)="toStripePayment(room.roomId)"
+        (keyup.enter)="toStripePayment(room.roomId)"
+        icon="pi pi-shopping-cart"
+        class="flex-auto md:flex-initial white-space-nowrap mt-2"
+        label="Book now"
+      />
     </div>
   </div>
   <!--Room Information -->

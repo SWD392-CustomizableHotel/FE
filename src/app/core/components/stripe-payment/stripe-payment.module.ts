@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { ViewAvailableRoomComponent } from './view-available-room.component';
+import { StripePaymentComponent } from './stripe-payment.component';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -13,7 +13,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { sharedModule } from '../layout/share/shared.module';
 import { RatingModule } from 'primeng/rating';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputTextModule } from 'primeng/inputtext';
@@ -24,7 +24,7 @@ import { SliderModule } from 'primeng/slider';
 import { ToastModule } from 'primeng/toast';
 @NgModule({
     declarations: [
-        ViewAvailableRoomComponent,
+        StripePaymentComponent,
     ],
     imports: [
         CommonModule,
@@ -48,11 +48,12 @@ import { ToastModule } from 'primeng/toast';
         InputTextModule,
         DataViewModule,
         TagModule,
-        ScrollPanelModule
+        ScrollPanelModule,
+        ReactiveFormsModule
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    bootstrap: [ViewAvailableRoomComponent],
+    bootstrap: [StripePaymentComponent],
 })
 
-export class ViewAvailableRoomModule {}
+export class StripePaymentModule {}

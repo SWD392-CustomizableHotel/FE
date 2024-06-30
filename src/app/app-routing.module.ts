@@ -7,6 +7,7 @@ import { ResetPasswordComponent } from './core/components/reset-password/reset-p
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
+import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
 const routes: Routes = [
   {
       path: '',
@@ -65,6 +66,19 @@ const routes: Routes = [
           import(
             './core/components/booking-room/booking-room.module'
           ).then((m) => m.BookingRoomModule),
+      },
+    ],
+  },
+  {
+    path: 'stripe-payment/:id',
+    component: StripePaymentComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/stripe-payment/stripe-payment.module'
+          ).then((m) => m.StripePaymentModule),
       },
     ],
   },

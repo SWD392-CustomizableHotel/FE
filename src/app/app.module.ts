@@ -30,7 +30,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
 import { RouterLink, RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
-import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { DatePipe, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
@@ -40,6 +40,8 @@ import { RegisterComponent } from './core/components/register/register.component
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StripeModule } from 'stripe-angular';
+
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 
 @NgModule({
@@ -72,7 +74,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ToastModule,
     PasswordModule,
     ButtonModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    StripeModule.forRoot('pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'),
   ],
   declarations: [
     AppComponent,
@@ -80,7 +83,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NotfoundComponent,
     ResetPasswordComponent,
     RegisterComponent,
-    VerifyEmailComponent,
+    VerifyEmailComponent
   ],
   exports: [
     PanelModule,
@@ -111,6 +114,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     PasswordModule,
   ],
   providers: [
+    DatePipe,
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     ProductService,
     MessageService,

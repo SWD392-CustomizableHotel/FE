@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/rooms';
 @Component({
@@ -9,11 +9,14 @@ import { Room } from '../../../interfaces/models/rooms';
 })
 export class BookingRoomComponent implements OnInit {
   selectedRoomId?: number;
+  selectedRoom?: Room;
+  rooms?: Room[];
   room?: Room;
 
   constructor(
     private route: ActivatedRoute,
-    private roomService: RoomService
+    private roomService: RoomService,
+    public router : Router
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +28,12 @@ export class BookingRoomComponent implements OnInit {
         this.room = response;
       }
     );
+  }
+
+  toStripePayment(id?: number): void {
+    this.selectedRoomId = id;
+    this.selectedRoom = this.rooms?.find((room) => room.roomId === id);
+    this.router.navigate(['/stripe-payment', id]);
   }
 }
 
