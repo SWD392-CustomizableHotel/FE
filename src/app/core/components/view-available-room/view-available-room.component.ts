@@ -41,7 +41,7 @@ export class ViewAvailableRoomComponent implements OnInit {
     public router: Router,
     private messageService: MessageService,
     private roomService: RoomService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
   ) {
     this.NumberOfAdult = 1;
     this.NumberOfChildren = 0;
