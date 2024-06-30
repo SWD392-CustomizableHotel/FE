@@ -17,8 +17,13 @@
             </li>
         </ul>
         <div class="topbar-actions">
-            <button pButton pRipple label="Login" class="p-button-text p-button-rounded border-none font-light line-height-2 text-blue-500" [routerLink]="'/login'"></button>
-            <button pButton pRipple label="Register" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-blue-500 text-white" [routerLink]="'/register'"></button>
+            <ng-container *ngIf="!getIsLoggedIn()">
+                <button pButton pRipple label="Login" class="p-button-text p-button-rounded border-none font-light line-height-2 text-blue-500" [routerLink]="'/login'"></button>
+                <button pButton pRipple label="Register" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-blue-500 text-white" [routerLink]="'/register'"></button>
+            </ng-container>
+            <ng-container *ngIf="getIsLoggedIn()">
+                <button pButton pRipple label="Logout" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-red-500 text-white" (click)="logout()"></button>
+            </ng-container>
         </div>
     </div>
 </div>
