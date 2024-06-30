@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@angular/core';
 import {
   GoogleLoginProvider,
@@ -120,6 +121,7 @@ export class GoogleCommonService {
       ...additionalInfo,
       UserName: socialUser.email,
     };
+
     return this.http.post<any>(url, body, { headers }).pipe(
       tap((res) => {
         this.setLoggedIn(true);
