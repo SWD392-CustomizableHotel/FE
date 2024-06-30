@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { RoomService } from '../../../services/view.room.service';
 import { Hotel } from '../../../interfaces/models/hotels';
 import { UserBookingService } from '../../../services/user-booking.service';
+import { AuthenticationService } from '../../../services/authentication.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -28,14 +29,16 @@ export class HomeComponent implements OnInit {
   formGroup: FormGroup;
   showSliders: boolean = false;
   hotels?: Hotel[];
+  isLoggedIn: boolean = true;
 
-  constructor(
-    private userDataService: UserBookingService,
-    public layoutService: LayoutService,
-    public router: Router,
-    private formBuilder: FormBuilder,
-    private messageService: MessageService,
-    private roomService: RoomService) {
+  cities = [
+    { name: 'Ho Chi Minh City' },
+    { name: 'Hue City' },
+    { name: 'Da Nang City' },
+    { name: 'Ha Noi Capital' }
+  ];
+
+  constructor(public layoutService: LayoutService, public router: Router, private formBuilder: FormBuilder, private messageService: MessageService, public authenticationService: AuthenticationService, private userDataService: UserBookingService, private roomService: RoomService) {
     this.formGroup = this.formBuilder.group({
       numberOfPeople: [null]
     });
@@ -99,5 +102,7 @@ export class HomeComponent implements OnInit {
     });
     this.router.navigate(['/view-available-room']);
   }
-
+  logout(): void {
+    this.authenticationService.logOut();
+  }
 }
