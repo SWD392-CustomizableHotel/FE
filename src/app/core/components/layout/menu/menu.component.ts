@@ -20,6 +20,12 @@ export class MenuComponent implements OnInit {
                         items: [
                             {label: 'All Rooms', icon: 'pi pi-fw pi-home', routerLink : ['/dashboard/rooms/all-rooms']},
                         ]
+                    },
+                    {
+                        label: 'Amenities', icon: 'pi pi-cog',
+                        items: [
+                            { label: 'Manage Amenities', icon: 'pi pi-fw pi-cog', routerLink: ['/dashboard/manage-amenities'] },
+                        ]
                     }
                 ]
             },
