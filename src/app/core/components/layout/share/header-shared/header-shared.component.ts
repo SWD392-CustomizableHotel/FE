@@ -17,10 +17,8 @@ export class HeaderSharedComponent {
   user?: User | null;
   menuItems: MenuItem[] = [
     { label: 'Home', route: 'home' },
-    { label: 'Features', route: 'features' },
-    { label: 'Highlights', route: 'highlights' },
-    { label: 'Pricing', route: 'pricing' },
     { label: 'View Available Room', route: 'view-available-room' },
+    { label: 'Customizing Room', route: 'customizing-room' }
   ];
 
   constructor(
@@ -90,6 +88,6 @@ export class HeaderSharedComponent {
   logout(): void {
     this.authService.logOut();
     this.googleCommonService.signOutExternal();
-    // this.googleCommonService.setShowAdditionalInfoForm(false); 
+    // this.googleCommonService.setShowAdditionalInfoForm(false);
   }
 }
