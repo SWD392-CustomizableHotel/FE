@@ -12,7 +12,7 @@
         [loading]="loading"
         [rowHover]="true"
         styleClass="p-datatable-gridlines"
-        [globalFilterFields]="['name', 'description']"
+        [globalFilterFields]="['amenityStatus.status', 'name', 'description']"
         responsiveLayout="scroll"
       >
         <ng-template pTemplate="caption">
@@ -47,7 +47,6 @@
             </span>
           </div>
         </ng-template>
-
         <ng-template pTemplate="header">
           <tr>
             <th style="min-width: 12rem" pSortableColumn="name">
@@ -86,6 +85,33 @@
                 ></p-columnFilter>
               </div>
             </th>
+            <th style="min-width: 12rem" pSortableColumn="amenityStatus.status">
+              <div class="flex justify-content-between align-items-center">
+                Status
+                <p-sortIcon field="amenityStatus"></p-sortIcon>
+                <p-columnFilter
+                  field="amenityStatus.status"
+                  matchMode="equals"
+                  display="menu"
+                >
+                  <ng-template
+                    pTemplate="filter"
+                    let-value
+                    let-filter="filterCallback"
+                  >
+                    <p-dropdown
+                      [(ngModel)]="amenity.status"
+                      [options]="amenityStatusOptions"
+                      optionLabel="status"
+                      (onChange)="filter($event.value.status)"
+                      placeholder="Any"
+                      [style]="{ 'min-width': '12rem' }"
+                    >
+                    </p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
+              </div>
+            </th>
             <th style="min-width: 10rem" pSortableColumn="capacity">
               <div class="flex justify-content-between align-items-center">
                 Capacity
@@ -97,25 +123,44 @@
                 ></p-columnFilter>
               </div>
             </th>
+            <th style="min-width: 10rem" pSortableColumn="inUse">
+              <div class="flex justify-content-between align-items-center">
+                In Use
+                <p-sortIcon field="inUse"></p-sortIcon>
+                <p-columnFilter
+                  type="numeric"
+                  field="inUse"
+                  display="menu"
+                ></p-columnFilter>
+              </div>
+            </th>
             <th></th>
           </tr>
         </ng-template>
-
         <ng-template pTemplate="body" let-amenity>
           <tr>
             <td>{{ amenity.name }}</td>
             <td>{{ amenity.price | currency }}</td>
             <td>{{ amenity.description }}</td>
+            <td>
+              <div class="hidden">
+                {{ amenity.amenityStatus.status }}
+              </div>
+              <p-dropdown
+                id="amenityStatus"
+                [options]="amenityStatusOptions"
+                [showClear]="true"
+                [(ngModel)]="amenity.status"
+                optionLabel="status"
+                [style]="{ width: '100%' }"
+                (onChange)="updateAmenityStatus(amenity, $event.value)"
+              >
+              </p-dropdown>
+            </td>
             <td>{{ amenity.capacity }}</td>
+            <td>{{ amenity.inUse }}</td>
             <td>
               <div class="flex">
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-eye"
-                  class="p-button-rounded p-button-info mr-2"
-                  (click)="viewAmenityDetails(amenity)"
-                ></button>
                 <button
                   pButton
                   pRipple
@@ -171,133 +216,10 @@
       </div>
     </div>
 
-    <!-- View Amenity Dialog -->
-    <p-dialog
-      [(visible)]="amenityDetailsDialog"
-      [style]="{ width: '700px' }"
-      header="Amenity Details"
-      [modal]="true"
-      class="p-fluid"
-      (onHide)="hideAmenityDetailsDialog()"
-    >
-      <ng-template pTemplate="content">
-        <div class="formgrid grid flex justify-content space-between">
-          <div style="flex: 1; margin-right: 40px">
-            <div class="field">
-              <label for="name">Name</label>
-              <input
-                type="text"
-                pInputText
-                id="name"
-                [value]="selectedAmenityDetails?.name || ''"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="price">Price</label>
-              <input
-                type="number"
-                pInputText
-                id="price"
-                [value]="selectedAmenityDetails?.price || 0"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="capacity">Capacity</label>
-              <input
-                type="number"
-                pInputText
-                id="capacity"
-                [value]="selectedAmenityDetails?.capacity || 0"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="inUse">InUse</label>
-              <input
-                type="number"
-                pInputText
-                id="inUse"
-                [value]="selectedAmenityDetails?.inUse || 0"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="description">Description</label>
-              <textarea
-                pInputTextarea
-                id="description"
-                [value]="selectedAmenityDetails?.description || ''"
-                rows="3"
-                style="
-                  width: 100%;
-                  border-radius: 4px;
-                  border: 1px solid #ced4da;
-                  padding: 0.375rem 0.75rem;
-                "
-                disabled
-              ></textarea>
-            </div>
-          </div>
-          <div style="flex: 1; margin-left: 40px">
-            <div class="field">
-              <label for="status">Status</label>
-              <input
-                type="text"
-                pInputText
-                id="status"
-                [value]="selectedAmenityDetails?.status || ''"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="createdBy">Created By</label>
-              <input
-                type="text"
-                pInputText
-                id="createdBy"
-                [value]="selectedAmenityDetails?.createdBy || ''"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="createdDate">Created Date</label>
-              <input
-                type="text"
-                pInputText
-                id="createdDate"
-                [value]="selectedAmenityDetails?.createdDate | date : 'short'"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label for="lastUpdatedBy">Last Updated By</label>
-              <input
-                type="text"
-                pInputText
-                id="lastUpdatedBy"
-                [value]="selectedAmenityDetails?.lastUpdatedBy || ''"
-                disabled
-              />
-            </div>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="footer">
-        <p-button
-          label="Close"
-          icon="pi pi-times"
-          (onClick)="hideAmenityDetailsDialog()"
-        ></p-button>
-      </ng-template>
-    </p-dialog>
-
-    <!-- Edit Amenity Dialog -->
     <p-dialog
       [(visible)]="amenityDialog"
-      [style]="{ width: '700px' }"
-      header="Edit Amenity Details"
+      [style]="{ width: '450px' }"
+      header="Amenity Details"
       [modal]="true"
       class="p-fluid"
     >
@@ -341,6 +263,24 @@
               >
             </div>
             <div class="field">
+              <label for="description">Description</label>
+              <input
+                type="string"
+                pInputText
+                id="description"
+                [(ngModel)]="amenity.description"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.description
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.description"
+                >Description is required.</small
+              >
+            </div>
+            <div class="field">
               <label for="capacity">Capacity</label>
               <input
                 type="number"
@@ -359,7 +299,7 @@
               >
             </div>
             <div class="field">
-              <label for="inUse">InUse</label>
+              <label for="inUse">In Use</label>
               <input
                 type="number"
                 pInputText
@@ -373,53 +313,7 @@
               <small
                 class="ng-dirty ng-invalid"
                 *ngIf="submitted && !amenity.inUse"
-                >InUse is required.</small
-              >
-            </div>
-          </div>
-          <div style="flex: 1; margin-left: 40px">
-            <div class="field">
-              <label for="description">Description</label>
-              <textarea
-                pInputTextarea
-                id="description"
-                [(ngModel)]="amenity.description"
-                required
-                rows="5"
-                style="
-                  width: 100%;
-                  border-radius: 4px;
-                  border: 1px solid #ced4da;
-                  padding: 0.375rem 0.75rem;
-                "
-                [ngClass]="{
-                  'ng-invalid ng-dirty': submitted && !amenity.description
-                }"
-              ></textarea>
-              <small
-                class="ng-dirty ng-invalid"
-                *ngIf="submitted && !amenity.description"
-                >Description is required.</small
-              >
-            </div>
-            <div class="field">
-              <label for="status">Status</label>
-              <p-dropdown
-                id="status"
-                [(ngModel)]="amenity.status"
-                [options]="amenityStatusOptions"
-                [(ngModel)]="selectedAmenityStatus"
-                optionLabel="status"
-                (onChange)="updateAmenityStatus(amenity, amenity.status)"
-                required
-                [ngClass]="{
-                  'ng-invalid ng-dirty': submitted && !amenity.status
-                }"
-              ></p-dropdown>
-              <small
-                class="ng-dirty ng-invalid"
-                *ngIf="submitted && !amenity.status"
-                >Status is required.</small
+                >In Use is required.</small
               >
             </div>
           </div>
@@ -441,7 +335,6 @@
       </ng-template>
     </p-dialog>
 
-    <!-- Delete Amenity Dialog -->
     <p-dialog
       [(visible)]="deleteAmenityDialog"
       header="Confirm"
@@ -470,7 +363,6 @@
       </ng-template>
     </p-dialog>
 
-    <!-- Create Amenity Dialog -->
     <p-dialog
       [(visible)]="createAmenityDialog"
       [style]="{ width: '700px' }"
@@ -520,6 +412,24 @@
               >
             </div>
             <div class="field">
+              <label for="description">Description</label>
+              <input
+                type="string"
+                pInputText
+                id="description"
+                [(ngModel)]="amenity.description"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.description
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.description"
+                >Description is required.</small
+              >
+            </div>
+            <div class="field">
               <label for="capacity">Capacity</label>
               <input
                 type="number"
@@ -540,7 +450,7 @@
               >
             </div>
             <div class="field">
-              <label for="inUse">InUse</label>
+              <label for="inUse">In Use</label>
               <input
                 type="number"
                 pInputText
@@ -556,35 +466,11 @@
               <small
                 class="ng-dirty ng-invalid"
                 *ngIf="submitted && (!amenity.inUse || amenity.inUse < 0)"
-                >InUse cannot be negative.</small
+                >In Use cannot be negative.</small
               >
             </div>
           </div>
           <div style="flex: 1; margin-left: 40px">
-            <div class="field">
-              <label for="description">Description</label>
-              <textarea
-                pInputTextarea
-                id="description"
-                [(ngModel)]="amenity.description"
-                required
-                rows="5"
-                style="
-                  width: 100%;
-                  border-radius: 4px;
-                  border: 1px solid #ced4da;
-                  padding: 0.375rem 0.75rem;
-                "
-                [ngClass]="{
-                  'ng-invalid ng-dirty': submitted && !amenity.description
-                }"
-              ></textarea>
-              <small
-                class="ng-dirty ng-invalid"
-                *ngIf="submitted && !amenity.description"
-                >Description is required.</small
-              >
-            </div>
             <div class="field">
               <label for="amenityStatus">Status</label>
               <p-dropdown
