@@ -89,6 +89,7 @@ import { BookingHistoryComponent } from './core/components/booking-history/booki
     SocialLoginModule,
     GoogleSigninButtonModule,
     ButtonModule,
+    ButtonModule
   ],
   exports: [
     BrowserModule,
