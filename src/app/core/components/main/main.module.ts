@@ -7,6 +7,8 @@ import { MainRoutingModule } from './main-routing.module';
         CommonModule,
         MainRoutingModule
     ],
+    declarations: [
+    ],
 })
 
 export class MainModule {}

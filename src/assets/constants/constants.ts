@@ -4,5 +4,8 @@ export const Auth = {
     LOGIN: 'login',
     USER: 'users',
     FORGOT_PASSWORD: 'forgot-password',
-    RESET_PASSWORD: 'reset-password'
+    RESET_PASSWORD: 'reset-password',
+    CHECK_USER_REGISTRATION_STATUS: 'CheckUserRegistrationStatus',
+    REGISTER_ADDITIONAL_INFO: 'RegisterAdditionalInfo',
+    EXTERNAL_LOGIN: 'ExternalLogin',
 };

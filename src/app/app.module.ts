@@ -128,10 +128,10 @@ export function tokenGetter(): any {
       useValue: {
         autoLogin: false,
         providers: [
-          // {
-          //   id: GoogleLoginProvider.PROVIDER_ID,
-          //   provider: new GoogleLoginProvider(environment.googleClientId, {}),
-          // },
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environment.googleClientId, {}),
+          },
         ],
         onError: (err) => {
           console.error(err);
