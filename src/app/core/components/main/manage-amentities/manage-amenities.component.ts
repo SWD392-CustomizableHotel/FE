@@ -29,6 +29,8 @@ export class ManageAmenitiesComponent implements OnInit {
   amenityDialog: boolean = false;
   createAmenityDialog: boolean = false;
   deleteAmenityDialog: boolean = false;
+  amenityDetailsDialog: boolean = false;
+  selectedAmenityDetails: Amenity | null = null;
   submitted: boolean = false;
   loading: boolean = true;
   amenities: Amenity[] = [];
@@ -46,7 +48,7 @@ export class ManageAmenitiesComponent implements OnInit {
   amenityStatusOptions = [
     { status: 'Normal' },
     { status: 'Old' },
-    { status: 'OutOfStock' },
+    { status: 'Out Of Stock' },
     { status: 'Broken' },
     { status: 'Repairing' },
   ];
@@ -69,10 +71,8 @@ export class ManageAmenitiesComponent implements OnInit {
       { field: 'id', header: 'Amenity ID' },
       { field: 'name', header: 'Name' },
       { field: 'price', header: 'Price' },
-      { field: 'status', header: 'Status' },
       { field: 'hotelId', header: 'Hotel' },
       { field: 'capacity', header: 'Capacity' },
-      { field: 'inUse', header: 'In Use' },
     ];
     this.loadHotels();
   }
@@ -88,14 +88,16 @@ export class ManageAmenitiesComponent implements OnInit {
       .getAllAmenities(pageNumber, pageSize, amenityStatus, searchTerm)
       .subscribe({
         next: (data) => {
-          this.amenities = data.data.map((amenity: Amenity) => {
-            return {
-              ...amenity,
-              amenityStatus: this.amenityStatusOptions.find(
-                (option) => option.status === amenity.status
-              ),
-            };
-          });
+          this.amenities = data.data
+            .map((amenity: Amenity) => {
+              return {
+                ...amenity,
+                amenityStatus: this.amenityStatusOptions.find(
+                  (option) => option.status === amenity.status
+                ),
+              };
+            })
+            .sort((a: { id: number }, b: { id: number }) => b.id - a.id);
           this.loading = false;
           this.totalRecords = data.totalRecords;
           this.totalPages = data.totalPages;
@@ -124,7 +126,9 @@ export class ManageAmenitiesComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   editAmenity(amenity: Amenity) {
     this.amenity = { ...amenity };
-    // this.selectedAmenityStatus = this.amenityStatusOptions.find(option => option.status === amenity.status);
+    this.selectedAmenityStatus = this.amenityStatusOptions.find(
+      (option) => option.status === amenity.status
+    );
     this.isEdit = true;
     this.amenityDialog = true;
   }
@@ -138,8 +142,39 @@ export class ManageAmenitiesComponent implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   deleteAmenity(amenity: Amenity) {
+    if ((amenity.inUse ?? 0) > 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Cannot delete an amenity while it is InUse.',
+        life: 3000,
+      });
+      return;
+    }
     this.deleteAmenityDialog = true;
     this.amenity = { ...amenity };
+  }
+
+  viewAmenityDetails(amenity: Amenity): void {
+    const amenityId = amenity.id;
+    if (amenityId !== undefined) {
+      this.amenityService.getAmenityDetails(amenityId).subscribe({
+        next: (response) => {
+          this.selectedAmenityDetails = response.data;
+          this.amenityDetailsDialog = true;
+        },
+        error: (error) => {
+          console.error('Error fetching amenity details:', error);
+        },
+      });
+    } else {
+      console.error('Amenity ID is undefined.');
+    }
+  }
+
+  hideAmenityDetailsDialog(): void {
+    this.amenityDetailsDialog = false;
+    this.selectedAmenityDetails = null;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -231,11 +266,19 @@ export class ManageAmenitiesComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'In Use cannot be negative or undefined.',
+        detail: 'InUse cannot be negative or undefined.',
+        life: 3000,
+      });
+    } else if (this.amenity.inUse > this.amenity.capacity) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'InUse cannot be greater than Capacity.',
         life: 3000,
       });
     } else {
       if (this.amenity.id !== undefined) {
+        // Update existing amenity
         this.amenityService
           .updateAmenity(
             this.amenity.id,
@@ -260,6 +303,7 @@ export class ManageAmenitiesComponent implements OnInit {
             );
           });
       } else {
+        // Create new amenity
         this.amenity.status = this.selectedAmenityStatus?.status || 'Normal';
         if (
           this.amenity.name &&
@@ -282,13 +326,14 @@ export class ManageAmenitiesComponent implements OnInit {
               this.amenity.inUse || 0
             )
             .subscribe(
-              () => {
+              (newAmenity) => {
                 this.messageService.add({
                   severity: 'success',
                   summary: 'Successful',
                   detail: 'Amenity Created',
                   life: 3000,
                 });
+                this.amenities.unshift(newAmenity.data);
                 this.loadAmenities(
                   this.first / this.rows + 1,
                   this.rows,
@@ -320,14 +365,7 @@ export class ManageAmenitiesComponent implements OnInit {
     if (amenity.id !== undefined) {
       this.amenityService
         .updateAmenityStatus(amenity.id, statusString)
-        .subscribe(() => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Amenity Status Updated',
-            life: 3000,
-          });
-        });
+        .subscribe();
     } else {
       console.error('Amenity ID is undefined');
     }
