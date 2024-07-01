@@ -44,7 +44,6 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
-import { CustomizingRoomComponent } from './core/components/customizing-room/customizing-room.component';
 
 export function tokenGetter(): any {
   return localStorage.getItem('token');
@@ -58,7 +57,6 @@ export function tokenGetter(): any {
     ResetPasswordComponent,
     RegisterComponent,
     VerifyEmailComponent,
-    CustomizingRoomComponent,
   ],
   imports: [
     BrowserModule,

@@ -66,7 +66,12 @@ export class HeaderSharedComponent {
       this.router.navigate(['/view-available-room'], {
         fragment: 'view-available-room',
       });
-    } else {
+    } else if (route === 'customizing-room') {
+      this.router.navigate(['/customizing-room'], {
+        fragment: 'customizing-room',
+      });
+    }
+    else {
       this.router.navigate(['/landing'], { fragment: route });
     }
   }

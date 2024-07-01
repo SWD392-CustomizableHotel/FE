@@ -1,1 +1,16 @@
-<p>customizing-room works!</p>
+<div style="height: 100px;"></div>
+<app-header-shared></app-header-shared>
+<p-toolbar>
+    <div class="p-toolbar-group-start">
+        <p-button (click)="selectFurniture('table')" class="mr-2">Table</p-button>
+        <p-button (click)="selectFurniture('beds')" class="mr-2">Bed</p-button>
+        <p-button (click)="selectFurniture('closet')" class="mr-2">Closet</p-button>
+        <p-button (click)="selectFurniture('chair')">Chair</p-button>
+      </div>
+  <div class="p-toolbar-group-center">
+    <p-button (click)="onRotateButtonClick($event, 15)" class="mr-2">Rotate +15°</p-button>
+    <p-button (click)="onRotateButtonClick($event, -15)" class="mr-2">Rotate -15°</p-button>
+  </div>
+</p-toolbar>
+<canvas #canvas width="800" height="600" (mousedown)="onMouseDown($event)"></canvas>
+<app-footer-shared></app-footer-shared>

@@ -6,37 +6,45 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { CustomizingRoomComponent } from './core/components/customizing-room/customizing-room.component';
 
 const routes: Routes = [
   {
-      path: '',
-      loadChildren: () => import('./core/components/home/home.module').then(m => m.HomeModule)
+    path: '',
+    loadChildren: () =>
+      import('./core/components/home/home.module').then((m) => m.HomeModule),
   },
   {
-      path: 'dashboard',
-      component: LayoutComponent,
-      children: [
-          {
-              path: '',
-              loadChildren: () => import('./core/components/dashboard/dashboard.module').then(m => m.DashboardModule)
-          },
-          {
-              path: '',
-              loadChildren: () => import('./core/components/main/main.module').then(m => m.MainModule)
-          }
-      ],
+    path: 'dashboard',
+    component: LayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
+      },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/main/main.module').then(
+            (m) => m.MainModule
+          ),
+      },
+    ],
   },
   {
-      path: 'login',
-      component: LoginComponent
+    path: 'login',
+    component: LoginComponent,
   },
   {
-      path: 'notfound',
-      component: NotfoundComponent
+    path: 'notfound',
+    component: NotfoundComponent,
   },
   {
-      path: 'reset-password',
-      component: ResetPasswordComponent
+    path: 'reset-password',
+    component: ResetPasswordComponent,
   },
   {
     path: 'verify-email',
@@ -56,8 +64,21 @@ const routes: Routes = [
     ],
   },
   {
-      path: '**',
-      redirectTo: 'notfound'
+    path: 'customizing-room',
+    component: CustomizingRoomComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/customizing-room/customizing-room.module'
+          ).then((m) => m.CustomizingRoomModule),
+      },
+    ],
+  },
+  {
+    path: '**',
+    redirectTo: 'notfound',
   },
 
   // { path: '', component: HomeComponent },
