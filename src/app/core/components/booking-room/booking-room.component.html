@@ -1,11 +1,7 @@
 <app-header-shared></app-header-shared>
 
-<div class="room-container surface-100 my-6 pt-2">
-  <p-floatLabel>
-    <p-calendar id="dateRange" [(ngModel)]="formattedRangeDates" selectionMode="range" [readonlyInput]="true"></p-calendar>
-    <label for="dateRange">Checkin -> CheckOut</label>
-</p-floatLabel>
-  <!--Room Information -->
+<div class="room-container surface-100 my-6 pt-2">  
+  <!--Guest Information -->
   <h2 class="text-center my-6 font-bold">Guest Information</h2>
   <div class="card flex flex-column md:flex-row gap-3">
     <p-inputGroup>
@@ -27,8 +23,8 @@
       <input pInputText placeholder="Email" />
     </p-inputGroup>
   </div>
-  <!--Room Information -->
-
+  <!--Guest Information -->
+  
   <!--Room Information -->
   <h2 class="text-center my-6 font-bold">Room Information</h2>
   <div *ngIf="room" class="room-details">

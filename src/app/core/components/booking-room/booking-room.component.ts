@@ -26,11 +26,11 @@ export class BookingRoomComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     const idParam = this.route.snapshot.paramMap.get('id');
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
     this.roomService.getRoomDetails(this.selectedRoomId).subscribe(
       (response: Room) => {
-        console.log(response);
         this.room = response;
       }
     );

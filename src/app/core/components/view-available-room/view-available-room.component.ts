@@ -49,8 +49,6 @@ export class ViewAvailableRoomComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.NumberOfAdult);
-
     this.sortType = ['Price Low To High', 'Price High To Low'];
     this.roomService.getAvailableRoom().subscribe((response: Room[]) => {
       this.rooms = response;
@@ -63,6 +61,8 @@ export class ViewAvailableRoomComponent implements OnInit {
 
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
+      console.log(rangeDates[0]);
+      console.log(rangeDates[1]);
       if (rangeDates && rangeDates.length === 2) {
         const start =
           this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';

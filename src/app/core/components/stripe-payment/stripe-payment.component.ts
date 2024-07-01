@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/rooms';
 import { environment } from '../../../../assets/environments/environment';
+import { UserBookingService } from '../../../services/user-booking.service';
 @Component({
   selector: 'app-payment',
   templateUrl: './stripe-payment.component.html',
@@ -22,12 +23,14 @@ export class StripePaymentComponent implements OnInit {
   amount?: number;
   selectedRoomId?: number;
   room?: Room;
+  rangeDates?: Date[];
 
   constructor(private http: HttpClient,
     private fb: FormBuilder,
     private paymentService: StripePaymentService,
     private route: ActivatedRoute,
-    private roomService: RoomService) {
+    private roomService: RoomService,
+    private userBookingData: UserBookingService) {
     // this.paymentService = new StripePaymentService(new HttpClient();
     this.paymentForm = this.fb.group({
       name: [''],
@@ -43,6 +46,11 @@ export class StripePaymentComponent implements OnInit {
         this.room = response;
       }
     );
+
+    this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
+      this.rangeDates = rangeDates;
+      console.log(this.rangeDates);
+    });
     // Initialize Stripe
     this.stripe = await loadStripe('pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI');
     try {
