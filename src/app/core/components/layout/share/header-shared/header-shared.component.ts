@@ -70,8 +70,7 @@ export class HeaderSharedComponent {
       this.router.navigate(['/customizing-room'], {
         fragment: 'customizing-room',
       });
-    }
-    else {
+    } else {
       this.router.navigate(['/landing'], { fragment: route });
     }
   }
