@@ -1,16 +1,52 @@
-<div style="height: 100px;"></div>
+<p-toast
+  key="1"
+></p-toast>
+<div style="height: 100px"></div>
 <app-header-shared></app-header-shared>
 <p-toolbar>
-    <div class="p-toolbar-group-start">
-        <p-button (click)="selectFurniture('table')" class="mr-2">Table</p-button>
-        <p-button (click)="selectFurniture('beds')" class="mr-2">Bed</p-button>
-        <p-button (click)="selectFurniture('closet')" class="mr-2">Closet</p-button>
-        <p-button (click)="selectFurniture('chair')">Chair</p-button>
-      </div>
+  <div class="p-toolbar-group-start">
+    <p-button
+      (click)="selectFurniture('chair')"
+      [disabled]="!canAddFurniture('chair')"
+      class="mr-2"
+      >Chair ({{ getFurnitureCount("chair") }}/{{ limits.chair }})</p-button
+    >
+    <p-button
+      (click)="selectFurniture('beds')"
+      [disabled]="!canAddFurniture('beds')"
+      class="mr-2"
+      >Bed ({{ getFurnitureCount("beds") }}/{{ limits.beds }})</p-button
+    >
+    <p-button
+      (click)="selectFurniture('closet')"
+      [disabled]="!canAddFurniture('closet')"
+      class="mr-2"
+      >Closet ({{ getFurnitureCount("closet") }}/{{ limits.closet }})</p-button
+    >
+    <p-button
+      (click)="selectFurniture('table')"
+      [disabled]="!canAddFurniture('table')"
+      >Table ({{ getFurnitureCount("table") }}/{{ limits.table }})</p-button
+    >
+  </div>
   <div class="p-toolbar-group-center">
-    <p-button (click)="onRotateButtonClick($event, 15)" class="mr-2">Rotate +15°</p-button>
-    <p-button (click)="onRotateButtonClick($event, -15)" class="mr-2">Rotate -15°</p-button>
+    <p-button (click)="undo()" class="mr-2">Undo</p-button>
+    <p-button (click)="redo()">Redo</p-button>
   </div>
 </p-toolbar>
-<canvas #canvas width="800" height="600" (mousedown)="onMouseDown($event)"></canvas>
+<div class="flex flex-wrap align-items-center justify-content-center">
+  <div
+    class="zoomin animation-duration-500 flex align-items-center justify-content-center"
+  >
+    <canvas
+      #canvas
+      width="800"
+      height="600"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      class="grid"
+    ></canvas>
+  </div>
+</div>
 <app-footer-shared></app-footer-shared>

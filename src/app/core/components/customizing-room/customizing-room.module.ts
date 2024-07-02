@@ -21,6 +21,7 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { TagModule } from 'primeng/tag';
 import { sharedModule } from '../layout/share/shared.module';
 import { ToolbarModule } from 'primeng/toolbar';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   declarations: [CustomizingRoomComponent],
@@ -46,6 +47,7 @@ import { ToolbarModule } from 'primeng/toolbar';
     TagModule,
     ScrollPanelModule,
     ToolbarModule,
+    ToastModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
