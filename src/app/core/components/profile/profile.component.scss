@@ -1,8 +1,22 @@
 .profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-  animation: fadeIn 0.5s ease-in-out;
+  display: flex;
+  align-items: flex-start;
+}
+
+.profile-left {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.profile-left .user-info {
+  text-align: center;
+}
+
+.profile-right {
+  width: 75%;
 }
 
 @keyframes fadeIn {

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../../../services/user.service';
 import { MessageService } from 'primeng/api';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { User } from '../../../interfaces/models/user';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -14,53 +15,92 @@ export class ProfileComponent implements OnInit {
   loading = false;
   editable = false;
   selectedFile: File | null = null;
-  user?: any;
+  user?: User | null;
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private messageService: MessageService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    this.profileForm = this.fb.group({
-      firstName: [{ value: '', disabled: true }, Validators.required],
-      lastName: [{ value: '', disabled: true }, Validators.required],
-      phoneNumber: [{ value: '', disabled: true }, Validators.required],
-      address: [{ value: '', disabled: true }, Validators.required],
-      dob: [{ value: '', disabled: true }, Validators.required],
-    });
-    this.getProfile();
+    this.user = this.authService.userValue;
+    this.initializeForm();
+    this.loadProfile();
   }
 
-  getProfile(): void {
-    this.loading = true;
-    const email = this.authService.userValue?.email;
-    console.log(`User Email: ${email}`); // Log the user email
-    if (email) {
-      this.userService.getProfile(email).subscribe({
+  initializeForm(): void {
+    this.profileForm = this.fb.group({
+      firstName: [
+        { value: this.user?.firstName || '', disabled: true },
+        Validators.required,
+      ],
+      lastName: [
+        { value: this.user?.lastName || '', disabled: true },
+        Validators.required,
+      ],
+      phoneNumber: [
+        { value: this.user?.phoneNumber || '', disabled: true },
+        Validators.required,
+      ],
+      address: [
+        { value: this.user?.address || '', disabled: true },
+        Validators.required,
+      ],
+      dob: [
+        { value: this.formatDate(this.user?.dob) || '', disabled: true },
+        Validators.required,
+      ],
+      email: [
+        { value: this.user?.email || '', disabled: true },
+        Validators.required,
+      ],
+    });
+  }
+
+  formatDate(date: Date | undefined): string {
+    if (!date) return '';
+    const d = new Date(date);
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${year}-${month}-${day}`;
+  }
+
+  loadProfile(): void {
+    if (this.user?.email) {
+      this.userService.getProfile(this.user.email).subscribe({
         next: (response: any) => {
           if (response.isSucceed) {
             this.profileForm.patchValue(response.result);
-            this.user = response.result; // Store the user information
           }
-          this.loading = false;
         },
         error: (err: any) => {
           console.error('Error fetching profile', err);
-          this.loading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Error fetching profile: ' +
+              (err.error?.message || 'Unknown error'),
+          });
         },
       });
     } else {
       console.error('User email not found');
-      this.loading = false;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'User email not found',
+      });
     }
   }
 
   enableEditing(): void {
     this.editable = true;
     this.profileForm.enable();
+    this.profileForm.controls['email'].disable();
   }
 
   disableEditing(): void {
@@ -69,9 +109,17 @@ export class ProfileComponent implements OnInit {
   }
 
   onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
+    this.selectedFile = event.files[0];
+  }
+
+  onUpload(event: any): void {
+    if (this.selectedFile) {
+      // Handle the file upload here
+      this.messageService.add({
+        severity: 'info',
+        summary: 'File Uploaded',
+        detail: this.selectedFile.name,
+      });
     }
   }
 

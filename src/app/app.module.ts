@@ -47,6 +47,7 @@ import { RegisterComponent } from './core/components/register/register.component
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { ProfileComponent } from './core/components/profile/profile.component';
+import { FileUploadModule } from 'primeng/fileupload';
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 
 import { AuthenticationService } from './services/authentication.service';
@@ -97,6 +98,7 @@ export function tokenGetter(): any {
     BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    FileUploadModule,
   ],
   exports: [
     BrowserModule,
@@ -124,6 +126,7 @@ export function tokenGetter(): any {
     ToastModule,
     PasswordModule,
     SocialLoginModule,
+    FileUploadModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
