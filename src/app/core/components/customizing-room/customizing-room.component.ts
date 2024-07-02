@@ -83,12 +83,13 @@ export class CustomizingRoomComponent implements OnInit {
   addFurniture(x: number, y: number): void {
     if (!this.selectedFurniture) return; // Ensure a furniture type is selected
     const size = this.getFurnitureSize(this.selectedFurniture);
-    if (this.isInsideBlueprint(x, y, size)) {
+    if (this.isInsideBlueprint(x, y, size) && !this.isOverlapping(x, y, size)) {
       this.furnitureList.push({ x, y, size, type: this.selectedFurniture });
       this.saveState();
       this.draw();
     } else {
       this.messageService.add({
+        key: '1',
         severity: 'error',
         summary: 'Error',
         detail: 'You cannot place your furniture outside the room',
@@ -284,8 +285,9 @@ export class CustomizingRoomComponent implements OnInit {
   moveFurniture(index: number, dx: number, dy: number): void {
     const newX = this.furnitureList[index].x + dx / this.scale;
     const newY = this.furnitureList[index].y + dy / this.scale;
+    const size = this.furnitureList[index].size;
 
-    if (this.isInsideBlueprint(newX, newY, this.furnitureList[index].size)) {
+    if (this.isInsideBlueprint(newX, newY, this.furnitureList[index].size) && !this.isOverlapping(newX, newY, size, index)) {
       this.furnitureList[index].x = newX;
       this.furnitureList[index].y = newY;
       this.draw();
@@ -294,8 +296,8 @@ export class CustomizingRoomComponent implements OnInit {
       this.messageService.add({
         key: '1',
         severity: 'error',
-        summary: 'Error',
-        detail: 'You cannot move your furniture outside the room',
+        summary: 'Invalid',
+        detail: 'You cannot move your furniture outside the room or same position with furniture',
       });
     }
   }
@@ -320,6 +322,18 @@ export class CustomizingRoomComponent implements OnInit {
       y - size / 2 >= this.blueprintY &&
       y + size / 2 <= this.blueprintY + this.blueprintHeight
     );
+  }
+
+  isOverlapping(newX: number, newY: number, size: number, ignoreIndex: number | null = null): boolean {
+    for (let i = 0; i < this.furnitureList.length; i++) {
+      if (ignoreIndex !== null && i === ignoreIndex) continue;
+      const furniture = this.furnitureList[i];
+      const distance = Math.hypot(furniture.x - newX, furniture.y - newY);
+      if (distance < (furniture.size + size) / 2) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // // Danh cho zoom in, zoom out
