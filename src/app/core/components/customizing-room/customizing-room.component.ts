@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-customizing-room',
@@ -28,6 +28,12 @@ export class CustomizingRoomComponent implements OnInit {
   blueprintWidth: number = 435;
   blueprintHeight: number = 677;
 
+  // Customizing Show
+  isHideCustomizing: boolean = true;
+  // Steps
+  steps: MenuItem[] | undefined;
+  activeIndex: number = 0;
+
   limits: any = { chair: 2, beds: 1, closet: 1, table: 1 };
   amenities = {
     basic: { chair: 2, beds: 1, closet: 1, table: 1 },
@@ -38,6 +44,32 @@ export class CustomizingRoomComponent implements OnInit {
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
+    this.steps = [
+      {
+          label: 'Information',
+          command: (): void => {
+            this.hideCustomizing(true);
+          },
+      },
+      {
+          label: 'Customizing',
+          command: (): void => {
+            this.hideCustomizing(false);
+          }
+      },
+      {
+          label: 'Export',
+          command: (): void => {
+            this.hideCustomizing(false);
+          },
+      },
+      {
+          label: 'Payment',
+          command: (): void => {
+            this.hideCustomizing(true);
+          },
+      }
+  ];
     if (this.canvas) {
       this.ctx = this.canvas.nativeElement.getContext(
         '2d'
@@ -54,6 +86,14 @@ export class CustomizingRoomComponent implements OnInit {
     } else {
       console.error('Canvas element not found');
     }
+  }
+
+  hideCustomizing(value: boolean): void {
+    this.isHideCustomizing = value;
+  }
+
+  onActiveIndexChange(event: number): void {
+    this.activeIndex = event;
   }
 
   async loadImages(): Promise<void> {
@@ -92,7 +132,7 @@ export class CustomizingRoomComponent implements OnInit {
         key: '1',
         severity: 'error',
         summary: 'Error',
-        detail: 'You cannot place your furniture outside the room',
+        detail: 'You cannot place your furniture outside the room or same position with other furnitures',
       });
     }
   }

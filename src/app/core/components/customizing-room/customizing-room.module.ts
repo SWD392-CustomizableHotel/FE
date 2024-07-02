@@ -22,6 +22,7 @@ import { TagModule } from 'primeng/tag';
 import { sharedModule } from '../layout/share/shared.module';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
+import { StepsModule } from 'primeng/steps';
 
 @NgModule({
   declarations: [CustomizingRoomComponent],
@@ -34,6 +35,7 @@ import { ToastModule } from 'primeng/toast';
     ChartModule,
     PanelModule,
     DropdownModule,
+    StepsModule,
     CalendarModule,
     FloatLabelModule,
     InputNumberModule,
