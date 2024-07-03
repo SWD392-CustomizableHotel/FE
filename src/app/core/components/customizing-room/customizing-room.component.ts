@@ -33,6 +33,8 @@ export class CustomizingRoomComponent implements OnInit {
   // Steps
   steps: MenuItem[] | undefined;
   activeIndex: number = 0;
+  // Context Menu
+  contextMenuItems: MenuItem[] | undefined;
 
   limits: any = { chair: 2, beds: 1, closet: 1, table: 1 };
   amenities = {
@@ -41,35 +43,59 @@ export class CustomizingRoomComponent implements OnInit {
     family: { chair: 6, beds: 3, closet: 2, table: 2 },
   };
 
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService) {
+    this.contextMenuItems = [
+      {
+        label: 'Undo',
+        icon: 'pi pi-undo',
+        command: (): void => {
+          this.undo();
+        },
+      },
+      {
+        label: 'Redo',
+        icon: 'pi pi-refresh',
+        command: (): void => {
+          this.redo();
+        },
+      },
+      {
+        separator: true,
+      },
+      {
+        label: 'Print',
+        icon: 'pi pi-print',
+      },
+    ];
+  }
 
   ngOnInit(): void {
     this.steps = [
       {
-          label: 'Information',
-          command: (): void => {
-            this.hideCustomizing(true);
-          },
+        label: 'Information',
+        command: (): void => {
+          this.hideCustomizing(true);
+        },
       },
       {
-          label: 'Customizing',
-          command: (): void => {
-            this.hideCustomizing(false);
-          }
+        label: 'Customizing',
+        command: (): void => {
+          this.hideCustomizing(false);
+        },
       },
       {
-          label: 'Export',
-          command: (): void => {
-            this.hideCustomizing(false);
-          },
+        label: 'Export',
+        command: (): void => {
+          this.hideCustomizing(false);
+        },
       },
       {
-          label: 'Payment',
-          command: (): void => {
-            this.hideCustomizing(true);
-          },
-      }
-  ];
+        label: 'Payment',
+        command: (): void => {
+          this.hideCustomizing(true);
+        },
+      },
+    ];
     if (this.canvas) {
       this.ctx = this.canvas.nativeElement.getContext(
         '2d'
@@ -132,7 +158,8 @@ export class CustomizingRoomComponent implements OnInit {
         key: '1',
         severity: 'error',
         summary: 'Error',
-        detail: 'You cannot place your furniture outside the room or same position with other furnitures',
+        detail:
+          'You cannot place your furniture outside the room or same position with other furnitures',
       });
     }
   }
@@ -327,7 +354,10 @@ export class CustomizingRoomComponent implements OnInit {
     const newY = this.furnitureList[index].y + dy / this.scale;
     const size = this.furnitureList[index].size;
 
-    if (this.isInsideBlueprint(newX, newY, this.furnitureList[index].size) && !this.isOverlapping(newX, newY, size, index)) {
+    if (
+      this.isInsideBlueprint(newX, newY, this.furnitureList[index].size) &&
+      !this.isOverlapping(newX, newY, size, index)
+    ) {
       this.furnitureList[index].x = newX;
       this.furnitureList[index].y = newY;
       this.draw();
@@ -337,7 +367,8 @@ export class CustomizingRoomComponent implements OnInit {
         key: '1',
         severity: 'error',
         summary: 'Invalid',
-        detail: 'You cannot move your furniture outside the room or same position with furniture',
+        detail:
+          'You cannot move your furniture outside the room or same position with furniture',
       });
     }
   }
@@ -364,7 +395,12 @@ export class CustomizingRoomComponent implements OnInit {
     );
   }
 
-  isOverlapping(newX: number, newY: number, size: number, ignoreIndex: number | null = null): boolean {
+  isOverlapping(
+    newX: number,
+    newY: number,
+    size: number,
+    ignoreIndex: number | null = null
+  ): boolean {
     for (let i = 0; i < this.furnitureList.length; i++) {
       if (ignoreIndex !== null && i === ignoreIndex) continue;
       const furniture = this.furnitureList[i];
@@ -376,7 +412,7 @@ export class CustomizingRoomComponent implements OnInit {
     return false;
   }
 
-  // // Danh cho zoom in, zoom out
+  // Danh cho zoom in, zoom out features (dang bi loi)
   // @HostListener('wheel', ['$event'])
   // onScroll(event: WheelEvent): void {
   //   if (event.target === this.canvas?.nativeElement) {
@@ -391,12 +427,18 @@ export class CustomizingRoomComponent implements OnInit {
   // }
 
   // zoomIn(): void {
-  //   this.scale *= 1.1;
-  //   this.draw();
+  //   console.log(`Zoom in: `, this.scale);
+  //   if (this.scale < 0.81 && this.scale > 0.5) {
+  //     this.scale *= 1.1;
+  //     this.draw();
+  //   }
   // }
 
   // zoomOut(): void {
-  //   this.scale /= 1.1;
-  //   this.draw();
+  //   console.log(`Zoom out: `, this.scale);
+  //   if (this.scale >= 0.8 && this.scale < 3) {
+  //     this.scale /= 1.1;
+  //     this.draw();
+  //   }
   // }
 }

@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomizingRoomComponent } from './customizing-room.component';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ import { sharedModule } from '../layout/share/shared.module';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { StepsModule } from 'primeng/steps';
+import { ContextMenuModule } from 'primeng/contextmenu';
 
 @NgModule({
   declarations: [CustomizingRoomComponent],
@@ -49,10 +50,10 @@ import { StepsModule } from 'primeng/steps';
     TagModule,
     ScrollPanelModule,
     ToolbarModule,
-    ToastModule
+    ToastModule,
+    ContextMenuModule
   ],
   providers: [],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [CustomizingRoomComponent],
 })
 export class CustomizingRoomModule {}
