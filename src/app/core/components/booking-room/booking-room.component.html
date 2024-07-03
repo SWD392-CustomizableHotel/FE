@@ -1,5 +1,6 @@
 <app-header-shared></app-header-shared>
 
+<form>
 <div class="room-container surface-100 my-6 pt-2">  
   <!--Guest Information -->
   <h2 class="text-center my-6 font-bold">Guest Information</h2>
@@ -8,19 +9,19 @@
       <p-inputGroupAddon>
         <i class="pi pi-user"></i>
       </p-inputGroupAddon>
-      <input pInputText placeholder="Firstname" />
+      <input pInputText placeholder="Firstname" type="firstName" id="firstName" [(ngModel)]="firstName" name="firstName"/>
     </p-inputGroup>
     <p-inputGroup>
       <p-inputGroupAddon>
         <i class="pi pi-user"></i>
       </p-inputGroupAddon>
-      <input pInputText placeholder="Lastname" />
+      <input pInputText placeholder="Lastname" type="lastName" id="lastName" [(ngModel)]="lastName" name="lastName"/>
     </p-inputGroup>
     <p-inputGroup>
       <p-inputGroupAddon>
         <i class="pi pi-user"></i>
       </p-inputGroupAddon>
-      <input pInputText placeholder="Email" />
+      <input pInputText placeholder="Email" type="email" id="email" [(ngModel)]="email" name="email"/>
     </p-inputGroup>
   </div>
   <!--Guest Information -->
@@ -48,8 +49,9 @@
     </div>
     <div class="card flex justify-content-center">
       <p-button
-        (click)="toStripePayment(room.roomId)"
-        (keyup.enter)="toStripePayment(room.roomId)"
+        type = "submit"
+        (click)="toStripePayment(room.roomId, firstName, lastName, email)"
+        (keyup.enter)="toStripePayment(room.roomId, firstName, lastName, email)"
         icon="pi pi-shopping-cart"
         class="flex-auto md:flex-initial white-space-nowrap mt-2"
         label="Book now"
@@ -58,5 +60,6 @@
   </div>
   <!--Room Information -->
 </div>
+</form>
 
 <app-footer-shared></app-footer-shared>

@@ -16,6 +16,9 @@ export class BookingRoomComponent implements OnInit {
   room?: Room;
   rangeDates?: Date[];
   formattedRangeDates?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,10 +50,13 @@ export class BookingRoomComponent implements OnInit {
     });
   }
 
-  toStripePayment(id?: number): void {
+  toStripePayment(id?: number, firstName?: string, lastName?: string, email?: string): void {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
     this.selectedRoomId = id;
     this.selectedRoom = this.rooms?.find((room) => room.roomId === id);
-    this.router.navigate(['/stripe-payment', id]);
+    this.router.navigate(['/stripe-payment', id, firstName, lastName, email]);
   }
 }
 

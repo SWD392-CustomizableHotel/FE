@@ -5,6 +5,7 @@ export interface Room {
     description?: string;
     image?: string;
     numberOfPeople?: number;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: any;
+    endDate?: any;
+    hotelId?: number;
 }

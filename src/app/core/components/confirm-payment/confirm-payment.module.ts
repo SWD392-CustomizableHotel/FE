@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { StripePaymentComponent } from './stripe-payment.component';
+import { ConfirmPaymentComponent } from './confirm-payment.component';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -24,7 +24,7 @@ import { SliderModule } from 'primeng/slider';
 import { ToastModule } from 'primeng/toast';
 @NgModule({
     declarations: [
-        StripePaymentComponent,
+        ConfirmPaymentComponent,
     ],
     imports: [
         CommonModule,
@@ -53,7 +53,7 @@ import { ToastModule } from 'primeng/toast';
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    bootstrap: [StripePaymentComponent],
+    bootstrap: [ConfirmPaymentComponent],
 })
 
-export class StripePaymentModule {}
+export class ConfirmPaymentModule {}

@@ -4,7 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // Third-party imports
-import { GoogleLoginProvider, GoogleSigninButtonModule, SocialAuthServiceConfig, SocialLoginModule} from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  GoogleSigninButtonModule,
+  SocialAuthServiceConfig,
+  SocialLoginModule,
+} from '@abacritt/angularx-social-login';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Assuming needed for animations
 
@@ -32,7 +37,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
 import { RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
-import { DatePipe, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import {
+  DatePipe,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
@@ -57,7 +66,7 @@ export function tokenGetter(): any {
     NotfoundComponent,
     ResetPasswordComponent,
     RegisterComponent,
-    VerifyEmailComponent
+    VerifyEmailComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,7 +98,9 @@ export function tokenGetter(): any {
     BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
-    StripeModule.forRoot('pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'),
+    StripeModule.forRoot(
+      'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
+    ),
   ],
   exports: [
     BrowserModule,

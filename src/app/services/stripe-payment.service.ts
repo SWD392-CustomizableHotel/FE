@@ -10,13 +10,16 @@ export class StripePaymentService {
 
   constructor(private http: HttpClient) { }
 
-  createStripePayment(id?: string, amount?: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/StripePayments/create-payment-intent?Id=${id}&Amount=${amount}`;
+  createStripePayment(roomId?: string, roomPrice?: number, numberOfDate?: number, numberOfRoom?: number, userEmail?: string): Observable<any> {
+    const url = `${environment.BACKEND_API_URL}/api/StripePayments/create-payment-intent`;
     return this.http.post(url, {
       'items': [
         {
-          'id': id,
-          'amount': amount
+          'roomId': roomId,
+          'roomPrice': roomPrice,
+          'numberOfDate': numberOfDate,
+          'numberOfRoom': numberOfRoom,
+          'userEmail' : userEmail
         }
       ]
     });

@@ -8,36 +8,44 @@ import { ViewAvailableRoomComponent } from './core/components/view-available-roo
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
+import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 const routes: Routes = [
   {
-      path: '',
-      loadChildren: () => import('./core/components/home/home.module').then(m => m.HomeModule)
+    path: '',
+    loadChildren: () =>
+      import('./core/components/home/home.module').then((m) => m.HomeModule),
   },
   {
-      path: 'dashboard',
-      component: LayoutComponent,
-      children: [
-          {
-              path: '',
-              loadChildren: () => import('./core/components/dashboard/dashboard.module').then(m => m.DashboardModule)
-          },
-          {
-              path: '',
-              loadChildren: () => import('./core/components/main/main.module').then(m => m.MainModule)
-          }
-      ],
+    path: 'dashboard',
+    component: LayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
+      },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/main/main.module').then(
+            (m) => m.MainModule
+          ),
+      },
+    ],
   },
   {
-      path: 'login',
-      component: LoginComponent
+    path: 'login',
+    component: LoginComponent,
   },
   {
-      path: 'notfound',
-      component: NotfoundComponent
+    path: 'notfound',
+    component: NotfoundComponent,
   },
   {
-      path: 'reset-password',
-      component: ResetPasswordComponent
+    path: 'reset-password',
+    component: ResetPasswordComponent,
   },
   {
     path: 'verify-email',
@@ -63,28 +71,41 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import(
-            './core/components/booking-room/booking-room.module'
-          ).then((m) => m.BookingRoomModule),
+          import('./core/components/booking-room/booking-room.module').then(
+            (m) => m.BookingRoomModule
+          ),
       },
     ],
   },
   {
-    path: 'stripe-payment/:id',
+    path: 'stripe-payment/:id/:firstName/:lastName/:email',
     component: StripePaymentComponent,
     children: [
       {
         path: '',
         loadChildren: () =>
-          import(
-            './core/components/stripe-payment/stripe-payment.module'
-          ).then((m) => m.StripePaymentModule),
+          import('./core/components/stripe-payment/stripe-payment.module').then(
+            (m) => m.StripePaymentModule
+          ),
       },
     ],
   },
   {
-      path: '**',
-      redirectTo: 'notfound'
+    path: 'confirm-payment',
+    component: ConfirmPaymentComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/confirm-payment/confirm-payment.module').then(
+            (m) => m.ConfirmPaymentModule
+          ),
+      },
+    ],
+  },
+  {
+    path: '**',
+    redirectTo: 'notfound',
   },
 
   // { path: '', component: HomeComponent },
