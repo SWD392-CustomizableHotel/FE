@@ -30,6 +30,8 @@ export class HomeComponent implements OnInit {
   showSliders: boolean = false;
   hotels?: Hotel[];
   isLoggedIn: boolean = true;
+  selectedRoomId?: number;
+  selectedRoom?: Room;
 
   cities = [
     { name: 'Ho Chi Minh City' },
@@ -90,6 +92,12 @@ export class HomeComponent implements OnInit {
   onLocationChange(event: any) {
     this.location = event.address;
     this.realLocation = this.location;
+  }
+
+  toBookingPage(id?: number): void {
+    this.selectedRoomId = id;
+    this.selectedRoom = this.rooms?.find((room) => room.id === id);
+    this.router.navigate(['/booking-room', id]);
   }
 
   toAvailableRoomPage(): void {

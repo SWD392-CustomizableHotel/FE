@@ -181,7 +181,7 @@
             <div class="feature-card-popularroom">
               <div class="img-container-popularroom">
                 <img
-                  src="assets/images/family_room.png"                 
+                  [src]="room.image"                 
                   alt="Family Room"
                   class="feature-image"
                 />
@@ -202,13 +202,13 @@
                   <span class="original-price">$799</span>
                 </div>
                 <div class="box">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Booking"
-                    class="p-button-outlined"
-                  ></button>
+                  <p-button
+                    (click)="toBookingPage(room.id)"
+                    (keyup.enter)="toBookingPage(room.id)"
+                    icon="pi pi-shopping-cart"
+                    class="flex-auto md:flex-initial white-space-nowrap mt-2"
+                    label="Booking "
+                  />
                 </div>
               </div>
             </div>
