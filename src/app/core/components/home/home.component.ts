@@ -73,7 +73,7 @@ export class HomeComponent {
       });
     }
   }
-  
+
   logout(): void {
     this.authenticationService.logOut();
   }

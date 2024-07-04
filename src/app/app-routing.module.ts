@@ -59,15 +59,15 @@ const routes: Routes = [
   {
     path: 'booking-history',
     component: BookingHistoryComponent,
-    // children: [
-    //   {
-    //     path: '',
-    //     loadChildren: () =>
-    //       import(
-    //         './core/components/booking-history/booking-history.component'
-    //       ).then((m) => m.BookingHistoryComponent),
-    //   },
-    // ]
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/booking-history/booking-history.module'
+          ).then((m) => m.BookingHistoryModule),
+      },
+    ]
   },
 
 
