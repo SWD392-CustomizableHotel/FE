@@ -24,6 +24,10 @@ export class UserBookingService {
       this.rangeDatesSource.next(rangeDates);
   }
 
+  setRangeDates(rangeDates: Date[]): void {
+    this.rangeDatesSource.next(rangeDates);
+  }
+
   getPeopleCount(peopleCount: { rooms: number, adults: number, children: number }) :void {
     this.peopleCountSource.next(peopleCount);
   }

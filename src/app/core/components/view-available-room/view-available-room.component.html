@@ -14,9 +14,10 @@
     <p-floatLabel>
       <p-calendar
         id="dateRange"
-        [(ngModel)]="formattedRangeDates"
+        [(ngModel)]="rangeDates"
         selectionMode="range"
         [readonlyInput]="true"
+        (ngModelChange)="onDateChange()"
       ></p-calendar>
       <label for="dateRange">Checkin -> CheckOut</label>
     </p-floatLabel>
@@ -124,8 +125,7 @@
               rangeDates[1] &&
               rangeDates[0].getDate() === room.startDate.getDate() &&
               rangeDates[1].getDate() <= room.endDate.getDate() &&
-              NumberOfAdult + NumberOfChildren === room.numberOfPeople &&
-              hotelId === room.hotelId
+              NumberOfAdult + NumberOfChildren === room.numberOfPeople
             "
             class=""
           >

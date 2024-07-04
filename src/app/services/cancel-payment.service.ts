@@ -10,10 +10,10 @@ export class CancelPaymentService {
 
   constructor(private http: HttpClient) { }
 
-  cancelPayment(clientSecret?: string): Observable<any> {
+  cancelPayment(paymentIntentId?: string): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/StripePayments/cancel-payment`;
     return this.http.post(url, {
-          'clientSecret': clientSecret,
+          'paymentIntentId': paymentIntentId,
     });
   }
 }

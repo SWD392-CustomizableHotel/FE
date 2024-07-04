@@ -28,6 +28,7 @@ import { CancelPaymentService } from '../../../services/cancel-payment.service';
     rangeDates?: Date[];
     email?: string;
     numOfDays?: number;
+    numberOfRoom?: number;
 
     constructor(private http: HttpClient,
       private fb: FormBuilder,
@@ -60,13 +61,16 @@ import { CancelPaymentService } from '../../../services/cancel-payment.service';
         } else {
           console.log('Unavailable range dates');
         }
-
+        this.userBookingData.currentPeopleCount.subscribe((peopleCount) => {
+          this.numberOfRoom = peopleCount.rooms;
+        });
       });
+
       // Initialize Stripe
       this.stripe = await loadStripe('pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI');
       try {
         // Get client secret
-        this.paymentService?.createStripePayment(this.selectedRoomId.toString(), this.room?.roomPrice, this.numOfDays, 2, this.email).subscribe({
+        this.paymentService?.createStripePayment(this.selectedRoomId.toString(), this.room?.roomPrice, this.numOfDays, this.numberOfRoom, this.email).subscribe({
           next: (response: any) => {
             console.log(response);
             this.clientSecret = response.clientSecret[0];
@@ -88,11 +92,10 @@ import { CancelPaymentService } from '../../../services/cancel-payment.service';
             const cancelButton = document.getElementById('cancel');
             cancelButton?.classList.remove('hidden');
 
-            //Set Time Out For Payment
+            //Set Time Out For Payment (15mins * 60seconds)
             setTimeout(() => {
-              console.log('Kiwawa dance');
               this.cancelPayment();
-            }, 5000);
+            }, 900000);
           },
           error: (err: any) => {
             console.error('Error creating payment:', err);

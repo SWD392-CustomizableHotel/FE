@@ -49,17 +49,38 @@ export class ViewAvailableRoomComponent implements OnInit {
 
   ngOnInit(): void {
     this.sortType = ['Price Low To High', 'Price High To Low'];
-    this.roomService.getAvailableRoom().subscribe((response: Room[]) => {
-      this.rooms = response;
-      this.rooms.forEach((room) => {
-        room.startDate = new Date(Date.parse(room.startDate));
-        room.endDate = new Date(Date.parse(room.endDate));
-      });
-      this.filteredRooms = response;
-    });
+    this.initializeData();
+  }
 
+  async initializeData(): Promise<void> {
+    await this.getAvailableRooms();
+    this.subscribeToUserBookingData();
+    await this.getHotels();
+    this.filterRooms();
+  }
+
+  getAvailableRooms(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.roomService.getAvailableRoom().subscribe((response: Room[]) => {
+        this.rooms = response;
+        this.rooms.forEach((room) => {
+          room.startDate = new Date(Date.parse(room.startDate));
+          room.endDate = new Date(Date.parse(room.endDate));
+        });
+        this.filteredRooms = [...this.rooms]; // Copy the rooms array
+        console.log('Rooms initialized:', this.rooms);
+        resolve();
+      });
+    });
+  }
+
+  subscribeToUserBookingData(): void {
     this.userBookingData.currentLocation.subscribe((location) => {
       this.location = location;
+      console.log('Location subscription triggered:', location);
+      if (this.rooms) {
+        this.filterRooms();
+      }
     });
 
     this.userBookingData.currentPeopleCount.subscribe((peopleCount) => {
@@ -71,24 +92,30 @@ export class ViewAvailableRoomComponent implements OnInit {
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
       if (rangeDates && rangeDates.length === 2) {
-        const start =
-          this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
+        const start = this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
         const end = this.datePipe.transform(rangeDates[1], 'dd/MM/yyyy') || '';
         this.formattedRangeDates = `${start} - ${end}`;
-        this.filterRooms();
       } else {
         this.formattedRangeDates = '';
       }
-      console.log(this.filteredRooms);
+      console.log('Range dates subscription triggered:', rangeDates);
+      if (this.rooms) {
+        this.filterRooms();
+      }
     });
+  }
 
-    this.roomService.getHotel().subscribe((response: Hotel[]) => {
-      this.hotels = response;
 
-      this.hotels.find((h) => {
-        if (h.address === this.location) {
-          this.hotelId = h.id;
-        }
+  getHotels(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.roomService.getHotel().subscribe((response: Hotel[]) => {
+        this.hotels = response;
+        this.hotels.find((h) => {
+          if (h.address === this.location) {
+            this.hotelId = h.id;
+          }
+        });
+        resolve();
       });
     });
   }
@@ -100,44 +127,60 @@ export class ViewAvailableRoomComponent implements OnInit {
   }
 
   filterRooms(): void {
-    if (this.rooms) {
-      // Filter by text input
-      if (this.filterText) {
-        this.rooms = this.rooms.filter((room) =>
-          room.type?.toLowerCase().includes(this.filterText.toLowerCase())
-        );
-      }
-
-      // Filter by location
-      if (this.location) {
-        this.filteredRooms = this.filteredRooms?.filter((room) => {
-          let hotelAddress: string | undefined;
-          // Find hotel corresponding to room's hotelId
-          const hotel = this.hotels?.find((h) => h.id === room.hotelId);
-          if (hotel) {
-            hotelAddress = hotel.address;
-            return hotelAddress?.toLowerCase().includes(this.location!.toLowerCase());
-          }
-          return false;
-        });
-      }
-
-      // Filter by date range
-      if (this.rangeDates && this.rangeDates.length === 2) {
-        this.filteredRooms = this.filteredRooms?.filter((room) =>
-          room.startDate <= this.rangeDates![0] && room.endDate >= this.rangeDates![1]
-        );
-      }
-
-      // Sort if selectedSortType is defined
-      if (this.selectedSortType) {
-        if (this.selectedSortType === 'Price Low To High') {
-          this.rooms.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
-        } else if (this.selectedSortType === 'Price High To Low') {
-          this.rooms.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
-        }
-      }
+    console.log('filterRooms called');
+    if (!this.rooms) {
+      console.log('Rooms are not initialized');
+      return;
     }
+
+    // Bắt đầu với danh sách phòng đầy đủ
+    this.filteredRooms = [...this.rooms];
+    console.log('Starting filter with rooms:', this.filteredRooms);
+
+    // Lọc theo văn bản nhập vào
+    if (this.filterText) {
+      this.filteredRooms = this.filteredRooms.filter((room) =>
+        room.type?.toLowerCase().includes(this.filterText.toLowerCase())
+      );
+      console.log('After text filter:', this.filteredRooms);
+    }
+
+    // Lọc theo địa điểm
+    if (this.location) {
+      this.filteredRooms = this.filteredRooms.filter((room) => {
+        const hotel = this.hotels?.find((h) => h.id === room.hotelId);
+        if (hotel) {
+          console.log(hotel.address);
+          return hotel.address
+            ?.toLowerCase()
+            .includes(this.location!.toLowerCase());
+        }
+        return false;
+      });
+      console.log('After location filter:', this.filteredRooms);
+    }
+
+    // Lọc theo khoảng thời gian
+    if (this.rangeDates && this.rangeDates.length === 2) {
+      this.filteredRooms = this.filteredRooms.filter(
+        (room) =>
+          room.startDate <= this.rangeDates![0] &&
+          room.endDate >= this.rangeDates![1]
+      );
+      console.log('After date range filter:', this.filteredRooms);
+    }
+
+    // Sắp xếp nếu selectedSortType được định nghĩa
+    if (this.selectedSortType) {
+      if (this.selectedSortType === 'Price Low To High') {
+        this.filteredRooms.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+      } else if (this.selectedSortType === 'Price High To Low') {
+        this.filteredRooms.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+      }
+      console.log('After sorting:', this.filteredRooms);
+    }
+
+    console.log('Filtered rooms after all filters:', this.filteredRooms);
   }
 
   openModal(id: number | undefined): void {
@@ -159,6 +202,10 @@ export class ViewAvailableRoomComponent implements OnInit {
 
   onLocationChange(event: any): void {
     this.location = event.address;
+    this.filterRooms();
+  }
+
+  onDateChange():void {
     this.filterRooms();
   }
 
