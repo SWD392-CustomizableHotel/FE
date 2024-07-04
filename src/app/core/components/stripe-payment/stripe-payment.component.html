@@ -13,7 +13,9 @@
     <button id="submit" type="submit">
       <span id="button-text">Pay now</span>
     </button>
+    <p-button label="Cancel" severity="danger" class="hidden" id="cancel" (onClick)="cancelPayment()"/>
   </form>
+  
   <div id="payment-message" class="hidden"></div>
   <div id="spinner" class="hidden"></div>
   <!-- 

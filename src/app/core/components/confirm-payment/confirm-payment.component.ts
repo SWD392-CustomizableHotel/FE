@@ -29,30 +29,19 @@ export class ConfirmPaymentComponent implements OnInit {
       return;
     }
 
-    const paymentIntentId = new URLSearchParams(window.location.search).get(
-      'payment_intent'
-    );
-    if (!paymentIntentId) {
-      return;
-    }
-
     const { paymentIntent } = await this.stripe.retrievePaymentIntent(clientSecret);
       switch (paymentIntent.status) {
         case 'succeeded':
           this.showMessage('Payment succeed');
-          // this.sendMailService.sendInvoiceEmail(paymentIntentId).subscribe((response: any) => {
-          //   if(response === 'Success') {
-          //     this.router.navigate(['']);
-          //   } else {
-          //     console.log('Send Email Error');
-          //   }
-          // });
           break;
         case 'processing':
           this.showMessage('Payment processing');
           break;
         case 'requires_payment_method':
           this.showMessage('Payment failed');
+          break;
+        case 'canceled':
+          this.showMessage('Payment Canceled');
           break;
         default:
           this.showMessage('Something went wrong');

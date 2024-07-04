@@ -3,11 +3,12 @@
   import { loadStripe } from '@stripe/stripe-js';
   import { FormBuilder, FormGroup } from '@angular/forms';
   import { StripePaymentService } from '../../../services/stripe-payment.service';
-  import { ActivatedRoute } from '@angular/router';
+  import { ActivatedRoute, Router } from '@angular/router';
   import { RoomService } from '../../../services/view.room.service';
   import { Room } from '../../../interfaces/models/rooms';
   import { UserBookingService } from '../../../services/user-booking.service';
   import { firstValueFrom } from 'rxjs';
+import { CancelPaymentService } from '../../../services/cancel-payment.service';
   @Component({
     selector: 'app-payment',
     templateUrl: './stripe-payment.component.html',
@@ -19,6 +20,7 @@
     elements: any;
     card: any;
     clientSecret? : string;
+    paymentIntentId?: string;
     id? : string;
     amount?: number;
     selectedRoomId?: number;
@@ -32,7 +34,9 @@
       private paymentService: StripePaymentService,
       private route: ActivatedRoute,
       private roomService: RoomService,
-      private userBookingData: UserBookingService) {
+      private userBookingData: UserBookingService,
+      private cancelPaymentService: CancelPaymentService,
+      private router : Router) {
       // this.paymentService = new StripePaymentService(new HttpClient();
       this.paymentForm = this.fb.group({
         name: [''],
@@ -45,11 +49,7 @@
       const emailParam = this.route.snapshot.paramMap.get('email');
       this.email = emailParam ? emailParam : '';
       this.room = await firstValueFrom(this.roomService.getRoomDetails(this.selectedRoomId));
-      // this.roomService.getRoomDetails(this.selectedRoomId).subscribe(
-      //   (response: Room) => {
-      //     this.room = response;
-      //   }
-      // );
+
 
       this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
         this.rangeDates = rangeDates;
@@ -61,7 +61,6 @@
           console.log('Unavailable range dates');
         }
 
-
       });
       // Initialize Stripe
       this.stripe = await loadStripe('pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI');
@@ -69,7 +68,9 @@
         // Get client secret
         this.paymentService?.createStripePayment(this.selectedRoomId.toString(), this.room?.roomPrice, this.numOfDays, 2, this.email).subscribe({
           next: (response: any) => {
-            this.clientSecret = response.clientSecret;
+            console.log(response);
+            this.clientSecret = response.clientSecret[0];
+            this.paymentIntentId = response.clientSecret[1];
 
             // Layout payment form
             this.elements = this.stripe.elements();
@@ -82,6 +83,16 @@
             // Attach element into HTML
             paymentElement.mount('#payment-element');
             console.log('Payment element mounted');
+
+            // Enable cancel
+            const cancelButton = document.getElementById('cancel');
+            cancelButton?.classList.remove('hidden');
+
+            //Set Time Out For Payment
+            setTimeout(() => {
+              console.log('Kiwawa dance');
+              this.cancelPayment();
+            }, 5000);
           },
           error: (err: any) => {
             console.error('Error creating payment:', err);
@@ -130,6 +141,22 @@
             this.showMessage('Something went wrong');
             break;
         }
+      }
+    }
+
+    async cancelPayment(): Promise<void> {
+      try {
+        this.cancelPaymentService?.cancelPayment(this.paymentIntentId).subscribe({
+          next: (response: any) => {
+            console.log(response);
+            this.router.navigate([`/confirm-payment`], { queryParams: { payment_intent_client_secret: this.clientSecret }});
+          },
+          error: (error: any) => {
+            console.error('Error canceling payment:', error);
+          }
+        });
+      } catch (error) {
+        console.error('Error initializing Stripe:', error);
       }
     }
 
