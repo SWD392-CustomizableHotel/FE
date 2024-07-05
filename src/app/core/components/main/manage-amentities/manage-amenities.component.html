@@ -1,0 +1,521 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<div class="grid">
+  <div class="col-12">
+    <div class="card px-6 py-6">
+      <p-toast></p-toast>
+      <h5>Amenity List</h5>
+      <p-table
+        #dt1
+        [value]="amenities"
+        [columns]="cols"
+        dataKey="id"
+        [loading]="loading"
+        [rowHover]="true"
+        styleClass="p-datatable-gridlines"
+        [globalFilterFields]="['amenityStatus.status', 'name', 'description']"
+        responsiveLayout="scroll"
+      >
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <div class="flex">
+              <button
+                pButton
+                label="Clear"
+                class="p-button-outlined mr-2"
+                icon="pi pi-filter-slash"
+                (click)="clear(dt1)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                label="New"
+                icon="pi pi-plus"
+                class="p-button-success mr-2"
+                (click)="openNew()"
+              ></button>
+            </div>
+            <span class="p-input-icon-left mb-2">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                #filter
+                (input)="onGlobalFilter(dt1, $event)"
+                placeholder="Search Keyword"
+                class="w-full"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="min-width: 12rem" pSortableColumn="name">
+              <div class="flex justify-content-between align-items-center">
+                Amenity Name
+                <p-sortIcon field="name"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="name"
+                  display="menu"
+                  placeholder="Search by Amenity Name"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 10rem" pSortableColumn="price">
+              <div class="flex justify-content-between align-items-center">
+                Price
+                <p-sortIcon field="price"></p-sortIcon>
+                <p-columnFilter
+                  type="numeric"
+                  field="price"
+                  display="menu"
+                  currency="USD"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 12rem" pSortableColumn="description">
+              <div class="flex justify-content-between align-items-center">
+                Description
+                <p-sortIcon field="description"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="description"
+                  display="menu"
+                  placeholder="Search by Description"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 12rem" pSortableColumn="amenityStatus.status">
+              <div class="flex justify-content-between align-items-center">
+                Status
+                <p-sortIcon field="amenityStatus"></p-sortIcon>
+                <p-columnFilter
+                  field="amenityStatus.status"
+                  matchMode="equals"
+                  display="menu"
+                >
+                  <ng-template
+                    pTemplate="filter"
+                    let-value
+                    let-filter="filterCallback"
+                  >
+                    <p-dropdown
+                      [(ngModel)]="amenity.status"
+                      [options]="amenityStatusOptions"
+                      optionLabel="status"
+                      (onChange)="filter($event.value.status)"
+                      placeholder="Any"
+                      [style]="{ 'min-width': '12rem' }"
+                    >
+                    </p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 10rem" pSortableColumn="capacity">
+              <div class="flex justify-content-between align-items-center">
+                Capacity
+                <p-sortIcon field="capacity"></p-sortIcon>
+                <p-columnFilter
+                  type="numeric"
+                  field="capacity"
+                  display="menu"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 10rem" pSortableColumn="inUse">
+              <div class="flex justify-content-between align-items-center">
+                In Use
+                <p-sortIcon field="inUse"></p-sortIcon>
+                <p-columnFilter
+                  type="numeric"
+                  field="inUse"
+                  display="menu"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-amenity>
+          <tr>
+            <td>{{ amenity.name }}</td>
+            <td>{{ amenity.price | currency }}</td>
+            <td>{{ amenity.description }}</td>
+            <td>
+              <div class="hidden">
+                {{ amenity.amenityStatus.status }}
+              </div>
+              <p-dropdown
+                id="amenityStatus"
+                [options]="amenityStatusOptions"
+                [showClear]="true"
+                [(ngModel)]="amenity.status"
+                optionLabel="status"
+                [style]="{ width: '100%' }"
+                (onChange)="updateAmenityStatus(amenity, $event.value)"
+              >
+              </p-dropdown>
+            </td>
+            <td>{{ amenity.capacity }}</td>
+            <td>{{ amenity.inUse }}</td>
+            <td>
+              <div class="flex">
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-success mr-2"
+                  (click)="editAmenity(amenity)"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-trash"
+                  class="p-button-rounded p-button-warning"
+                  [disabled]="
+                    amenity.amenityStatus.status === 'Broken' ||
+                    amenity.amenityStatus.status === 'Repairing'
+                  "
+                  (click)="deleteAmenity(amenity)"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">No amenities found.</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td colspan="5">Loading amenities data. Please wait.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="flex align-items-center justify-content-en">
+        <span class="mx-1 text-color">Items per page: </span>
+        <p-dropdown
+          [options]="options"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="rows"
+          (ngModelChange)="onRowsChange($event)"
+        />
+        <p-paginator
+          (onPageChange)="onPageChange($event)"
+          [showCurrentPageReport]="true"
+          [first]="first"
+          [rows]="rows"
+          [totalRecords]="totalRecords"
+          currentPageReportTemplate="{first} - {last} of {totalRecords}"
+          [showPageLinks]="false"
+          [showFirstLastIcon]="false"
+        ></p-paginator>
+      </div>
+    </div>
+
+    <p-dialog
+      [(visible)]="amenityDialog"
+      [style]="{ width: '450px' }"
+      header="Amenity Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+      <ng-template pTemplate="content">
+        <div class="formgrid grid flex justify-content space-between">
+          <div style="flex: 1; margin-right: 40px">
+            <div class="field">
+              <label for="name">Name</label>
+              <input
+                type="string"
+                pInputText
+                id="name"
+                [(ngModel)]="amenity.name"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.name
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.name"
+                >Name is required.</small
+              >
+            </div>
+            <div class="field">
+              <label for="price">Price</label>
+              <input
+                type="number"
+                pInputText
+                id="price"
+                [(ngModel)]="amenity.price"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.price
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.price"
+                >Price is required.</small
+              >
+            </div>
+            <div class="field">
+              <label for="description">Description</label>
+              <input
+                type="string"
+                pInputText
+                id="description"
+                [(ngModel)]="amenity.description"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.description
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.description"
+                >Description is required.</small
+              >
+            </div>
+            <div class="field">
+              <label for="capacity">Capacity</label>
+              <input
+                type="number"
+                pInputText
+                id="capacity"
+                [(ngModel)]="amenity.capacity"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.capacity
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.capacity"
+                >Capacity is required.</small
+              >
+            </div>
+            <div class="field">
+              <label for="inUse">In Use</label>
+              <input
+                type="number"
+                pInputText
+                id="inUse"
+                [(ngModel)]="amenity.inUse"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.inUse
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.inUse"
+                >In Use is required.</small
+              >
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          icon="pi pi-times"
+          (onClick)="hideDialog()"
+        ></p-button>
+        <p-button
+          label="Save"
+          icon="pi pi-check"
+          (onClick)="saveAmenity()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog
+      [(visible)]="deleteAmenityDialog"
+      header="Confirm"
+      [modal]="true"
+      [style]="{ width: '450px' }"
+    >
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="amenity"
+          >Are you sure you want to delete Amenity <b>{{ amenity.name }}</b
+          >?</span
+        >
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button
+          icon="pi pi-times"
+          severity="secondary"
+          label="No"
+          (click)="deleteAmenityDialog = false"
+        ></p-button>
+        <p-button
+          icon="pi pi-check"
+          label="Yes"
+          (click)="confirmDelete()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog
+      [(visible)]="createAmenityDialog"
+      [style]="{ width: '700px' }"
+      header="New Amenity Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+      <ng-template pTemplate="content">
+        <div class="formgrid grid flex justify-content space-between">
+          <div style="flex: 1; margin-right: 40px">
+            <div class="field">
+              <label for="name">Amenity Name</label>
+              <input
+                type="string"
+                pInputText
+                id="name"
+                [(ngModel)]="amenity.name"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.name
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.name"
+                >Amenity Name is required.</small
+              >
+            </div>
+            <div class="field">
+              <label for="price">Price</label>
+              <input
+                type="number"
+                pInputText
+                id="price"
+                [(ngModel)]="amenity.price"
+                required
+                min="0"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    submitted && (!amenity.price || amenity.price < 0)
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && (!amenity.price || amenity.price < 0)"
+                >Price cannot be negative.</small
+              >
+            </div>
+            <div class="field">
+              <label for="description">Description</label>
+              <input
+                type="string"
+                pInputText
+                id="description"
+                [(ngModel)]="amenity.description"
+                required
+                [ngClass]="{
+                  'ng-invalid ng-dirty': submitted && !amenity.description
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.description"
+                >Description is required.</small
+              >
+            </div>
+            <div class="field">
+              <label for="capacity">Capacity</label>
+              <input
+                type="number"
+                pInputText
+                id="capacity"
+                [(ngModel)]="amenity.capacity"
+                required
+                min="0"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    submitted && (!amenity.capacity || amenity.capacity < 0)
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && (!amenity.capacity || amenity.capacity < 0)"
+                >Capacity cannot be negative.</small
+              >
+            </div>
+            <div class="field">
+              <label for="inUse">In Use</label>
+              <input
+                type="number"
+                pInputText
+                id="inUse"
+                [(ngModel)]="amenity.inUse"
+                required
+                min="0"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    submitted && (!amenity.inUse || amenity.inUse < 0)
+                }"
+              />
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && (!amenity.inUse || amenity.inUse < 0)"
+                >In Use cannot be negative.</small
+              >
+            </div>
+          </div>
+          <div style="flex: 1; margin-left: 40px">
+            <div class="field">
+              <label for="amenityStatus">Status</label>
+              <p-dropdown
+                id="amenityStatus"
+                placeholder="Please choose a status"
+                required
+                [showClear]="true"
+                [checkmark]="true"
+                [(ngModel)]="selectedAmenityStatus"
+                [options]="amenityStatusOptions"
+                optionLabel="status"
+              ></p-dropdown>
+            </div>
+            <div class="field">
+              <label for="hotelId">Hotel</label>
+              <p-dropdown
+                id="hotelId"
+                [(ngModel)]="amenity.hotelId"
+                optionLabel="code"
+                optionValue="id"
+                [options]="hotels"
+              ></p-dropdown>
+              <small
+                class="ng-dirty ng-invalid"
+                *ngIf="submitted && !amenity.hotelId"
+                >Hotel is required.</small
+              >
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          icon="pi pi-times"
+          (onClick)="hideDialog()"
+        ></p-button>
+        <p-button
+          label="Save"
+          icon="pi pi-check"
+          (onClick)="saveAmenity()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>
