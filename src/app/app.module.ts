@@ -4,7 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // Third-party imports
-import { GoogleLoginProvider, GoogleSigninButtonModule, SocialAuthServiceConfig, SocialLoginModule} from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  GoogleSigninButtonModule,
+  SocialAuthServiceConfig,
+  SocialLoginModule,
+} from '@abacritt/angularx-social-login';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Assuming needed for animations
 
@@ -44,7 +49,7 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
-
+import { CalendarModule } from 'primeng/calendar';
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
@@ -86,7 +91,8 @@ export function tokenGetter(): any {
     PasswordModule,
     BrowserAnimationsModule,
     SocialLoginModule,
-    GoogleSigninButtonModule
+    GoogleSigninButtonModule,
+    CalendarModule,
   ],
   exports: [
     BrowserModule,
@@ -114,6 +120,7 @@ export function tokenGetter(): any {
     ToastModule,
     PasswordModule,
     SocialLoginModule,
+    CalendarModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
