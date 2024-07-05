@@ -46,6 +46,8 @@ export class ViewAvailableRoomComponent implements OnInit {
     this.NumberOfChildren = 0;
     this.NumberOfRoom = 1;
   }
+  visible: boolean = false;
+
 
   ngOnInit(): void {
     this.sortType = ['Price Low To High', 'Price High To Low'];
@@ -68,7 +70,6 @@ export class ViewAvailableRoomComponent implements OnInit {
           room.endDate = new Date(Date.parse(room.endDate));
         });
         this.filteredRooms = [...this.rooms]; // Copy the rooms array
-        console.log('Rooms initialized:', this.rooms);
         resolve();
       });
     });
@@ -77,7 +78,6 @@ export class ViewAvailableRoomComponent implements OnInit {
   subscribeToUserBookingData(): void {
     this.userBookingData.currentLocation.subscribe((location) => {
       this.location = location;
-      console.log('Location subscription triggered:', location);
       if (this.rooms) {
         this.filterRooms();
       }
@@ -98,7 +98,6 @@ export class ViewAvailableRoomComponent implements OnInit {
       } else {
         this.formattedRangeDates = '';
       }
-      console.log('Range dates subscription triggered:', rangeDates);
       if (this.rooms) {
         this.filterRooms();
       }
@@ -127,22 +126,18 @@ export class ViewAvailableRoomComponent implements OnInit {
   }
 
   filterRooms(): void {
-    console.log('filterRooms called');
     if (!this.rooms) {
-      console.log('Rooms are not initialized');
       return;
     }
 
     // Bắt đầu với danh sách phòng đầy đủ
     this.filteredRooms = [...this.rooms];
-    console.log('Starting filter with rooms:', this.filteredRooms);
 
     // Lọc theo văn bản nhập vào
     if (this.filterText) {
       this.filteredRooms = this.filteredRooms.filter((room) =>
         room.type?.toLowerCase().includes(this.filterText.toLowerCase())
       );
-      console.log('After text filter:', this.filteredRooms);
     }
 
     // Lọc theo địa điểm
@@ -150,14 +145,12 @@ export class ViewAvailableRoomComponent implements OnInit {
       this.filteredRooms = this.filteredRooms.filter((room) => {
         const hotel = this.hotels?.find((h) => h.id === room.hotelId);
         if (hotel) {
-          console.log(hotel.address);
           return hotel.address
             ?.toLowerCase()
             .includes(this.location!.toLowerCase());
         }
         return false;
       });
-      console.log('After location filter:', this.filteredRooms);
     }
 
     // Lọc theo khoảng thời gian
@@ -167,7 +160,6 @@ export class ViewAvailableRoomComponent implements OnInit {
           room.startDate <= this.rangeDates![0] &&
           room.endDate >= this.rangeDates![1]
       );
-      console.log('After date range filter:', this.filteredRooms);
     }
 
     // Sắp xếp nếu selectedSortType được định nghĩa
@@ -177,17 +169,19 @@ export class ViewAvailableRoomComponent implements OnInit {
       } else if (this.selectedSortType === 'Price High To Low') {
         this.filteredRooms.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
       }
-      console.log('After sorting:', this.filteredRooms);
     }
-
-    console.log('Filtered rooms after all filters:', this.filteredRooms);
   }
 
   openModal(id: number | undefined): void {
     this.selectedRoomId = id;
     this.selectedRoom = this.rooms?.find((room) => room.id === id);
     this.displayModal = true;
+    this.showDialog();
   }
+
+  showDialog() : void {
+    this.visible = true;
+}
 
   closeModal(): void {
     this.displayModal = false;

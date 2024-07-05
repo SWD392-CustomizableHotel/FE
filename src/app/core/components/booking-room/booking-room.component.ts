@@ -4,6 +4,7 @@ import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/rooms';
 import { UserBookingService } from '../../../services/user-booking.service';
 import { DatePipe } from '@angular/common';
+import { BookingService } from '../../../services/booking.service';
 @Component({
   selector: 'app-booking-room',
   templateUrl: './booking-room.component.html',
@@ -25,6 +26,7 @@ export class BookingRoomComponent implements OnInit {
     private roomService: RoomService,
     public router : Router,
     private userBookingData: UserBookingService,
+    private bookingService: BookingService,
     private datePipe: DatePipe
   ) {}
 
@@ -48,6 +50,8 @@ export class BookingRoomComponent implements OnInit {
         this.formattedRangeDates = '';
       }
     });
+    const data = localStorage.getItem('user');
+    console.log(data);
   }
 
   toStripePayment(id?: number, firstName?: string, lastName?: string, email?: string): void {
@@ -57,6 +61,11 @@ export class BookingRoomComponent implements OnInit {
     this.selectedRoomId = id;
     this.selectedRoom = this.rooms?.find((room) => room.roomId === id);
     this.router.navigate(['/stripe-payment', id, firstName, lastName, email]);
+  }
+
+  saveDate() : void {
+    this.bookingService.saveSelectedRoomId(this.selectedRoomId);
+    this.bookingService.saveRangeDates(this.rangeDates);
   }
 }
 

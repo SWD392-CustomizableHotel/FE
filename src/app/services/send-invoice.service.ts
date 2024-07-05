@@ -10,7 +10,7 @@ export class SendInvoiceService {
 
   constructor(private http: HttpClient) { }
 
-  sendInvoiceEmail(paymentIntentId?: string): Observable<any> {
+  getInvoiceLink(paymentIntentId?: string): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/StripePayments/send-invoice-email`;
     return this.http.post(url, {
           'paymentIntentId': paymentIntentId,

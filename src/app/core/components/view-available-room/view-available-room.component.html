@@ -2,15 +2,15 @@
 <app-header-shared></app-header-shared>
 <div class="surface-100 my-6 pt-2">
   <div class="my-6 flex gap-4 justify-content-center">
-      <p-dropdown
-        [options]="hotels"
-        [(ngModel)]="location"
-        [checkmark]="true" 
-        optionLabel="address"
-        [editable]="true" 
-        (ngModelChange)="onLocationChange($event)"
-      />
-      
+    <p-dropdown
+      [options]="hotels"
+      [(ngModel)]="location"
+      [checkmark]="true"
+      optionLabel="address"
+      [editable]="true"
+      (ngModelChange)="onLocationChange($event)"
+    />
+
     <p-floatLabel>
       <p-calendar
         id="dateRange"
@@ -167,7 +167,6 @@
                   >
                 </div>
                 <div class="flex flex-column text-right">
-                  <p-button icon="pi pi-heart" [outlined]="true"></p-button>
                   <p-button
                     (click)="toBookingPage(room.id)"
                     (keyup.enter)="toBookingPage(room.id)"
@@ -185,34 +184,80 @@
     <!-- This is View Room -->
 
     <!-- Modal -->
-    <div class="custom-modal" *ngIf="displayModal">
-      <div
-        class="card flex justify-content-center custom-content w-10 xl:w-8 h-30rem"
-      >
-        <p-button
-          class="closed-btn"
-          type="button"
-          label="X"
-          (click)="closeModal()"
-        ></p-button>
 
-        <div class="modal-content">
-          <div class="xl:w-3 w-2">
-            <img
-              class="room-image w-full overflow-auto"
-              [src]="selectedRoom?.image"
-              alt=""
-            />
+    <p-dialog
+      [(visible)]="visible"
+      header="{{ selectedRoom?.type }}"
+      [modal]="true"
+      [style]="{ width: '1200px' }"
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    >
+      <div
+        class="modal-content flex flex-column justify-content-between align-items-center mx-auto"
+        style="width: 1000px"
+      >
+        <div class="xl:w-8 w-2 mb-6">
+          <img
+            class="room-image w-full overflow-auto"
+            [src]="selectedRoom?.image"
+            alt=""
+          />
+        </div>
+
+        <div class="flex flex-column w-full justify-content-between align-items-center">
+
+          <div class="flex flex-wrap w-full justify-content-around">
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-book"></i> Description</p>
+              <p>{{ selectedRoom?.description }}</p>
+            </div>
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-users"></i> Number of people</p>
+              <p>{{ selectedRoom?.numberOfPeople }}</p>
+            </div>
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-wallet"></i> Price</p>
+              <p>$ {{ selectedRoom?.price }}</p>
+            </div>
           </div>
-          <div>
-            <h3>{{ selectedRoom?.type }}</h3>
-            <p>{{ selectedRoom?.description }}</p>
-            <p>Number of people: {{ selectedRoom?.numberOfPeople }}</p>
-            <p>Price: ${{ selectedRoom?.price }}</p>
+          <p-divider class="w-full" />
+
+          <div class="flex flex-wrap w-full justify-content-around">
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-book"></i> Description</p>
+              <p>{{ selectedRoom?.description }}</p>
+            </div>
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-users"></i> Number of people</p>
+              <p>{{ selectedRoom?.numberOfPeople }}</p>
+            </div>
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-wallet"></i> Price</p>
+              <p>$ {{ selectedRoom?.price }}</p>
+            </div>
           </div>
+          <p-divider class="w-full" />
+
+          <div class="flex flex-wrap w-full justify-content-around">
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-book"></i> Description</p>
+              <p>{{ selectedRoom?.description }}</p>
+            </div>
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-users"></i> Number of people</p>
+              <p>{{ selectedRoom?.numberOfPeople }}</p>
+            </div>
+            <div class="flex flex-column justify-content-center">
+              <p><i class="pi pi-wallet"></i> Price</p>
+              <p>$ {{ selectedRoom?.price }}</p>
+            </div>
+          </div>
+          <p-divider class="w-full" />
+
+
         </div>
       </div>
-    </div>
+    </p-dialog>
     <!-- Modal -->
 
     <!-- This is validation -->

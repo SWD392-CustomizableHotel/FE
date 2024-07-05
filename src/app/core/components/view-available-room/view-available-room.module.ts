@@ -22,6 +22,7 @@ import { TagModule } from 'primeng/tag';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SliderModule } from 'primeng/slider';
 import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
 @NgModule({
     declarations: [
         ViewAvailableRoomComponent,
@@ -48,7 +49,8 @@ import { ToastModule } from 'primeng/toast';
         InputTextModule,
         DataViewModule,
         TagModule,
-        ScrollPanelModule
+        ScrollPanelModule,
+        DialogModule
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
