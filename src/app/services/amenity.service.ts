@@ -9,7 +9,6 @@ import { environment } from '../../assets/environments/environment';
 export class AmenityService {
   constructor(private http: HttpClient) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getAllAmenities(
     pageNumber: number,
     pageSize: number,
@@ -38,19 +37,16 @@ export class AmenityService {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getAmenityDetails(amenityId: number): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Amenity/get-amenity-details/${amenityId}`;
     return this.http.get(url);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getAmenitiesByRoomId(roomId: number): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Amenity/get-room-amenity/${roomId}`;
     return this.http.get(url);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createAmenity(
     name: string,
     description: string,
@@ -65,7 +61,6 @@ export class AmenityService {
     return this.http.post(url, body);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateAmenity(
     amenityId: number,
     name: string,
@@ -78,13 +73,11 @@ export class AmenityService {
     return this.http.put(url, {});
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateAmenityStatus(amenityId: number, status: string): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Amenity/update-amenity-status?amenityId=${amenityId}&status=${status}`;
     return this.http.put(url, {});
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deleteAmenity(amenityId: number): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Amenity/delete-amenity/${amenityId}`;
     return this.http.delete(url);

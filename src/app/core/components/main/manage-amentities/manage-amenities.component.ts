@@ -29,6 +29,8 @@ export class ManageAmenitiesComponent implements OnInit {
   amenityDialog: boolean = false;
   createAmenityDialog: boolean = false;
   deleteAmenityDialog: boolean = false;
+  amenityDetailsDialog: boolean = false;
+  selectedAmenityDetails: Amenity | null = null;
   submitted: boolean = false;
   loading: boolean = true;
   amenities: Amenity[] = [];
@@ -46,7 +48,7 @@ export class ManageAmenitiesComponent implements OnInit {
   amenityStatusOptions = [
     { status: 'Normal' },
     { status: 'Old' },
-    { status: 'OutOfStock' },
+    { status: 'Out Of Stock' },
     { status: 'Broken' },
     { status: 'Repairing' },
   ];
@@ -69,10 +71,8 @@ export class ManageAmenitiesComponent implements OnInit {
       { field: 'id', header: 'Amenity ID' },
       { field: 'name', header: 'Name' },
       { field: 'price', header: 'Price' },
-      { field: 'status', header: 'Status' },
       { field: 'hotelId', header: 'Hotel' },
       { field: 'capacity', header: 'Capacity' },
-      { field: 'inUse', header: 'In Use' },
     ];
     this.loadHotels();
   }
@@ -88,14 +88,16 @@ export class ManageAmenitiesComponent implements OnInit {
       .getAllAmenities(pageNumber, pageSize, amenityStatus, searchTerm)
       .subscribe({
         next: (data) => {
-          this.amenities = data.data.map((amenity: Amenity) => {
-            return {
-              ...amenity,
-              amenityStatus: this.amenityStatusOptions.find(
-                (option) => option.status === amenity.status
-              ),
-            };
-          });
+          this.amenities = data.data
+            .map((amenity: Amenity) => {
+              return {
+                ...amenity,
+                amenityStatus: this.amenityStatusOptions.find(
+                  (option) => option.status === amenity.status
+                ),
+              };
+            })
+            .sort((a: { id: number }, b: { id: number }) => b.id - a.id);
           this.loading = false;
           this.totalRecords = data.totalRecords;
           this.totalPages = data.totalPages;
@@ -113,37 +115,65 @@ export class ManageAmenitiesComponent implements OnInit {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  openNew() {
+  openNew(): void {
     this.amenity = { status: 'Normal' };
     this.selectedAmenityStatus = { status: 'Normal' };
     this.submitted = false;
     this.createAmenityDialog = true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  editAmenity(amenity: Amenity) {
+  editAmenity(amenity: Amenity): void {
     this.amenity = { ...amenity };
-    // this.selectedAmenityStatus = this.amenityStatusOptions.find(option => option.status === amenity.status);
+    this.selectedAmenityStatus = this.amenityStatusOptions.find(
+      (option) => option.status === amenity.status
+    );
     this.isEdit = true;
     this.amenityDialog = true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  hideDialog() {
+  hideDialog(): void {
     this.amenityDialog = false;
     this.submitted = false;
     this.createAmenityDialog = false;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  deleteAmenity(amenity: Amenity) {
+  deleteAmenity(amenity: Amenity): void {
+    if ((amenity.inUse ?? 0) > 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Cannot delete an amenity while it is InUse.',
+        life: 3000,
+      });
+      return;
+    }
     this.deleteAmenityDialog = true;
     this.amenity = { ...amenity };
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  confirmDelete() {
+  viewAmenityDetails(amenity: Amenity): void {
+    const amenityId = amenity.id;
+    if (amenityId !== undefined) {
+      this.amenityService.getAmenityDetails(amenityId).subscribe({
+        next: (response) => {
+          this.selectedAmenityDetails = response.data;
+          this.amenityDetailsDialog = true;
+        },
+        error: (error) => {
+          console.error('Error fetching amenity details:', error);
+        },
+      });
+    } else {
+      console.error('Amenity ID is undefined.');
+    }
+  }
+
+  hideAmenityDetailsDialog(): void {
+    this.amenityDetailsDialog = false;
+    this.selectedAmenityDetails = null;
+  }
+
+  confirmDelete(): void {
     this.deleteAmenityDialog = false;
     if (this.amenity.id !== undefined) {
       if (
@@ -197,8 +227,7 @@ export class ManageAmenitiesComponent implements OnInit {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  saveAmenity() {
+  saveAmenity(): void {
     this.submitted = true;
     const emptyFields = this.getEmptyFields();
     if (emptyFields.length > 0) {
@@ -231,11 +260,19 @@ export class ManageAmenitiesComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'In Use cannot be negative or undefined.',
+        detail: 'InUse cannot be negative or undefined.',
+        life: 3000,
+      });
+    } else if (this.amenity.inUse > this.amenity.capacity) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'InUse cannot be greater than Capacity.',
         life: 3000,
       });
     } else {
       if (this.amenity.id !== undefined) {
+        // Update existing amenity
         this.amenityService
           .updateAmenity(
             this.amenity.id,
@@ -260,6 +297,7 @@ export class ManageAmenitiesComponent implements OnInit {
             );
           });
       } else {
+        // Create new amenity
         this.amenity.status = this.selectedAmenityStatus?.status || 'Normal';
         if (
           this.amenity.name &&
@@ -282,13 +320,14 @@ export class ManageAmenitiesComponent implements OnInit {
               this.amenity.inUse || 0
             )
             .subscribe(
-              () => {
+              (newAmenity) => {
                 this.messageService.add({
                   severity: 'success',
                   summary: 'Successful',
                   detail: 'Amenity Created',
                   life: 3000,
                 });
+                this.amenities.unshift(newAmenity.data);
                 this.loadAmenities(
                   this.first / this.rows + 1,
                   this.rows,
@@ -314,42 +353,31 @@ export class ManageAmenitiesComponent implements OnInit {
     this.amenity = {};
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-  updateAmenityStatus(amenity: Amenity, newStatus: any) {
+  updateAmenityStatus(amenity: Amenity, newStatus: any): void {
     const statusString = newStatus.status;
     if (amenity.id !== undefined) {
       this.amenityService
         .updateAmenityStatus(amenity.id, statusString)
-        .subscribe(() => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Amenity Status Updated',
-            life: 3000,
-          });
-        });
+        .subscribe();
     } else {
       console.error('Amenity ID is undefined');
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onGlobalFilter(dt1: any, event: Event): void {
     this.searchTerm = (event.target as HTMLInputElement).value;
     console.log(this.searchTerm);
     this.loadAmenities(1, this.rows, this.amenityStatus, this.searchTerm);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  clear(table: Table) {
+  clear(table: Table): void {
     table.clear();
     this.filter.nativeElement.value = '';
     this.searchTerm = undefined;
     this.loadAmenities(1, this.rows, this.amenityStatus, this.searchTerm);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  onPageChange(event: PageEvent) {
+  onPageChange(event: PageEvent): void {
     this.first = event.first || 0;
     this.rows = event.rows || 10;
     const pageNumber = this.first / this.rows + 1;
@@ -361,8 +389,7 @@ export class ManageAmenitiesComponent implements OnInit {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  onRowsChange(newRows: number) {
+  onRowsChange(newRows: number): void {
     this.first = 0;
     this.rows = newRows;
     this.loadAmenities(1, this.rows, this.amenityStatus, this.searchTerm);
