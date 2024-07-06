@@ -14,6 +14,7 @@ import { ServiceService } from '../../../../services/service.service';
 import { HotelService } from '../../../../services/hotel.service';
 import { ManageServicesComponent } from './manage-services.component';
 import { ManageServicesRoutingModule } from './manage-services-routing.module';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [ManageServicesComponent],
@@ -30,6 +31,7 @@ import { ManageServicesRoutingModule } from './manage-services-routing.module';
     PaginatorModule,
     ToastModule,
     ManageServicesRoutingModule,
+    MultiSelectModule,
   ],
   providers: [ServiceService, HotelService, MessageService],
 })

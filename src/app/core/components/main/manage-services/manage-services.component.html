@@ -211,7 +211,7 @@
                     <div class="field col-6">
                         <label for="name">Name</label>
                         <input
-                            type="string"
+                            type="text"
                             pInputText
                             id="name"
                             [(ngModel)]="service.name"
@@ -226,7 +226,7 @@
                         >Name is required.</small>
                     </div>
                     <div class="field col-6">
-                        <label for="price">Price</label>
+                        <label for="price">Price($)</label>
                         <input
                             type="number"
                             pInputText
@@ -241,6 +241,36 @@
                             class="ng-dirty ng-invalid"
                             *ngIf="submitted && !service.price"
                         >Price is required.</small>
+                    </div>                   
+                    <div class="field col-6">
+                        <label for="startDate">Start Date</label>
+                        <p-calendar
+                            id="startDate"
+                            [(ngModel)]="service.startDate"
+                            showIcon="true"
+                            [showTime]="true"
+                            [hourFormat]="'12'"
+                            appendTo="body"
+                        ></p-calendar>
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.startDate"
+                        >Start Date is required.</small>
+                    </div>
+                    <div class="field col-6">
+                        <label for="endDate">End Date</label>
+                        <p-calendar
+                            id="endDate"
+                            [(ngModel)]="service.endDate"
+                            showIcon="true"
+                            [showTime]="true"
+                            [hourFormat]="'12'"
+                            appendTo="body"
+                        ></p-calendar>
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.endDate"
+                        >End Date is required.</small>
                     </div>
                     <div class="field col-6">
                         <label for="description">Description</label>
@@ -260,54 +290,14 @@
                         >Description is required.</small>
                     </div>
                     <div class="field col-6">
-                        <label for="startDate">Start Date</label>
-                        <p-calendar
-                            id="startDate"
-                            [(ngModel)]="service.startDate"
-                            showIcon="true"
-                            [showTime]="true"
-                            [hourFormat]="'12'"
-                        ></p-calendar>
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.startDate"
-                        >Start Date is required.</small>
-                    </div>
-                    <div class="field col-6">
-                        <label for="endDate">End Date</label>
-                        <p-calendar
-                            id="endDate"
-                            [(ngModel)]="service.endDate"
-                            showIcon="true"
-                            [showTime]="true"
-                            [hourFormat]="'12'"
-                        ></p-calendar>
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.endDate"
-                        >End Date is required.</small>
-                    </div>
-                    <div class="field col-6">
-                        <label for="serviceStatus">Status</label>
-                        <p-dropdown
-                            id="serviceStatus"
-                            placeholder="Please choose a status"
-                            required
-                            [showClear]="true"
-                            [checkmark]="true"
-                            [(ngModel)]="service.status"
-                            [options]="serviceStatusOptions"
-                            optionLabel="status"
-                        ></p-dropdown>
-                    </div>
-                    <div class="field col-6">
                         <label for="hotelId">Hotel</label>
                         <p-dropdown
                             id="hotelId"
                             [(ngModel)]="service.hotelId"
-                            optionLabel="name"
+                            optionLabel="code"
                             optionValue="id"
                             [options]="hotels"
+                            appendTo="body"
                         ></p-dropdown>
                         <small
                             class="ng-dirty ng-invalid"
@@ -334,136 +324,158 @@
 
         <!-- Edit Service Dialog -->
         <p-dialog
-            [(visible)]="serviceDialog"
-            [style]="{ width: '700px' }"
-            header="Service Details"
-            [modal]="true"
-            class="p-fluid"
+  [(visible)]="serviceDialog"
+  [style]="{ width: '700px' }"
+  header="Service Details"
+  [modal]="true"
+  class="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="formgrid grid">
+      <div class="field col-6">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          pInputText
+          id="name"
+          [(ngModel)]="service.name"
+          required
+          [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !service.name
+          }"
+        />
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.name"
+        >Name is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="price">Price</label>
+        <input
+          type="number"
+          pInputText
+          id="price"
+          [(ngModel)]="service.price"
+          required
+          [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !service.price
+          }"
+        />
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.price"
+        >Price is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="startDate">Start Date</label>
+        <p-calendar
+          id="startDate"
+          [(ngModel)]="service.startDate"
+          showIcon="true"
+          [showTime]="true"
+          [hourFormat]="'12'"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.startDate"
+        >Start Date is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="endDate">End Date</label>
+        <p-calendar
+          id="endDate"
+          [(ngModel)]="service.endDate"
+          showIcon="true"
+          [showTime]="true"
+          [hourFormat]="'12'"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.endDate"
+        >End Date is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="description">Description</label>
+        <input
+          type="text"
+          pInputText
+          id="description"
+          [(ngModel)]="service.description"
+          required
+          [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !service.description
+          }"
+        />
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.description"
+        >Description is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="serviceStatus">Status</label>
+        <p-dropdown
+          id="serviceStatus"
+          placeholder="Please choose a status"
+          required
+          [showClear]="true"
+          [checkmark]="true"
+          [(ngModel)]="selectedServiceStatus"
+          [options]="serviceStatusOptions"
+          optionLabel="status"
+          appendTo="body"
+          (onChange)="updateServiceStatus(service, $event.value)"
+        ></p-dropdown>
+      </div>
+      <div class="field col-6">
+        <label for="hotelId">Hotel</label>
+        <p-dropdown
+          id="hotelId"
+          [(ngModel)]="service.hotelId"
+          optionLabel="code"
+          optionValue="id"
+          [options]="hotels"
+          appendTo="body"
+        ></p-dropdown>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.hotelId"
+        >Hotel is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="assignedStaff">Assign Staff</label>
+        <p-multiSelect
+          id="assignedStaff"
+          [options]="staff"
+          [(ngModel)]="selectedStaff"
+          optionLabel="userName"
+          appendTo="body"
+          display="chip"
+          placeholder="Select staff members"
         >
-            <ng-template pTemplate="content">
-                <div class="formgrid grid">
-                    <div class="field col-12">
-                        <label for="name">Name</label>
-                        <input
-                            type="text"
-                            pInputText
-                            id="name"
-                            [(ngModel)]="service.name"
-                            required
-                            [ngClass]="{
-                                'ng-invalid ng-dirty': submitted && !service.name
-                            }"
-                        />
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.name"
-                        >Name is required.</small>
-                    </div>
-                    <div class="field col-12">
-                        <label for="price">Price</label>
-                        <input
-                            type="number"
-                            pInputText
-                            id="price"
-                            [(ngModel)]="service.price"
-                            required
-                            [ngClass]="{
-                                'ng-invalid ng-dirty': submitted && !service.price
-                            }"
-                        />
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.price"
-                        >Price is required.</small>
-                    </div>
-                    <div class="field col-12">
-                        <label for="description">Description</label>
-                        <input
-                            type="text"
-                            pInputText
-                            id="description"
-                            [(ngModel)]="service.description"
-                            required
-                            [ngClass]="{
-                                'ng-invalid ng-dirty': submitted && !service.description
-                            }"
-                        />
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.description"
-                        >Description is required.</small>
-                    </div>
-                    <div class="field col-12">
-                        <label for="startDate">Start Date</label>
-                        <p-calendar
-                            id="startDate"
-                            [(ngModel)]="service.startDate"
-                            showIcon="true"
-                            [showTime]="true"
-                            [hourFormat]="'12'"
-                        ></p-calendar>
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.startDate"
-                        >Start Date is required.</small>
-                    </div>
-                    <div class="field col-12">
-                        <label for="endDate">End Date</label>
-                        <p-calendar
-                            id="endDate"
-                            [(ngModel)]="service.endDate"
-                            showIcon="true"
-                            [showTime]="true"
-                            [hourFormat]="'12'"
-                        ></p-calendar>
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.endDate"
-                        >End Date is required.</small>
-                    </div>
-                    <div class="field col-12">
-                        <label for="serviceStatus">Status</label>
-                        <p-dropdown
-                            id="serviceStatus"
-                            placeholder="Please choose a status"
-                            required
-                            [showClear]="true"
-                            [checkmark]="true"
-                            [(ngModel)]="service.status"
-                            [options]="serviceStatusOptions"
-                            optionLabel="status"
-                        ></p-dropdown>
-                    </div>
-                    <div class="field col-12">
-                        <label for="hotelId">Hotel</label>
-                        <p-dropdown
-                            id="hotelId"
-                            [(ngModel)]="service.hotelId"
-                            optionLabel="name"
-                            optionValue="id"
-                            [options]="hotels"
-                        ></p-dropdown>
-                        <small
-                            class="ng-dirty ng-invalid"
-                            *ngIf="submitted && !service.hotelId"
-                        >Hotel is required.</small>
-                    </div>
-                </div>
-            </ng-template>
-            <ng-template pTemplate="footer">
-                <p-button
-                    label="Cancel"
-                    severity="secondary"
-                    icon="pi pi-times"
-                    (onClick)="hideDialog()"
-                ></p-button>
-                <p-button
-                    label="Save"
-                    icon="pi pi-check"
-                    (onClick)="saveService()"
-                ></p-button>
-            </ng-template>
-        </p-dialog>
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center">
+              <div>{{ option.userName }}: {{ option.firstName }} {{ option.lastName }}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      (onClick)="hideDialog()"
+    ></p-button>
+    <p-button
+      label="Save"
+      icon="pi pi-check"
+      (onClick)="saveService()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
 
         <!-- Confirm Delete Dialog -->
         <p-dialog
@@ -490,5 +502,31 @@
                 ></p-button>
             </ng-template>
         </p-dialog>
+
+        <!-- Confirm Status Change Dialog -->
+<p-dialog
+[(visible)]="confirmStatusChangeDialog"
+header="Confirm Status Change"
+[modal]="true"
+[style]="{ width: '450px' }"
+>
+<div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure you want to change the status of Service <b>{{ service.name }}</b> to <b>{{ newStatus }}</b>?</span>
+</div>
+<ng-template pTemplate="footer">
+    <p-button
+        icon="pi pi-times"
+        severity="secondary"
+        label="No"
+        (click)="confirmStatusChangeDialog = false"
+    ></p-button>
+    <p-button
+        icon="pi pi-check"
+        label="Yes"
+        (click)="confirmStatusChange()"
+    ></p-button>
+</ng-template>
+</p-dialog>
     </div>
 </div>

@@ -11,4 +11,13 @@ export interface Service {
   createdBy?: string;
   isDeleted?: boolean;
   userName?: string;
+  assignedStaff?: Staff[];
+}
+
+export interface Staff {
+  id: string;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
 }

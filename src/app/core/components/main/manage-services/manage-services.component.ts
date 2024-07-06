@@ -5,6 +5,8 @@ import { Service } from '../../../../interfaces/models/service';
 import { Table } from 'primeng/table';
 import { Hotel } from '../../../../interfaces/models/hotels';
 import { HotelService } from '../../../../services/hotel.service';
+import { Staff } from '../../../../interfaces/models/staff';
+import { UserService } from '../../../../services/user.service';
 
 interface ExpandedRows {
   [key: string]: boolean;
@@ -28,11 +30,15 @@ export class ManageServicesComponent implements OnInit {
   serviceDialog: boolean = false;
   createServiceDialog: boolean = false;
   deleteServiceDialog: boolean = false;
+  assignStaffDialog: boolean = false;
+  confirmStatusChangeDialog: boolean = false;
   submitted: boolean = false;
   loading: boolean = true;
   services: Service[] = [];
   service: Service = {};
   hotels: Hotel[] = [];
+  staff: Staff[] = [];
+  selectedStaff: Staff[] = [];
   expandedRows: ExpandedRows = {};
   cols: any[] = [];
   first: number = 0;
@@ -54,12 +60,14 @@ export class ManageServicesComponent implements OnInit {
     { label: 20, value: 20 },
   ];
   selectedServiceStatus: { status: string } | undefined;
+  newStatus: string | undefined;
   @ViewChild('filter') filter!: ElementRef;
 
   constructor(
     private serviceService: ServiceService,
     private messageService: MessageService,
-    private hotelService: HotelService
+    private hotelService: HotelService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +82,7 @@ export class ManageServicesComponent implements OnInit {
       { field: 'endDate', header: 'End Date' },
     ];
     this.loadHotels(); // Load hotels data
+    this.loadStaff(); // Load staff data
   }
 
   private loadServices(
@@ -108,7 +117,18 @@ export class ManageServicesComponent implements OnInit {
   private loadHotels(): void {
     this.hotelService.getAllHotels().subscribe({
       next: (data) => {
-        this.hotels = data;
+        this.hotels = data.data;
+      },
+      error: (error) => {
+        console.error('There was an error!', error);
+      },
+    });
+  }
+
+  private loadStaff(): void {
+    this.userService.getStaff().subscribe({
+      next: (data) => {
+        this.staff = data;
       },
       error: (error) => {
         console.error('There was an error!', error);
@@ -117,7 +137,9 @@ export class ManageServicesComponent implements OnInit {
   }
 
   openNew(): void {
-    this.service = { status: 'Closed' };
+    this.service = {
+      status: 'Closed',
+    };
     this.selectedServiceStatus = { status: 'Closed' };
     this.submitted = false;
     this.createServiceDialog = true;
@@ -125,6 +147,33 @@ export class ManageServicesComponent implements OnInit {
 
   editService(service: Service): void {
     this.service = { ...service };
+
+    // Convert startDate and endDate to Date objects if they are not undefined
+    if (service.startDate) {
+      this.service.startDate = new Date(service.startDate);
+    } else {
+      this.service.startDate = new Date(); // Default value if startDate is not available
+    }
+
+    if (service.endDate) {
+      this.service.endDate = new Date(service.endDate);
+    } else {
+      this.service.endDate = new Date(); // Default value if endDate is not available
+    }
+
+    this.selectedServiceStatus = this.serviceStatusOptions.find(
+      (option) => option.status === service.status
+    );
+
+    this.selectedStaff = service.assignedStaff || [];
+    this.selectedStaff =
+      service.assignedStaff?.map((staff) => ({
+        id: staff.id,
+        userName: staff.userName,
+        firstName: staff.firstName,
+        lastName: staff.lastName,
+        email: staff.email,
+      })) || [];
     this.isEdit = true;
     this.serviceDialog = true;
   }
@@ -136,6 +185,26 @@ export class ManageServicesComponent implements OnInit {
   }
 
   deleteService(service: Service): void {
+    if (service.status !== 'Closed') {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Only services with status "Closed" can be deleted.',
+        life: 3000,
+      });
+      return;
+    }
+
+    if (service.assignedStaff && service.assignedStaff.length > 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Service cannot be deleted while staff are assigned to it.',
+        life: 3000,
+      });
+      return;
+    }
+
     this.deleteServiceDialog = true;
     this.service = { ...service };
   }
@@ -208,6 +277,17 @@ export class ManageServicesComponent implements OnInit {
         detail: 'Hotel ID cannot be negative or undefined.',
         life: 3000,
       });
+    } else if (
+      this.service.startDate &&
+      this.service.endDate &&
+      this.service.startDate >= this.service.endDate
+    ) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'End Date must be greater than Start Date.',
+        life: 3000,
+      });
     } else {
       if (this.isEdit) {
         this.serviceService
@@ -219,19 +299,38 @@ export class ManageServicesComponent implements OnInit {
             this.service.startDate?.toISOString() || '',
             this.service.endDate?.toISOString() || ''
           )
-          .subscribe(() => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Successful',
-              detail: 'Service Updated',
-              life: 3000,
-            });
-            this.loadServices(
-              this.first / this.rows + 1,
-              this.rows,
-              this.serviceStatus,
-              this.searchTerm
-            );
+          .subscribe({
+            next: (updatedService) => {
+              if (this.selectedStaff.length > 0) {
+                this.assignStaffToService(
+                  updatedService.data.id!,
+                  this.selectedStaff.map((s) => s.id)
+                );
+                setTimeout(() => {
+                  window.location.reload();
+                }, 3000);
+              } else {
+                this.removeAssignedStaff(updatedService.data.id!);
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Successful',
+                  detail: 'Remove assignStaff successfully!',
+                  life: 3000,
+                });
+                setTimeout(() => {
+                  window.location.reload();
+                }, 3000);
+              }
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Service Updated',
+                life: 3000,
+              });
+              setTimeout(() => {
+                window.location.reload();
+              }, 3000);
+            },
           });
       } else {
         this.service.status = this.selectedServiceStatus?.status || 'Closed';
@@ -252,8 +351,14 @@ export class ManageServicesComponent implements OnInit {
               this.service.endDate?.toISOString() || '',
               this.service.hotelId
             )
-            .subscribe(
-              () => {
+            .subscribe({
+              next: (createdService) => {
+                if (this.selectedStaff.length > 0) {
+                  this.assignStaffToService(
+                    createdService.data.id!,
+                    this.selectedStaff.map((s) => s.id)
+                  );
+                }
                 this.messageService.add({
                   severity: 'success',
                   summary: 'Successful',
@@ -267,17 +372,18 @@ export class ManageServicesComponent implements OnInit {
                   this.searchTerm
                 );
               },
-              (error) => {
+              error: (error) => {
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',
                   detail: error.error.message,
                   life: 3000,
                 });
-              }
-            );
+              },
+            });
         }
       }
+
       this.isEdit = false;
       this.createServiceDialog = false;
       this.serviceDialog = false;
@@ -285,11 +391,43 @@ export class ManageServicesComponent implements OnInit {
     }
   }
 
+  assignStaffToService(serviceId: number, staffIds: string[]): void {
+    console.log('Assigning Staff to Service ID:', serviceId); // Log the service ID
+    console.log('Staff IDs:', staffIds); // Log the staff IDs
+    this.serviceService.assignStaffToService(serviceId, staffIds).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Staff Assigned',
+          life: 3000,
+        });
+      },
+    });
+  }
+
+  removeAssignedStaff(serviceId: number): void {
+    this.serviceService.removeStaffAssignments(serviceId).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Staff Assignments Removed',
+          life: 3000,
+        });
+      },
+    });
+  }
+
   updateServiceStatus(service: Service, newStatus: any): void {
-    const statusString = newStatus.status;
-    if (service.id !== undefined) {
+    this.newStatus = newStatus.status;
+    this.confirmStatusChangeDialog = true;
+  }
+
+  confirmStatusChange(): void {
+    if (this.service.id !== undefined && this.newStatus !== undefined) {
       this.serviceService
-        .updateServiceStatus(service.id, statusString)
+        .updateServiceStatus(this.service.id, this.newStatus)
         .subscribe(() => {
           this.messageService.add({
             severity: 'success',
@@ -297,9 +435,22 @@ export class ManageServicesComponent implements OnInit {
             detail: 'Service Status Updated',
             life: 3000,
           });
+          this.confirmStatusChangeDialog = false;
+          this.loadServices(
+            this.first / this.rows + 1,
+            this.rows,
+            this.serviceStatus,
+            this.searchTerm
+          );
         });
     } else {
-      console.error('Service ID is undefined');
+      console.error('Service ID or new status is undefined');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Service ID or new status is undefined.',
+        life: 3000,
+      });
     }
   }
 
