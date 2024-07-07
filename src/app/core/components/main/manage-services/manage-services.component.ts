@@ -204,7 +204,6 @@ export class ManageServicesComponent implements OnInit {
       });
       return;
     }
-
     this.deleteServiceDialog = true;
     this.service = { ...service };
   }
