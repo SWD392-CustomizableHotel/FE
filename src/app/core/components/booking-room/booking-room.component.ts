@@ -4,7 +4,6 @@ import { RoomService } from '../../../services/view.room.service';
 import { Room } from '../../../interfaces/models/room';
 import { UserBookingService } from '../../../services/user-booking.service';
 import { DatePipe } from '@angular/common';
-import { BookingService } from '../../../services/booking.service';
 import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-booking-room',
@@ -28,7 +27,6 @@ export class BookingRoomComponent implements OnInit {
     private roomService: RoomService,
     public router : Router,
     private userBookingData: UserBookingService,
-    private bookingService: BookingService,
     private datePipe: DatePipe,
     private messageService: MessageService
   ) {}
@@ -39,7 +37,6 @@ export class BookingRoomComponent implements OnInit {
 
     // Fetch room details and wait for the response
     this.room = await this.roomService.getRoomDetails(this.selectedRoomId).toPromise();
-    console.log(this.room);
 
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;

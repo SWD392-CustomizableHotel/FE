@@ -9,7 +9,7 @@ import { environment } from '../../../../assets/environments/environment';
 @Component({
   selector: 'app-confirm-payment',
   templateUrl: './confirm-payment.component.html',
-  styleUrl: './confirm-payment.component.scss'
+  styleUrl: './confirm-payment.component.scss',
 })
 export class ConfirmPaymentComponent implements OnInit {
   stripe: any;
@@ -22,23 +22,22 @@ export class ConfirmPaymentComponent implements OnInit {
   rangDates?: Date[];
   bookingId?: number;
   totalPrice?: number;
-  constructor(private sendMailService: SendInvoiceService,
+  constructor(
+    private sendMailService: SendInvoiceService,
     private bookingService: BookingService,
     private paymentService: PaymentService,
-    public router: Router ) {
-
-  }
+    public router: Router
+  ) {}
 
   navigateToHome(): void {
     this.router.navigate(['/']);
   }
   async ngOnInit(): Promise<void> {
-
     this.stripe = await loadStripe(environment.STRIPE_PUBLIC_KEY);
     this.checkStatus();
   }
 
-  async checkStatus() : Promise<void> {
+  async checkStatus(): Promise<void> {
     const clientSecret = new URLSearchParams(window.location.search).get(
       'payment_intent_client_secret'
     );
@@ -53,56 +52,73 @@ export class ConfirmPaymentComponent implements OnInit {
     this.bookingCode = 'B_' + paymentIntentId;
     this.paymentCode = 'P_' + paymentIntentId;
 
-    const { paymentIntent } = await this.stripe.retrievePaymentIntent(clientSecret);
-      switch (paymentIntent.status) {
-        case 'succeeded':
-          if (!paymentIntentId) {
-            return;
-          }
-          this.showMessage('Payment succeed');
-          this.bookingService.createBooking(this.bookingCode).subscribe({
-            next : (response : any) => {
-              this.bookingId = response.data;
-              this.totalPrice = paymentIntent.amount / 100;
-              this.paymentService.createPayment(this.paymentCode, this.totalPrice, paymentIntentId, this.bookingId).subscribe({
-                next : (response1 : any) => {
+    const { paymentIntent } = await this.stripe.retrievePaymentIntent(
+      clientSecret
+    );
+    switch (paymentIntent.status) {
+      case 'succeeded':
+        if (!paymentIntentId) {
+          return;
+        }
+        this.showMessage(
+          'Your payment for the reservation has been successfully completed. Thank you!'
+        );
+        this.bookingService.createBooking(this.bookingCode).subscribe({
+          next: (response: any) => {
+            this.bookingId = response.data;
+            this.totalPrice = paymentIntent.amount / 100;
+            this.paymentService
+              .createPayment(
+                this.paymentCode,
+                this.totalPrice,
+                paymentIntentId,
+                this.bookingId
+              )
+              .subscribe({
+                next: (response1: any) => {
                   console.log(response1);
                   this.paymentService.updateRoomStatusAfterBooking().subscribe({
-                    next : (response2 : any) => {
+                    next: (response2: any) => {
                       console.log(response2);
-                    }
+                      const invoiceLink =
+                        document.getElementById('invoiceLink');
+                      invoiceLink?.classList.remove('hidden');
+                      const invoicePage =
+                        document.getElementById('invoicePage');
+                      invoicePage?.classList.remove('hidden');
+                    },
                   });
-                }
+                },
               });
-            }
-          });
-          this.sendMailService.getInvoiceLink(paymentIntentId).subscribe({
-            next: (response : any) => {
-              this.invoiceDownloadLink = response[0];
-              this.invoiceHostedPages = response[1];
-            },
-            error: (error: any) => {
-              console.error('Error ', error);
-            },
-          });
-          break;
-        case 'processing':
-          this.showMessage('Payment processing');
-          break;
-        case 'requires_payment_method':
-          this.showMessage('Payment failed');
-          break;
-        case 'canceled':
-          this.showMessage('Payment Canceled');
-          break;
-        default:
-          this.showMessage('Something went wrong');
-          break;
-      }
+          },
+        });
+        this.sendMailService.getInvoiceLink(paymentIntentId).subscribe({
+          next: (response: any) => {
+            this.invoiceDownloadLink = response[0];
+            this.invoiceHostedPages = response[1];
+          },
+          error: (error: any) => {
+            console.error('Error ', error);
+          },
+        });
+        break;
+      case 'processing':
+        this.showMessage('Payment processing');
+        break;
+      case 'requires_payment_method':
+        this.showMessage('Payment failed');
+        break;
+      case 'canceled':
+        this.showMessage('Your payment for the reservation has been canceled');
+        break;
+      default:
+        this.showMessage('Something went wrong');
+        break;
+    }
   }
 
   // UI Helpers
-  showMessage(messageText : string) : void {
+  showMessage(messageText: string): void {
     const messageContainer = document.querySelector('#payment-message');
     if (messageContainer !== null) {
       messageContainer.classList.remove('hidden');

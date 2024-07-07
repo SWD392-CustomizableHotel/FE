@@ -22,7 +22,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { sharedModule } from '../layout/share/shared.module';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { FileUploadModule } from 'primeng/fileupload';
+//import { FileUploadModule } from 'primeng/fileupload';
 import { MessageService } from 'primeng/api';
 
 @NgModule({
@@ -52,7 +52,7 @@ import { MessageService } from 'primeng/api';
         sharedModule,
         InputGroupModule,
         InputGroupAddonModule,
-        FileUploadModule,
+        //FileUploadModule,
     ],
     providers: [MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
