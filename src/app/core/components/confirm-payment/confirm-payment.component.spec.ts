@@ -11,7 +11,7 @@ describe('ConfirmPaymentComponent', () => {
       declarations: [ConfirmPaymentComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ConfirmPaymentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

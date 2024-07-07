@@ -1,7 +1,8 @@
 .room-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding-bottom: 50px;
+    margin: 100px auto 30px auto;
   }
   
   .room-header, .room-footer {
@@ -24,12 +25,7 @@
     border-radius: 8px;
   }
   
-  .room-info {
-    margin-bottom: 20px;
-  }
-  
   .room-info h2 {
     font-size: 18px;
     margin: 10px 0;
   }
-  

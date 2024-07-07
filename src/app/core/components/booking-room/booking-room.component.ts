@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoomService } from '../../../services/view.room.service';
-import { Room } from '../../../interfaces/models/rooms';
+import { Room } from '../../../interfaces/models/room';
 import { UserBookingService } from '../../../services/user-booking.service';
 import { DatePipe } from '@angular/common';
 import { BookingService } from '../../../services/booking.service';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-booking-room',
   templateUrl: './booking-room.component.html',
@@ -20,6 +21,7 @@ export class BookingRoomComponent implements OnInit {
   email?: string;
   firstName?: string;
   lastName?: string;
+  userId?: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,20 +29,22 @@ export class BookingRoomComponent implements OnInit {
     public router : Router,
     private userBookingData: UserBookingService,
     private bookingService: BookingService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private messageService: MessageService
   ) {}
 
-  ngOnInit(): void {
-
+  async ngOnInit(): Promise<void> {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
-    this.roomService.getRoomDetails(this.selectedRoomId).subscribe(
-      (response: Room) => {
-        this.room = response;
-      }
-    );
+
+    // Fetch room details and wait for the response
+    this.room = await this.roomService.getRoomDetails(this.selectedRoomId).toPromise();
+    console.log(this.room);
+
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
+      localStorage.setItem('rangeDate[0]', rangeDates[0]);
+      localStorage.setItem('rangeDate[1]', rangeDates[1]);
       if (rangeDates && rangeDates.length === 2) {
         const start =
           this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
@@ -50,22 +54,23 @@ export class BookingRoomComponent implements OnInit {
         this.formattedRangeDates = '';
       }
     });
-    const data = localStorage.getItem('user');
-    console.log(data);
   }
 
-  toStripePayment(id?: number, firstName?: string, lastName?: string, email?: string): void {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.selectedRoomId = id;
-    this.selectedRoom = this.rooms?.find((room) => room.roomId === id);
-    this.router.navigate(['/stripe-payment', id, firstName, lastName, email]);
+
+  toStripePayment(firstName?: string, lastName?: string, email?: string): void {
+    console.log(this.selectedRoomId);
+    if (this.selectedRoomId !== undefined) {
+      localStorage.setItem('roomId', this.selectedRoomId.toString());
+    } else {
+      console.error('ID is undefined');
+    }
+    console.log(this.room);
+    this.selectedRoom = this.rooms?.find((room) => room.id === this.selectedRoomId);
+    this.router.navigate(['/stripe-payment', this.selectedRoomId, firstName, lastName, email]);
   }
 
-  saveDate() : void {
-    this.bookingService.saveSelectedRoomId(this.selectedRoomId);
-    this.bookingService.saveRangeDates(this.rangeDates);
-  }
+  onUpload() :void {
+    this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded with ID' });
+}
 }
 

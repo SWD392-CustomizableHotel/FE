@@ -4,6 +4,7 @@ import { SendInvoiceService } from '../../../services/send-invoice.service';
 import { BookingService } from '../../../services/booking.service';
 import { PaymentService } from '../../../services/payment.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../../assets/environments/environment';
 
 @Component({
   selector: 'app-confirm-payment',
@@ -16,7 +17,11 @@ export class ConfirmPaymentComponent implements OnInit {
   invoiceHostedPages?: string;
   bookingCode?: string;
   paymentCode?: string;
-
+  selectedRoomId?: number;
+  selectedUserId?: string;
+  rangDates?: Date[];
+  bookingId?: number;
+  totalPrice?: number;
   constructor(private sendMailService: SendInvoiceService,
     private bookingService: BookingService,
     private paymentService: PaymentService,
@@ -28,11 +33,8 @@ export class ConfirmPaymentComponent implements OnInit {
     this.router.navigate(['/']);
   }
   async ngOnInit(): Promise<void> {
-    this.bookingService.getSelectedRoomId();
-    this.bookingService.getSelectedUserId();
-    this.bookingService.getRangeDates();
 
-    this.stripe = await loadStripe('pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI');
+    this.stripe = await loadStripe(environment.STRIPE_PUBLIC_KEY);
     this.checkStatus();
   }
 
@@ -47,9 +49,6 @@ export class ConfirmPaymentComponent implements OnInit {
     const paymentIntentId = new URLSearchParams(window.location.search).get(
       'payment_intent'
     );
-    if (!paymentIntentId) {
-      return;
-    }
 
     this.bookingCode = 'B_' + paymentIntentId;
     this.paymentCode = 'P_' + paymentIntentId;
@@ -57,18 +56,33 @@ export class ConfirmPaymentComponent implements OnInit {
     const { paymentIntent } = await this.stripe.retrievePaymentIntent(clientSecret);
       switch (paymentIntent.status) {
         case 'succeeded':
+          if (!paymentIntentId) {
+            return;
+          }
           this.showMessage('Payment succeed');
-          this.bookingService.createBooking();
-          // this.paymentService.createPayment();
-          console.log(paymentIntentId);
+          this.bookingService.createBooking(this.bookingCode).subscribe({
+            next : (response : any) => {
+              this.bookingId = response.data;
+              this.totalPrice = paymentIntent.amount / 100;
+              this.paymentService.createPayment(this.paymentCode, this.totalPrice, paymentIntentId, this.bookingId).subscribe({
+                next : (response1 : any) => {
+                  console.log(response1);
+                  this.paymentService.updateRoomStatusAfterBooking().subscribe({
+                    next : (response2 : any) => {
+                      console.log(response2);
+                    }
+                  });
+                }
+              });
+            }
+          });
           this.sendMailService.getInvoiceLink(paymentIntentId).subscribe({
             next: (response : any) => {
-              console.log(response);
               this.invoiceDownloadLink = response[0];
               this.invoiceHostedPages = response[1];
             },
             error: (error: any) => {
-              console.error('Error Fuwamoco is poking eachother:', error);
+              console.error('Error ', error);
             },
           });
           break;

@@ -5,10 +5,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { StripePaymentService } from '../../../services/stripe-payment.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoomService } from '../../../services/view.room.service';
-import { Room } from '../../../interfaces/models/rooms';
+import { Room } from '../../../interfaces/models/room';
 import { UserBookingService } from '../../../services/user-booking.service';
 import { firstValueFrom } from 'rxjs';
 import { CancelPaymentService } from '../../../services/cancel-payment.service';
+import { environment } from '../../../../assets/environments/environment';
 @Component({
   selector: 'app-payment',
   templateUrl: './stripe-payment.component.html',
@@ -32,7 +33,6 @@ export class StripePaymentComponent implements OnInit {
   secondsRemaining: number;
   minutes: number;
   formattedSeconds: string;
-
 
   constructor(
     private http: HttpClient,
@@ -65,6 +65,7 @@ export class StripePaymentComponent implements OnInit {
 
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
+      console.log(rangeDates);
       if (this.rangeDates !== undefined) {
         const start = this.rangeDates[0];
         const end = this.rangeDates[1];
@@ -80,23 +81,19 @@ export class StripePaymentComponent implements OnInit {
     });
 
     // Initialize Stripe
-    this.stripe = await loadStripe(
-      'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
-    );
-
+    this.stripe = await loadStripe(environment.STRIPE_PUBLIC_KEY);
     try {
       // Get client secret
       this.paymentItentService
         ?.createStripePayment(
           this.selectedRoomId.toString(),
-          this.room?.roomPrice,
+          this.room?.price,
           this.numOfDays,
           this.numberOfRoom,
           this.email
         )
         .subscribe({
           next: (response: any) => {
-            console.log(response);
             this.clientSecret = response[0];
             this.paymentIntentId = response[1];
 
@@ -124,7 +121,6 @@ export class StripePaymentComponent implements OnInit {
 
             //Set Time Out For Payment (15mins * 60seconds)
             this.startCountdown(this.secondsRemaining);
-
           },
           error: (err: any) => {
             console.error('Error creating payment:', err);

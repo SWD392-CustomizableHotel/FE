@@ -1,5 +1,6 @@
 export interface Room {
     id?:number,
+    code?: string,
     type?: string;
     price?: number;
     description?: string;

@@ -22,6 +22,9 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { sharedModule } from '../layout/share/shared.module';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { FileUploadModule } from 'primeng/fileupload';
+import { MessageService } from 'primeng/api';
+
 @NgModule({
     declarations: [
         BookingRoomComponent,
@@ -48,9 +51,10 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
         ScrollPanelModule,
         sharedModule,
         InputGroupModule,
-        InputGroupAddonModule
+        InputGroupAddonModule,
+        FileUploadModule,
     ],
-    providers: [],
+    providers: [MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     bootstrap: [BookingRoomComponent],
 })
