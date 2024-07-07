@@ -16,6 +16,7 @@ export class ProfileComponent implements OnInit {
   editable = false;
   selectedFile: File | null = null;
   user?: User | null;
+  certificateUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -26,6 +27,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authService.userValue;
+    this.certificateUrl = this.user?.certificatePath || null;
     this.initializeForm();
     this.loadProfile();
   }
@@ -49,23 +51,17 @@ export class ProfileComponent implements OnInit {
         Validators.required,
       ],
       dob: [
-        { value: this.formatDate(this.user?.dob) || '', disabled: true },
+        {
+          value: this.user?.dob ? new Date(this.user.dob) : '',
+          disabled: true,
+        },
         Validators.required,
       ],
       email: [
         { value: this.user?.email || '', disabled: true },
-        Validators.required,
+        [Validators.required, Validators.email],
       ],
     });
-  }
-
-  formatDate(date: Date | undefined): string {
-    if (!date) return '';
-    const d = new Date(date);
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const day = d.getDate().toString().padStart(2, '0');
-    const year = d.getFullYear();
-    return `${year}-${month}-${day}`;
   }
 
   loadProfile(): void {
@@ -73,7 +69,11 @@ export class ProfileComponent implements OnInit {
       this.userService.getProfile(this.user.email).subscribe({
         next: (response: any) => {
           if (response.isSucceed) {
-            this.profileForm.patchValue(response.result);
+            this.profileForm.patchValue({
+              ...response.result,
+              dob: response.result.dob ? new Date(response.result.dob) : '',
+            });
+            this.certificateUrl = response.result.certificatePath || null;
           }
         },
         error: (err: any) => {
@@ -114,7 +114,6 @@ export class ProfileComponent implements OnInit {
 
   onUpload(event: any): void {
     if (this.selectedFile) {
-      // Handle the file upload here
       this.messageService.add({
         severity: 'info',
         summary: 'File Uploaded',
@@ -128,10 +127,23 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    if (this.profileForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please fill in all required fields.',
+      });
+      return;
+    }
+
     this.loading = true;
     const formData = new FormData();
     Object.keys(this.profileForm.controls).forEach((key) => {
-      formData.append(key, this.profileForm.get(key)?.value);
+      let value = this.profileForm.get(key)?.value;
+      if (key === 'dob' && value) {
+        value = value.toISOString(); // Convert dob to ISO string
+      }
+      formData.append(key, value);
     });
 
     if (this.selectedFile) {

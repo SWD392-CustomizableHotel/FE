@@ -1,9 +1,12 @@
-<div class="profile-container p-fluid p-card">
+<div class="profile-container p-fluid p-card" style="background-image: url('assets/images/sheriton-hotel.jpeg'); background-size: cover; background-position: center;">
   <div class="profile-left">
-    <p-avatar image="C:\Ky 7\SWD\FE\src\assets\images\logo2.png" shape="circle" size="xlarge"></p-avatar>
+    <p-avatar image="assets/images/logo2.png" shape="circle" size="xlarge"></p-avatar>
     <div class="user-info">
       <h4>{{ user?.email }}</h4>
       <p>{{ user?.role }}</p>
+      <div *ngIf="certificateUrl">
+        <a [href]="certificateUrl" target="_blank">View Certificate</a>
+      </div>
     </div>
   </div>
   <div class="profile-right">
@@ -37,7 +40,13 @@
 
       <div class="p-field">
         <label for="dob">Date of Birth</label>
-        <input pInputText type="date" id="dob" formControlName="dob" />
+        <p-calendar
+          id="dob"
+          formControlName="dob"
+          dateFormat="yy-mm-dd"
+          showIcon="true"
+          appendTo="body"
+        ></p-calendar>
       </div>
 
       <div class="p-field" *ngIf="user?.role === 'STAFF'">
@@ -51,15 +60,15 @@
           uploadLabel="Upload"
           cancelLabel="Cancel"
           mode="basic"
-          class="custom-file-upload">
-        </p-fileUpload>
+          class="custom-file-upload"
+        ></p-fileUpload>
       </div>
 
       <div class="p-field" style="display: none;">
         <input pInputText type="text" formControlName="email" />
       </div>
 
-      <div class="p-d-flex p-jc-end p-mt-3">
+      <div class="button-group">
         <button pButton type="button" label="Edit" icon="pi pi-pencil" (click)="enableEditing()" *ngIf="!editable" class="p-button-text p-mr-2"> </button>
         <button pButton type="submit" label="Save" icon="pi pi-check" *ngIf="editable" class="p-button-primary p-mr-2"> </button>
         <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="disableEditing()" *ngIf="editable" class="p-button-secondary"> </button>

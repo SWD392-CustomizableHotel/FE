@@ -49,6 +49,7 @@ import { VerifyEmailComponent } from './core/components/verify-email/verify-emai
 import { ProfileComponent } from './core/components/profile/profile.component';
 import { FileUploadModule } from 'primeng/fileupload';
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
+import { CalendarModule } from 'primeng/calendar';
 
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
@@ -99,6 +100,7 @@ export function tokenGetter(): any {
     SocialLoginModule,
     GoogleSigninButtonModule,
     FileUploadModule,
+    CalendarModule,
   ],
   exports: [
     BrowserModule,
@@ -127,6 +129,7 @@ export function tokenGetter(): any {
     PasswordModule,
     SocialLoginModule,
     FileUploadModule,
+    CalendarModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },
