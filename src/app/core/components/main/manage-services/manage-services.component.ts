@@ -51,8 +51,8 @@ export class ManageServicesComponent implements OnInit {
   serviceStatusOptions = [
     { status: 'Open' },
     { status: 'Closed' },
-    { status: 'OnDemand' },
-    { status: 'DailyService' },
+    { status: 'On Demand' },
+    { status: 'Daily Service' },
   ];
   options = [
     { label: 5, value: 5 },
