@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BookingService } from '../../../services/booking.service';
 import { MessageService } from 'primeng/api';
 import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
 import { Table } from 'primeng/table';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AssignServiceComponent } from '../main/manage-accounts/assign-service-component/assign-service.component';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Service } from '../../../interfaces/models/service';
 import { Amenity } from '../../../interfaces/models/amenity';
 import { Payment } from '../../../interfaces/models/payment';
@@ -92,7 +90,7 @@ export class BookingHistoryComponent implements OnInit {
           this.totalRecords = data.totalRecords;
           this.loading = false;
         },
-        error: (error) => {
+        error: () => {
           this.loading = false;
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load booking history' });
         }
