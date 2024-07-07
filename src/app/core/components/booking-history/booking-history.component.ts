@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BookingService } from '../../../services/booking.service';
@@ -125,30 +124,30 @@ export class BookingHistoryComponent implements OnInit {
     this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
   }
 
-  openServiceDialog(service: Service[]) {
+  openServiceDialog(service: Service[]) : void {
     this.selectedService = service;
     this.serviceDialogVisible = true;
   }
 
-  closeServiceDialog() {
+  closeServiceDialog() : void {
     this.serviceDialogVisible = false;
   }
 
-  openAmenityDialog(amenity: Amenity[]) {
+  openAmenityDialog(amenity: Amenity[]) : void {
     this.selectedAmenity = amenity;
     this.amenityDialogVisible = true;
   }
 
-  closeAmenityDialog() {
+  closeAmenityDialog() : void {
     this.amenityDialogVisible = false;
   }
 
-  openPaymentDialog(payment: Payment[]) {
+  openPaymentDialog(payment: Payment[]) : void {
     this.selectedPayment = payment;
     this.paymentDialogVisible = true;
   }
 
-  closePaymentDialog() {
+  closePaymentDialog() : void {
     this.paymentDialogVisible = false;
   }
 

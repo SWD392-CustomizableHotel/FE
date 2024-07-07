@@ -100,7 +100,6 @@ export function tokenGetter(): any {
     SocialLoginModule,
     GoogleSigninButtonModule,
     ButtonModule,
-    ButtonModule,
     PaginatorModule,
     StripeModule.forRoot(
       'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
