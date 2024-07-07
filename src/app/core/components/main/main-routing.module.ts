@@ -13,6 +13,12 @@ import { ManageAccountsModule } from './manage-accounts/manage-accounts.module';
           import('./rooms/rooms.module').then((m) => m.RoomsModule),
       },
       {
+        path: 'manage-amenities',
+        data: { breadcrumb: '' },
+        loadChildren: (): Promise<typeof import('./manage-amentities/manage-amenities.module').ManageAmenitiesModule> =>
+          import('./manage-amentities/manage-amenities.module').then((m) => m.ManageAmenitiesModule),
+      },
+      {
         path: 'accounts',
         data: { breadcrumb: '' },
         loadChildren: (): Promise<typeof ManageAccountsModule> =>
