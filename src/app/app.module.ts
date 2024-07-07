@@ -4,7 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 // Third-party imports
-import { GoogleLoginProvider, GoogleSigninButtonModule, SocialAuthServiceConfig, SocialLoginModule} from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  GoogleSigninButtonModule,
+  SocialAuthServiceConfig,
+  SocialLoginModule,
+} from '@abacritt/angularx-social-login';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Assuming needed for animations
 
@@ -45,6 +50,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
 import { PaginatorModule } from 'primeng/paginator';
+import { CalendarModule } from 'primeng/calendar';
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
@@ -90,6 +96,7 @@ export function tokenGetter(): any {
     ButtonModule,
     ButtonModule,
     PaginatorModule,
+    CalendarModule,
   ],
   exports: [
     BrowserModule,
@@ -118,6 +125,7 @@ export function tokenGetter(): any {
     PasswordModule,
     SocialLoginModule,
     PaginatorModule,
+    CalendarModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: PathLocationStrategy },

@@ -5,3 +5,4 @@ export interface AuthResponseDto {
     provider: string;
     role?: string;
 }
+
