@@ -25,7 +25,7 @@ export class HeaderSharedComponent {
   constructor(
     public router: Router,
     private authService: AuthenticationService,
-    private googleCommonService: GoogleCommonService,
+    private googleCommonService: GoogleCommonService
   ) {
     this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
       this.isLoggedIn.next(loggedIn);
