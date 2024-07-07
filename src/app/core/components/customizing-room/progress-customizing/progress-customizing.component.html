@@ -1,12 +1,15 @@
 <div class="pt-3">
   <div [hidden]="isHideCustomizing">
     <div class="fadeinleft animation-duration-600">
-      <p-toolbar class="flex flex-wrap justify-content-center align-items-center w-full">
+      <p-toolbar
+        class="flex flex-wrap justify-content-center align-items-center w-full"
+      >
         <div class="p-toolbar-group-start">
           <p-button
             (click)="selectFurniture('chair')"
             [disabled]="!canAddFurniture('chair')"
             class="mr-2"
+            severity="info"
             badge="{{ getFurnitureCount('chair') }}"
             badgeClass="p-badge-contrast"
             >Chair
@@ -15,6 +18,7 @@
             (click)="selectFurniture('beds')"
             [disabled]="!canAddFurniture('beds')"
             class="mr-2"
+            severity="info"
             badge="{{ getFurnitureCount('beds') }}"
             badgeClass="p-badge-contrast"
             >Bed</p-button
@@ -23,6 +27,7 @@
             (click)="selectFurniture('closet')"
             [disabled]="!canAddFurniture('closet')"
             class="mr-2"
+            severity="info"
             badge="{{ getFurnitureCount('closet') }}"
             badgeClass="p-badge-contrast"
             >Closet</p-button
@@ -30,14 +35,39 @@
           <p-button
             (click)="selectFurniture('table')"
             [disabled]="!canAddFurniture('table')"
+            severity="info"
             badge="{{ getFurnitureCount('table') }}"
             badgeClass="p-badge-contrast"
             >Table</p-button
           >
         </div>
-        <div class="p-toolbar-group-end">
-          <p-button (click)="undo()" class="mr-2">Undo</p-button>
-          <p-button (click)="redo()">Redo</p-button>
+        <div class="p-toolbar-group-end pl-6">
+          <p-button
+            (click)="undo()"
+            icon="pi pi-refresh"
+            severity="secondary"
+            class="mr-2"
+            label="Undo"
+          />
+          <p-button
+            (click)="redo()"
+            icon="pi pi-replay"
+            severity="secondary"
+            class="mr-2"
+            label="Redo"
+          />
+          <p-button
+            (click)="next(2)"
+            class="mr-2"
+            icon="pi pi-reply"
+            label="Next"
+          />
+          <p-button
+            (click)="back(0)"
+            icon="pi pi-arrow-left"
+            label="Back"
+            severity="warning"
+          />
         </div>
       </p-toolbar>
     </div>

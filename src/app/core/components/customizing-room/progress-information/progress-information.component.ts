@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-progress-information',
@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ProgressInformationComponent {
   @Input() activeIndex: number = 0;
+  @Output() changeActiveIndex = new EventEmitter<number>();
 
   hotelLocations = [
     { name: 'Location 1', code: 'LOC1' },
@@ -25,7 +26,7 @@ export class ProgressInformationComponent {
     { label: 'Family', value: 'family' },
   ];
 
-  navigateToSecondIndex(): void {
-    this.activeIndex = 1;
+  changeProgressIndex(index: number): void {
+    this.changeActiveIndex.emit(index);
   }
 }

@@ -12,6 +12,7 @@ export class ProgressCustomizingComponent {
   @Output() furnitureSelected = new EventEmitter<string>();
   @Output() undoAction = new EventEmitter<void>();
   @Output() redoAction = new EventEmitter<void>();
+  @Output() changeProgressIndex = new EventEmitter<number>();
 
   selectFurniture(type: string): void {
     this.furnitureSelected.emit(type);
@@ -23,5 +24,13 @@ export class ProgressCustomizingComponent {
 
   redo(): void {
     this.redoAction.emit();
+  }
+
+  next(index: number): void {
+    this.changeProgressIndex.emit(index);
+  }
+
+  back(index: number): void {
+    this.changeProgressIndex.emit(index);
   }
 }

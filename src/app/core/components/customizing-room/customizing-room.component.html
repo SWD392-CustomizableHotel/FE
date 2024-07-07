@@ -16,6 +16,7 @@
   </div>
   <app-progress-information
     [activeIndex]="activeIndex"
+    (changeActiveIndex)="onActiveIndexChange($event)"
   ></app-progress-information>
   <app-progress-customizing
     [isHideCustomizing]="isHideCustomizing"
@@ -24,9 +25,10 @@
     (furnitureSelected)="selectFurniture($event)"
     (undoAction)="undo()"
     (redoAction)="redo()"
+    (changeProgressIndex)="onActiveIndexChange($event)"
   >
   </app-progress-customizing>
-  <div class="flex flex-wrap align-items-center justify-content-center p-4">
+  <div class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center p-4">
     <canvas
       #canvas
       width="700"

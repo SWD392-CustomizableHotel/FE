@@ -63,6 +63,7 @@ export class CustomizingRoomComponent implements OnInit {
   }
 
   onActiveIndexChange(index: number): void {
+    console.log(index);
     this.activeIndex = index;
     this.isHideCustomizing = index !== 1 && index !== 2;
   }

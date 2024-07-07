@@ -24,6 +24,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { StepsModule } from 'primeng/steps';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { CardModule } from 'primeng/card';
 import { ProgressCustomizingComponent } from './progress-customizing/progress-customizing.component';
 import { ProgressInformationComponent } from './progress-information/progress-information.component';
 
@@ -53,7 +54,8 @@ import { ProgressInformationComponent } from './progress-information/progress-in
     ScrollPanelModule,
     ToolbarModule,
     ToastModule,
-    ContextMenuModule
+    ContextMenuModule,
+    CardModule
   ],
   providers: [],
   bootstrap: [CustomizingRoomComponent],
