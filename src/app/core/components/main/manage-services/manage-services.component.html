@@ -274,7 +274,7 @@
                     </div>
                     <div class="field col-6">
                         <label for="description">Description</label>
-                        <input
+                        <textarea
                             type="text"
                             pInputText
                             id="description"
@@ -283,7 +283,7 @@
                             [ngClass]="{
                                 'ng-invalid ng-dirty': submitted && !service.description
                             }"
-                        />
+                        ></textarea>
                         <small
                             class="ng-dirty ng-invalid"
                             *ngIf="submitted && !service.description"
@@ -398,7 +398,7 @@
       </div>
       <div class="field col-6">
         <label for="description">Description</label>
-        <input
+        <textarea
           type="text"
           pInputText
           id="description"
@@ -407,7 +407,7 @@
           [ngClass]="{
             'ng-invalid ng-dirty': submitted && !service.description
           }"
-        />
+        ></textarea>
         <small
           class="ng-dirty ng-invalid"
           *ngIf="submitted && !service.description"

@@ -288,6 +288,13 @@ export class ManageServicesComponent implements OnInit {
         detail: 'End Date must be greater than Start Date.',
         life: 3000,
       });
+    } else if (this.service.startDate && this.service.startDate <= new Date()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Start Date must be in the future.',
+        life: 3000,
+      });
     } else {
       if (this.isEdit) {
         this.serviceService
@@ -490,6 +497,8 @@ export class ManageServicesComponent implements OnInit {
     if (this.service.price === undefined) emptyFields.push('Price');
     if (!this.service.description) emptyFields.push('Description');
     if (!this.service.hotelId) emptyFields.push('Hotel');
+    if (!this.service.startDate) emptyFields.push('Start Date');
+    if (!this.service.endDate) emptyFields.push('End Date');
     return emptyFields;
   }
 }
