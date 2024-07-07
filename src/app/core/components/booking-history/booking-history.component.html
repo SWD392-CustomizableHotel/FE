@@ -250,7 +250,7 @@
               <td>{{ service.code }}</td>
               <td>{{ service.name }}</td>
               <td>{{ service.description }}</td>
-              <td>{{ service.price }}</td>
+              <td>{{ service.price | currency:'USD':'symbol':'1.0-0' }}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -286,7 +286,7 @@
               <td>{{ amenity.code }}</td>
               <td>{{ amenity.name }}</td>
               <td>{{ amenity.description }}</td>
-              <td>{{ amenity.price }}</td>
+              <td>{{ amenity.price | currency:'USD':'symbol':'1.0-0'  }}</td>
             </tr>
           </ng-template>
         </p-table>
@@ -318,7 +318,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-payment>
             <tr>
-              <td>{{ payment.amount }}</td>
+              <td>{{ payment.amount | currency:'USD':'symbol':'1.0-0'  }}</td>
               <td>{{ payment.status }}</td>
             </tr>
           </ng-template>
