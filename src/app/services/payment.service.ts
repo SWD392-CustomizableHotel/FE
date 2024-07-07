@@ -14,7 +14,7 @@ export class PaymentService {
 
   constructor(private http: HttpClient) {
     this.paymentStatus = 'Success';
-    this.roomStatus = 'Inuse';
+    this.roomStatus = 'Booked';
   }
 
   createPayment(paymentCode?: string, amount?: number, paymentIntentId?: string, bookingId?: number): Observable<any> {

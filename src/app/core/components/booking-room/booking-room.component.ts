@@ -21,6 +21,8 @@ export class BookingRoomComponent implements OnInit {
   firstName?: string;
   lastName?: string;
   userId?: string;
+  startDate?: string;
+  endDate?: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,7 +47,9 @@ export class BookingRoomComponent implements OnInit {
       if (rangeDates && rangeDates.length === 2) {
         const start =
           this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
+          this.startDate = start;
         const end = this.datePipe.transform(rangeDates[1], 'dd/MM/yyyy') || '';
+          this.endDate = end;
         this.formattedRangeDates = `${start} - ${end}`;
       } else {
         this.formattedRangeDates = '';
