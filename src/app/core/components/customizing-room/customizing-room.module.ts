@@ -24,9 +24,11 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { StepsModule } from 'primeng/steps';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { ProgressCustomizingComponent } from './progress-customizing/progress-customizing.component';
+import { ProgressInformationComponent } from './progress-information/progress-information.component';
 
 @NgModule({
-  declarations: [CustomizingRoomComponent],
+  declarations: [CustomizingRoomComponent, ProgressCustomizingComponent, ProgressInformationComponent],
   imports: [
     CommonModule,
     ButtonModule,

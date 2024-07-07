@@ -2,109 +2,42 @@
 <div style="height: 100px"></div>
 <app-header-shared></app-header-shared>
 <div class="surface-0">
-  <div class="grid">
-    <div class="col pl-6 md:col-2 lg:col-7" [hidden]="isHideCustomizing">
-      <div class="fadeinleft animation-duration-600">
-        <p-toolbar>
-          <div class="p-toolbar-group-start">
-            <p-button
-              (click)="selectFurniture('chair')"
-              [disabled]="!canAddFurniture('chair')"
-              class="mr-2"
-              badge="{{ getFurnitureCount('chair') }}"
-              badgeClass="p-badge-contrast"
-              >Chair
-            </p-button>
-            <p-button
-              (click)="selectFurniture('beds')"
-              [disabled]="!canAddFurniture('beds')"
-              class="mr-2"
-              badge="{{ getFurnitureCount('beds') }}"
-              badgeClass="p-badge-contrast"
-              >Bed</p-button
-            >
-            <p-button
-              (click)="selectFurniture('closet')"
-              [disabled]="!canAddFurniture('closet')"
-              class="mr-2"
-              badge="{{ getFurnitureCount('closet') }}"
-              badgeClass="p-badge-contrast"
-              >Closet</p-button
-            >
-            <p-button
-              (click)="selectFurniture('table')"
-              [disabled]="!canAddFurniture('table')"
-              badge="{{ getFurnitureCount('table') }}"
-              badgeClass="p-badge-contrast"
-              >Table</p-button
-            >
-          </div>
-          <div class="p-toolbar-group-end">
-            <p-button (click)="undo()" class="mr-2">Undo</p-button>
-            <p-button (click)="redo()">Redo</p-button>
-          </div>
-        </p-toolbar>
-        <div
-          class="flex flex-wrap align-items-center justify-content-center p-4"
-        >
-          <canvas
-            #canvas
-            width="700"
-            height="580"
-            (mousedown)="onMouseDown($event)"
-            (mousemove)="onMouseMove($event)"
-            (mouseup)="onMouseUp()"
-            class="canva-grid cursor-pointer"
-          >
-          </canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col md:col-4 lg:col">
-      <div class="flex justify-content-center align-items-center">
-        <div class="card w-9">
-          <p-toast />
-          <p-steps
-            [model]="steps"
-            [readonly]="false"
-            class="justify-content-between"
-            [activeIndex]="activeIndex"
-            (activeIndexChange)="onActiveIndexChange($event)"
-          />
-        </div>
-      </div>
+  <div class="flex justify-content-center align-items-center">
+    <div class="card w-9">
+      <p-toast />
+      <p-steps
+        [model]="steps"
+        [readonly]="false"
+        class="justify-content-between"
+        [activeIndex]="activeIndex"
+        (activeIndexChange)="onActiveIndexChange($event)"
+      />
     </div>
   </div>
-  <div class="container" [hidden]="activeIndex !== 0">
-    <div
-      class="flex flex-column justify-content-center align-items-center pt-4 gap-4"
+  <app-progress-information
+    [activeIndex]="activeIndex"
+  ></app-progress-information>
+  <app-progress-customizing
+    [isHideCustomizing]="isHideCustomizing"
+    [canAddFurniture]="canAddFurniture.bind(this)"
+    [getFurnitureCount]="getFurnitureCount.bind(this)"
+    (furnitureSelected)="selectFurniture($event)"
+    (undoAction)="undo()"
+    (redoAction)="redo()"
+  >
+  </app-progress-customizing>
+  <div class="flex flex-wrap align-items-center justify-content-center p-4">
+    <canvas
+      #canvas
+      width="700"
+      height="580"
+      [hidden]="isHideCustomizing"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      class="canva-grid"
     >
-      <span class="text-4xl font-semibold text-primary"
-        >Customize Your Room</span
-      >
-      <span class="text-xl font-normal text-500"
-        >Give us your needs in our room. The requests will be setup more
-        accurately</span
-      >
-    </div>
-    <div
-      class="formgrid grid flex flex-wrap justify-content-center align-items-center pt-7"
-    >
-      <div class="gap-4">
-        <div class="field col">
-          <p-floatLabel>
-            <input pInputText id="location" />
-            <label for="location">Choose hotel's location</label>
-          </p-floatLabel>
-        </div>
-        <div class="field col">
-          <p-floatLabel>
-            <input pInputText id="size" />
-            <label for="size">Room Size</label>
-          </p-floatLabel>
-        </div>
-      </div>
-    </div>
+    </canvas>
   </div>
 </div>
 <app-footer-shared></app-footer-shared>

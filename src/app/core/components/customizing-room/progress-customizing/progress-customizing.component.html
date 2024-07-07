@@ -1,0 +1,45 @@
+<div class="pt-3">
+  <div [hidden]="isHideCustomizing">
+    <div class="fadeinleft animation-duration-600">
+      <p-toolbar class="flex flex-wrap justify-content-center align-items-center w-full">
+        <div class="p-toolbar-group-start">
+          <p-button
+            (click)="selectFurniture('chair')"
+            [disabled]="!canAddFurniture('chair')"
+            class="mr-2"
+            badge="{{ getFurnitureCount('chair') }}"
+            badgeClass="p-badge-contrast"
+            >Chair
+          </p-button>
+          <p-button
+            (click)="selectFurniture('beds')"
+            [disabled]="!canAddFurniture('beds')"
+            class="mr-2"
+            badge="{{ getFurnitureCount('beds') }}"
+            badgeClass="p-badge-contrast"
+            >Bed</p-button
+          >
+          <p-button
+            (click)="selectFurniture('closet')"
+            [disabled]="!canAddFurniture('closet')"
+            class="mr-2"
+            badge="{{ getFurnitureCount('closet') }}"
+            badgeClass="p-badge-contrast"
+            >Closet</p-button
+          >
+          <p-button
+            (click)="selectFurniture('table')"
+            [disabled]="!canAddFurniture('table')"
+            badge="{{ getFurnitureCount('table') }}"
+            badgeClass="p-badge-contrast"
+            >Table</p-button
+          >
+        </div>
+        <div class="p-toolbar-group-end">
+          <p-button (click)="undo()" class="mr-2">Undo</p-button>
+          <p-button (click)="redo()">Redo</p-button>
+        </div>
+      </p-toolbar>
+    </div>
+  </div>
+</div>

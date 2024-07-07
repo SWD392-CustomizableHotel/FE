@@ -28,13 +28,9 @@ export class CustomizingRoomComponent implements OnInit {
   blueprintWidth: number = 435;
   blueprintHeight: number = 677;
 
-  // Customizing Show
   isHideCustomizing: boolean = true;
-  // Steps
   steps: MenuItem[] | undefined;
   activeIndex: number = 0;
-  // Context Menu
-  contextMenuItems: MenuItem[] | undefined;
 
   limits: any = { chair: 2, beds: 1, closet: 1, table: 1 };
   amenities = {
@@ -43,83 +39,32 @@ export class CustomizingRoomComponent implements OnInit {
     family: { chair: 6, beds: 3, closet: 2, table: 2 },
   };
 
-  constructor(private messageService: MessageService) {
-    this.contextMenuItems = [
-      {
-        label: 'Undo',
-        icon: 'pi pi-undo',
-        command: (): void => {
-          this.undo();
-        },
-      },
-      {
-        label: 'Redo',
-        icon: 'pi pi-refresh',
-        command: (): void => {
-          this.redo();
-        },
-      },
-      {
-        separator: true,
-      },
-      {
-        label: 'Print',
-        icon: 'pi pi-print',
-      },
-    ];
-  }
+  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.steps = [
-      {
-        label: 'Information',
-        command: (): void => {
-          this.hideCustomizing(true);
-        },
-      },
-      {
-        label: 'Customizing',
-        command: (): void => {
-          this.hideCustomizing(false);
-        },
-      },
-      {
-        label: 'Export',
-        command: (): void => {
-          this.hideCustomizing(false);
-        },
-      },
-      {
-        label: 'Payment',
-        command: (): void => {
-          this.hideCustomizing(true);
-        },
-      },
+      { label: 'Information', command: (): void => this.onActiveIndexChange(0) },
+      { label: 'Customizing', command: (): void => this.onActiveIndexChange(1) },
+      { label: 'Export', command: (): void => this.onActiveIndexChange(2) },
+      { label: 'Payment', command: (): void => this.onActiveIndexChange(3) },
     ];
     if (this.canvas) {
-      this.ctx = this.canvas.nativeElement.getContext(
-        '2d'
-      ) as CanvasRenderingContext2D;
-      this.loadImages()
-        .then(() => {
-          this.blueprintImage.src = 'assets/furniture/hotelroom-blueprint.png';
-          this.blueprintImage.onload = (): void => {
-            this.saveState();
-            this.draw();
-          };
-        })
-        .catch((err) => console.error('Error loading images', err));
+      this.ctx = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+      this.loadImages().then(() => {
+        this.blueprintImage.src = 'assets/furniture/hotelroom-blueprint.png';
+        this.blueprintImage.onload = (): void => {
+          this.saveState();
+          this.draw();
+        };
+      }).catch(err => console.error('Error loading images', err));
     } else {
       console.error('Canvas element not found');
     }
   }
 
-  hideCustomizing(value: boolean): void {
-    this.isHideCustomizing = value;
-  }
-
-  onActiveIndexChange(event: number): void {
-    this.activeIndex = event;
+  onActiveIndexChange(index: number): void {
+    this.activeIndex = index;
+    this.isHideCustomizing = index !== 1 && index !== 2;
   }
 
   async loadImages(): Promise<void> {
@@ -147,7 +92,7 @@ export class CustomizingRoomComponent implements OnInit {
   }
 
   addFurniture(x: number, y: number): void {
-    if (!this.selectedFurniture) return; // Ensure a furniture type is selected
+    if (!this.selectedFurniture) return;
     const size = this.getFurnitureSize(this.selectedFurniture);
     if (this.isInsideBlueprint(x, y, size) && !this.isOverlapping(x, y, size)) {
       this.furnitureList.push({ x, y, size, type: this.selectedFurniture });
@@ -158,8 +103,7 @@ export class CustomizingRoomComponent implements OnInit {
         key: '1',
         severity: 'error',
         summary: 'Error',
-        detail:
-          'You cannot place your furniture outside the room or same position with other furnitures',
+        detail: 'You cannot place your furniture outside the room or at the same position with other furniture'
       });
     }
   }
@@ -169,7 +113,7 @@ export class CustomizingRoomComponent implements OnInit {
   }
 
   getFurnitureCount(type: string): number {
-    return this.furnitureList.filter((f) => f.type === type).length;
+    return this.furnitureList.filter(f => f.type === type).length;
   }
 
   getFurnitureSize(type: string): number {
@@ -189,16 +133,14 @@ export class CustomizingRoomComponent implements OnInit {
 
   saveState(): void {
     this.undoStack.push(JSON.parse(JSON.stringify(this.furnitureList)));
-    if (this.undoStack.length > 10) this.undoStack.shift(); // Limit stack size
-    this.redoStack = []; // Clear redo stack
+    if (this.undoStack.length > 10) this.undoStack.shift();
+    this.redoStack = [];
   }
 
   undo(): void {
     if (this.undoStack.length > 1) {
       this.redoStack.push(this.undoStack.pop()!);
-      this.furnitureList = JSON.parse(
-        JSON.stringify(this.undoStack[this.undoStack.length - 1])
-      );
+      this.furnitureList = JSON.parse(JSON.stringify(this.undoStack[this.undoStack.length - 1]));
       this.draw();
     }
   }
@@ -206,11 +148,26 @@ export class CustomizingRoomComponent implements OnInit {
   redo(): void {
     if (this.redoStack.length > 0) {
       this.undoStack.push(this.redoStack.pop()!);
-      this.furnitureList = JSON.parse(
-        JSON.stringify(this.undoStack[this.undoStack.length - 1])
-      );
+      this.furnitureList = JSON.parse(JSON.stringify(this.undoStack[this.undoStack.length - 1]));
       this.draw();
     }
+  }
+
+  isOverlapping(
+    newX: number,
+    newY: number,
+    size: number,
+    ignoreIndex: number | null = null
+  ): boolean {
+    for (let i = 0; i < this.furnitureList.length; i++) {
+      if (ignoreIndex !== null && i === ignoreIndex) continue;
+      const furniture = this.furnitureList[i];
+      const distance = Math.hypot(furniture.x - newX, furniture.y - newY);
+      if (distance < (furniture.size + size) / 2) {
+        return true;
+      }
+    }
+    return false;
   }
 
   draw(): void {
@@ -330,23 +287,17 @@ export class CustomizingRoomComponent implements OnInit {
       this.draw();
     }
   }
-
-  onMouseMove(event: MouseEvent): void {
-    if (this.isDragging && this.selectedObjectIndex !== null) {
-      const rect = this.canvas!.nativeElement.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / this.scale;
-      const y = (event.clientY - rect.top) / this.scale;
-      const dx = x - this.lastX;
-      const dy = y - this.lastY;
-      this.moveFurniture(this.selectedObjectIndex, dx, dy);
-      this.lastX = x;
-      this.lastY = y;
+  findFurnitureIndex(x: number, y: number): number | null {
+    for (let i = 0; i < this.furnitureList.length; i++) {
+      const furniture = this.furnitureList[i];
+      if (
+        Math.abs(furniture.x - x) < furniture.size / 2 &&
+        Math.abs(furniture.y - y) < furniture.size / 2
+      ) {
+        return i;
+      }
     }
-  }
-
-  onMouseUp(): void {
-    this.isDragging = false;
-    this.saveState();
+    return null;
   }
 
   moveFurniture(index: number, dx: number, dy: number): void {
@@ -373,17 +324,22 @@ export class CustomizingRoomComponent implements OnInit {
     }
   }
 
-  findFurnitureIndex(x: number, y: number): number | null {
-    for (let i = 0; i < this.furnitureList.length; i++) {
-      const furniture = this.furnitureList[i];
-      if (
-        Math.abs(furniture.x - x) < furniture.size / 2 &&
-        Math.abs(furniture.y - y) < furniture.size / 2
-      ) {
-        return i;
-      }
+  onMouseMove(event: MouseEvent): void {
+    if (this.isDragging && this.selectedObjectIndex !== null) {
+      const rect = this.canvas!.nativeElement.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / this.scale;
+      const y = (event.clientY - rect.top) / this.scale;
+      const dx = x - this.lastX;
+      const dy = y - this.lastY;
+      this.moveFurniture(this.selectedObjectIndex, dx, dy);
+      this.lastX = x;
+      this.lastY = y;
     }
-    return null;
+  }
+
+  onMouseUp(): void {
+    this.isDragging = false;
+    this.saveState();
   }
 
   isInsideBlueprint(x: number, y: number, size: number): boolean {
@@ -395,50 +351,10 @@ export class CustomizingRoomComponent implements OnInit {
     );
   }
 
-  isOverlapping(
-    newX: number,
-    newY: number,
-    size: number,
-    ignoreIndex: number | null = null
-  ): boolean {
-    for (let i = 0; i < this.furnitureList.length; i++) {
-      if (ignoreIndex !== null && i === ignoreIndex) continue;
-      const furniture = this.furnitureList[i];
-      const distance = Math.hypot(furniture.x - newX, furniture.y - newY);
-      if (distance < (furniture.size + size) / 2) {
-        return true;
-      }
-    }
-    return false;
+  handleClick(event: MouseEvent): void {
+    const rect = this.canvas!.nativeElement.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    this.addFurniture(x, y);
   }
-
-  // Danh cho zoom in, zoom out features (dang bi loi)
-  // @HostListener('wheel', ['$event'])
-  // onScroll(event: WheelEvent): void {
-  //   if (event.target === this.canvas?.nativeElement) {
-  //     event.preventDefault();
-  //     event.stopPropagation();
-  //     if (event.deltaY < 0) {
-  //       this.zoomIn();
-  //     } else {
-  //       this.zoomOut();
-  //     }
-  //   }
-  // }
-
-  // zoomIn(): void {
-  //   console.log(`Zoom in: `, this.scale);
-  //   if (this.scale < 0.81 && this.scale > 0.5) {
-  //     this.scale *= 1.1;
-  //     this.draw();
-  //   }
-  // }
-
-  // zoomOut(): void {
-  //   console.log(`Zoom out: `, this.scale);
-  //   if (this.scale >= 0.8 && this.scale < 3) {
-  //     this.scale /= 1.1;
-  //     this.draw();
-  //   }
-  // }
 }

@@ -7,6 +7,7 @@ import { ResetPasswordComponent } from './core/components/reset-password/reset-p
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { CustomizingRoomComponent } from './core/components/customizing-room/customizing-room.component';
+import { AuthGuard } from './_helper/auth.guard';
 
 const routes: Routes = [
   {
@@ -75,6 +76,7 @@ const routes: Routes = [
           ).then((m) => m.CustomizingRoomModule),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: '**',
