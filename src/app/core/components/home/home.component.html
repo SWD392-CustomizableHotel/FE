@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <!-- eslint-disable @angular-eslint/template/elements-content -->
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
@@ -6,93 +7,70 @@
   <link rel="stylesheet" href="home.component.scss">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+<div>
+<app-header-shared></app-header-shared>
+</div>
 <div class="surface-0 flex justify-content-center">
   <div id="home" class="landing-wrapper overflow-hidden">
-      <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3">
-          <a class="flex align-items-center" href="#">
-              <img src="assets/images/logo2.png" alt="Sheriton-HotelLogo" height="80" class="mr-0 lg:mr-2">
-          </a>
-          <a pRipple class="cursor-pointer block lg:hidden text-700" pStyleClass="@next" enterClass="hidden" leaveToClass="hidden" [hideOnOutsideClick]="true">
-              <i class="pi pi-bars text-4xl"></i>
-          </a>
-          <div class="align-items-center surface-0 flex-grow-1 justify-content-between hidden lg:flex absolute lg:static w-full left-0 px-6 lg:px-0 z-2" style="top:120px">
-              <ul class="list-none p-0 m-0 flex lg:align-items-center select-none flex-column lg:flex-row cursor-pointer">
-                  <li>
-                      <a (click)="router.navigate(['/landing'], {fragment: 'home'})" pRipple class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                         <span>Home</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a (click)="router.navigate(['/landing'], {fragment: 'features'})" pRipple class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                          <span>Features</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a (click)="router.navigate(['/landing'], {fragment: 'highlights'})" pRipple class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                          <span>Highlights</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a (click)="router.navigate(['/landing'], {fragment: 'pricing'})" pRipple class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
-                          <span>Pricing</span>
-                      </a>
-                  </li>
-                  <li>
-                    <a
-                      (click)="router.navigate(['/view-available-room'], { fragment: 'view-available-room' })"
-                      pRipple
-                      class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3"
-                    >
-                      <span>View Available Room</span>
-                    </a>
-                  </li>
-              </ul>
-              <div class="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0">
-                  <button pButton pRipple label="Login" class="p-button-text p-button-rounded border-none font-light line-height-2 text-blue-500" [routerLink]="'/login'"></button>
-                  <button pButton pRipple label="Register" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-blue-500 text-white" [routerLink]="'/register'"></button>
-              </div>                
-          </div>
-          
-      </div>
       <div class="flex justify-content-center">
-          <div class="flex justify-content-center md:justify-content-end pb-8">
-              <!-- Box 1: Choose Location -->
-              <div class="box mr-4" style="max-width: 900px;">    
+          <div class="form-container">
+            <div class="form-box">
+                <!-- Box 1: Choose Location -->
+                <div class="box">
+                    <p-floatLabel>
+                        <p-dropdown id="location" [options]="hotels" optionLabel="address" (ngModelChange)="onLocationChange($event)" [(ngModel)]="location"></p-dropdown>
+                        <label for="location">Choose a location:</label>
+                    </p-floatLabel>
+                </div>
+
+                <!-- Box 3: StartDate & EndDate -->
+                <div class="box">
                   <p-floatLabel>
-                      <p-dropdown id="location" [options]="cities" optionLabel="name"></p-dropdown>
-                      <label for="location">Choose a location:</label>
+                      <p-calendar id="dateRange" [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true"></p-calendar>
+                      <label for="dateRange">Checkin -> CheckOut</label>
                   </p-floatLabel>
               </div>
-      
-              <!-- Box 2: Start Date -->
-              <div class="box mr-4" >
-                  <p-floatLabel>
-                      <p-calendar id="startDate" formControlName="startDate"></p-calendar>
-                      <label for="startDate">Start Date</label>
-                  </p-floatLabel>
-              </div>
-      
-              <!-- Box 3: End Date -->
-              <div class="box mr-4">
-                  <p-floatLabel>
-                      <p-calendar id="endDate" formControlName="endDate"></p-calendar>
-                      <label for="endDate">End Date</label>
-                  </p-floatLabel>
-              </div>
-      
+              
               <!-- Box 4: Number of People -->
-              <div class="box mr-4">
-                  <p-floatLabel>
-                      <p-inputNumber inputId="integeronly" />
-                      <label for="number-input">Number of People</label>
-                  </p-floatLabel>
+              <div class="box">
+                <div class="number-of-people-box" (click)="toggleSliders()">
+                  <input
+                    type="text"
+                    readonly
+                    [value]="
+                      NumberOfRoom + ' rooms, ' + NumberOfAdult + ' adults, ' + NumberOfChildren + ' children'
+                    "
+                  />
+
+                  <div *ngIf="showSliders" class="slider-container">
+                    <div class="slider-title">Number of People</div>
+                    <div class="slider-item">
+                      <label>Rooms</label>
+                      <p-slider [(ngModel)]="NumberOfRoom" [max]="8" [min]="1" [step]="1"></p-slider>
+                      <span>{{ NumberOfRoom }}</span>
+                    </div>
+                    <p-toast key="peopleCount"/>
+                    <div class="slider-item">
+                      <label>Adults</label>
+                      <p-slider [(ngModel)]="NumberOfAdult" [max]="10" [min]="1" [step]="1" (onChange)="checkPeopleCount()"></p-slider>
+                      <span>{{ NumberOfAdult }}</span>
+                    </div>
+                    <div class="slider-item">
+                      <label>Children</label>
+                      <p-slider [(ngModel)]="NumberOfChildren" [max]="10" [min]="0" [step]="1" (onChange)="checkPeopleCount()"></p-slider>
+                      <span>{{ NumberOfChildren }}</span>
+                    </div>
+                  </div>
+                  
+                </div>
               </div>
-      
+        
               <!-- Box 5: Booking -->
               <div class="box">
-                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined" (click)="toAvailableRoomPage()"></button>
               </div>
           </div>
+        </div>
       </div>
 
       <div class="col-12 mt-8 mb-8 p-2 md:p-8" style="border-radius:20px; background:linear-gradient(0deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), radial-gradient(77.36% 256.97% at 77.36% 57.52%, #EFE1AF 0%, #C3DCFA 100%);">
@@ -203,7 +181,7 @@
             <div class="feature-card-popularroom">
               <div class="img-container-popularroom">
                 <img
-                  src="assets/images/family_room.png"                 
+                  [src]="room.image"                 
                   alt="Family Room"
                   class="feature-image"
                 />
@@ -224,13 +202,13 @@
                   <span class="original-price">$799</span>
                 </div>
                 <div class="box">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Booking"
-                    class="p-button-outlined"
-                  ></button>
+                  <p-button
+                    (click)="toBookingPage(room.id)"
+                    (keyup.enter)="toBookingPage(room.id)"
+                    icon="pi pi-shopping-cart"
+                    class="flex-auto md:flex-initial white-space-nowrap mt-2"
+                    label="Booking "
+                  />
                 </div>
               </div>
             </div>
@@ -238,6 +216,7 @@
         </div>
       </div>
       </div>
-      <app-footer></app-footer>
+      <button (click)="goToBookingHistory()">View Booking History</button>
+      <app-footer-shared></app-footer-shared>
   </div>
 </div>

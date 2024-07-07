@@ -1,3 +1,24 @@
 .home-button {
-    padding-bottom: 6rem;
+  padding-bottom: 6rem;
+}
+.asl-google-signin-button {
+  display: block; /* Ensure it's a block-level element */
+  margin-top: 10px; /* Adjust spacing as needed */
+  background-color: #fff; /* Custom background color */
+  color: #4285f4; /* Custom text color */
+  border: 1px solid #4285f4; /* Custom border */
+  padding: 10px 20px; /* Adjust padding */
+  font-size: 16px; /* Custom font size */
+  cursor: pointer; /* Change cursor on hover */
+  border-radius: 4px; /* Rounded corners */
+  text-align: center; /* Center align text */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+.asl-google-signin-button:hover {
+  background-color: #f0f0f0; /* Custom hover background color */
+}
+
+.asl-google-signin-button:active {
+  background-color: #e0e0e0; /* Custom active background color */
 }

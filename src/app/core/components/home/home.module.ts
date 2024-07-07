@@ -14,6 +14,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { sharedModule } from '../layout/share/shared.module';
 import { RatingModule } from 'primeng/rating';
+import { FormsModule } from '@angular/forms';
+import { SliderModule } from 'primeng/slider';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
 @NgModule({
     declarations: [
         HomeComponent,
@@ -33,8 +38,11 @@ import { RatingModule } from 'primeng/rating';
         InputNumberModule,
         sharedModule,
         RatingModule,
+        FormsModule,
+        SliderModule,
+        ToastModule
     ],
-    providers: [],
+    providers: [MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     bootstrap: [HomeComponent],
 })

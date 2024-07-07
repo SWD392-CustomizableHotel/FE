@@ -9,7 +9,8 @@ import { LayoutService } from '../services/app.layout.service';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
   cities: string[] = ['Ho Chi Minh City', 'Ha Noi Capital', 'Da Nang City', 'Hue City'];
