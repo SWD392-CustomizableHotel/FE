@@ -26,7 +26,7 @@ export class HeaderSharedComponent {
   constructor(
     public router: Router,
     private authService: AuthenticationService,
-    private googleCommonService: GoogleCommonService,
+    private googleCommonService: GoogleCommonService
   ) {
     this.googleCommonService.isLoggedIn.subscribe((loggedIn) => {
       this.isLoggedIn.next(loggedIn);
@@ -90,6 +90,6 @@ export class HeaderSharedComponent {
   logout(): void {
     this.authService.logOut();
     this.googleCommonService.signOutExternal();
-    // this.googleCommonService.setShowAdditionalInfoForm(false); 
+    // this.googleCommonService.setShowAdditionalInfoForm(false);
   }
 }

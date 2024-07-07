@@ -9,7 +9,12 @@ import { environment } from '../../assets/environments/environment';
 export class AmenityService {
   constructor(private http: HttpClient) {}
 
-  getAllAmenities(pageNumber: number, pageSize: number, status?: string, searchTerm?: string): Observable<any> {
+  getAllAmenities(
+    pageNumber: number,
+    pageSize: number,
+    status?: string,
+    searchTerm?: string
+  ): Observable<any> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
@@ -26,7 +31,10 @@ export class AmenityService {
     //   params = params.set('filter.hotelId', filter.hotelId.toString());
     // }
 
-    return this.http.get(`${environment.BACKEND_API_URL}/api/Amenity/get-amenities`, { params });
+    return this.http.get(
+      `${environment.BACKEND_API_URL}/api/Amenity/get-amenities`,
+      { params }
+    );
   }
 
   getAmenityDetails(amenityId: number): Observable<any> {
@@ -39,13 +47,28 @@ export class AmenityService {
     return this.http.get(url);
   }
 
-  createAmenity(name: string, description: string, price: number, status: string, hotelId: number, capacity: number, inUse: number): Observable<any> {
+  createAmenity(
+    name: string,
+    description: string,
+    price: number,
+    status: string,
+    hotelId: number,
+    capacity: number,
+    inUse: number
+  ): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Amenity/create-amenity`;
     const body = { name, description, price, status, hotelId, capacity, inUse };
     return this.http.post(url, body);
   }
 
-  updateAmenity(amenityId: number, name: string, description: string, price: number, capacity: number, inUse: number): Observable<any> {
+  updateAmenity(
+    amenityId: number,
+    name: string,
+    description: string,
+    price: number,
+    capacity: number,
+    inUse: number
+  ): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Amenity/update-amenity?amenityId=${amenityId}&name=${name}&description=${description}&price=${price}&capacity=${capacity}&inUse=${inUse}`;
     return this.http.put(url, {});
   }
