@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-booking-room',
   templateUrl: './booking-room.component.html',
-  styleUrl: './booking-room.component.scss'
+  styleUrl: './booking-room.component.scss',
 })
 export class BookingRoomComponent implements OnInit {
   selectedRoomId?: number;
@@ -27,7 +27,7 @@ export class BookingRoomComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private roomService: RoomService,
-    public router : Router,
+    public router: Router,
     private userBookingData: UserBookingService,
     private datePipe: DatePipe,
     private messageService: MessageService
@@ -38,7 +38,9 @@ export class BookingRoomComponent implements OnInit {
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
 
     // Fetch room details and wait for the response
-    this.room = await this.roomService.getRoomDetails(this.selectedRoomId).toPromise();
+    this.room = await this.roomService
+      .getRoomDetails(this.selectedRoomId)
+      .toPromise();
 
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
@@ -47,29 +49,38 @@ export class BookingRoomComponent implements OnInit {
       if (rangeDates && rangeDates.length === 2) {
         const start =
           this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
-          this.startDate = start;
+        this.startDate = start;
         const end = this.datePipe.transform(rangeDates[1], 'dd/MM/yyyy') || '';
-          this.endDate = end;
+        this.endDate = end;
         this.formattedRangeDates = `${start} - ${end}`;
       } else {
         this.formattedRangeDates = '';
       }
     });
   }
-
-
   toStripePayment(firstName?: string, lastName?: string, email?: string): void {
     if (this.selectedRoomId !== undefined) {
       localStorage.setItem('roomId', this.selectedRoomId.toString());
     } else {
       console.error('ID is undefined');
     }
-    this.selectedRoom = this.rooms?.find((room) => room.id === this.selectedRoomId);
-    this.router.navigate(['/stripe-payment', this.selectedRoomId, firstName, lastName, email]);
+    this.selectedRoom = this.rooms?.find(
+      (room) => room.id === this.selectedRoomId
+    );
+    this.router.navigate([
+      '/stripe-payment',
+      this.selectedRoomId,
+      firstName,
+      lastName,
+      email,
+    ]);
   }
 
-  onUpload() :void {
-    this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded with ID' });
+  onUpload(): void {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Success',
+      detail: 'File Uploaded with ID',
+    });
+  }
 }
-}
-
