@@ -20,7 +20,6 @@ export class HeaderSharedComponent {
     { label: 'Features', route: 'features' },
     { label: 'Highlights', route: 'highlights' },
     { label: 'Pricing', route: 'pricing' },
-    { label: 'View Available Room', route: 'view-available-room' },
   ];
 
   constructor(

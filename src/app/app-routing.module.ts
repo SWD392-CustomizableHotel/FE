@@ -6,7 +6,9 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
-
+import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
+import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
+import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 const routes: Routes = [
   {
     path: '',
@@ -59,6 +61,45 @@ const routes: Routes = [
           import(
             './core/components/view-available-room/view-available-room.module'
           ).then((m) => m.ViewAvailableRoomModule),
+      },
+    ],
+  },
+  {
+    path: 'booking-room/:id',
+    component: BookingRoomComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/booking-room/booking-room.module').then(
+            (m) => m.BookingRoomModule
+          ),
+      },
+    ],
+  },
+  {
+    path: 'stripe-payment/:id/:firstName/:lastName/:email',
+    component: StripePaymentComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/stripe-payment/stripe-payment.module').then(
+            (m) => m.StripePaymentModule
+          ),
+      },
+    ],
+  },
+  {
+    path: 'confirm-payment',
+    component: ConfirmPaymentComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/confirm-payment/confirm-payment.module').then(
+            (m) => m.ConfirmPaymentModule
+          ),
       },
     ],
   },

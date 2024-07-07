@@ -1,0 +1,146 @@
+<app-header-shared></app-header-shared>
+<div class="surface-0"></div>
+<form>
+  <div
+    class="pt-2 flex flex-column justify-content-around align-items-center"
+  >
+    <h2 class="py-4 font-bold">Complete Your Booking</h2>
+    <!--Room Information -->
+    <div class="w-10">
+      <div
+        *ngIf="room"
+        class="room-details flex flex-column justify-content-between"
+      >
+        <h3 class="text-center my-4">Room Information</h3>
+
+        <div class="flex justify-content-between align-items-center">
+          <div class="sm:w-6 w-5 xl:text-2xl sm:text-xl">
+            <div class="py-2">
+              <span class="font-bold">Room Number: </span>
+              <span>{{ room.code }}</span>
+            </div>
+            <div class="py-2">
+              <span class="font-bold">Description:</span>
+              <span> {{ room.description }} </span>
+            </div>
+            <div class="py-2">
+              <span class="font-bold">Type: </span>
+              <span>{{ room.type }}</span>
+            </div>
+            <div class="py-2">
+              <span class="font-bold">Price:</span>
+              <span> ${{ room.price }}</span>
+            </div>
+            <div class="py-2">
+              <span class="font-bold">Number Of People:</span>
+              <span> {{ room.numberOfPeople }}</span>
+            </div>
+            <div class="py-2">
+              <span class="font-bold">Start Date:</span>
+              <span> {{ startDate }}</span>
+            </div>
+            <div class="py-2">
+              <span class="font-bold">End Date:</span>
+              <span> {{ endDate }}</span>
+            </div>
+          </div>
+
+          <div class="room-image-container md:w-5 w-5">
+            <img
+              class="room-image w-full"
+              [src]="room.image"
+              alt="Room Image"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Room Information -->
+
+    <!--Guest Information -->
+    <div class="w-10">
+      <div
+        class="room-details flex flex-column align-items-center justify-content-center my-4"
+      >
+        <h3 class="text-center my:4">Guest Information</h3>
+
+        <div class="flex flex-wrap gap-6">
+          <p-inputGroup class="w-5 h-3rem my-2">
+            <p-inputGroupAddon>
+              <i class="pi pi-user"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="First Name"
+              type="firstName"
+              id="firstName"
+              [(ngModel)]="firstName"
+              name="firstName"
+            />
+          </p-inputGroup>
+          <p-inputGroup class="w-5 h-3rem my-2">
+            <p-inputGroupAddon>
+              <i class="pi pi-user"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="Last Name"
+              type="lastName"
+              id="lastName"
+              [(ngModel)]="lastName"
+              name="lastName"
+            />
+          </p-inputGroup>
+          <p-inputGroup class="w-5 h-3rem my-2">
+            <p-inputGroupAddon>
+              <i class="pi pi-envelope"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="Email"
+              type="email"
+              id="email"
+              [(ngModel)]="email"
+              name="email"
+            />
+          </p-inputGroup>
+          <!-- <p-inputGroup class="w-5 h-3rem my-2">
+            <p-inputGroupAddon>
+              <i class="pi pi-phone"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              placeholder="Phone Number"
+            />
+          </p-inputGroup> -->
+          <!-- <p-inputGroup class="w-5 h-3rem my-2">
+            <p-toast />
+            <p-fileUpload 
+                mode="basic" 
+                chooseLabel="Upload Your ID" 
+                chooseIcon="pi pi-upload"
+                name="demo[]" 
+                accept="image/*" 
+                maxFileSize="1000000" 
+                (onUpload)="onUpload()" />
+          </p-inputGroup> -->
+        </div>
+      </div>
+
+      <div class="w-full">
+        <button
+          type="submit"
+          (click)="toStripePayment(firstName, lastName, email)"
+          (keyup.enter)="toStripePayment(firstName, lastName, email)"
+          icon="pi pi-shopping-cart"
+          class="mt-2 w-full border-none py-3 bg-blue-400 text-white hover:bg-blue-300 cursor-pointer border-round"
+        >
+          Book now
+        </button>
+      </div>
+    </div>
+    <!--Guest Information -->
+  </div>
+</form>
+
+<app-footer-shared></app-footer-shared>
