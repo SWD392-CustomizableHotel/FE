@@ -14,7 +14,7 @@
         [rowHover]="true"
         [totalRecords]="totalRecords"
         styleClass="p-datatable-gridlines"
-        [globalFilterFields]="['bookingId', 'roomType', 'rating', 'userName', 'service', 'amentities', 'payments']"
+        [globalFilterFields]="['bookingId', 'roomType', 'rating', 'userName', 'service', 'amentities', 'payments', 'startDate', 'endDate']"
         responsiveLayout="scroll"
       >
         <ng-template pTemplate="caption">
@@ -36,7 +36,7 @@
                 #filter
                 (input)="onGlobalFilter(dt1, $event)"
                 placeholder="Search Keyword"
-                class="w-full"
+                class="w-full h-full"
               />
             </span>
           </div>
@@ -76,6 +76,30 @@
                   field="userName"
                   display="menu"
                   placeholder="Search by User Name"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 8rem" pSortableColumn="startDate">
+              <div class="flex justify-content-between align-items-center">
+                Start Date
+                <p-sortIcon field="startDate"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="startDate"
+                  display="menu"
+                  placeholder="Search by Start Date"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th style="min-width: 8rem" pSortableColumn="endDate">
+              <div class="flex justify-content-between align-items-center">
+                End Date
+                <p-sortIcon field="endDate"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="endDate"
+                  display="menu"
+                  placeholder="Search by End Date"
                 ></p-columnFilter>
               </div>
             </th>
@@ -122,23 +146,67 @@
             <td>{{ booking.roomDescription }}</td>
             <td>{{ booking.rating }}</td>
             <td>{{ booking.userName }}</td>
-            <td>{{ booking.service?.join(', ') }}</td>
-            <td>{{ booking.amentities?.join(', ') }}</td>
-            <td>{{ booking.payments?.join(', ') }}</td>
+            <td>{{ booking.startDate }}</td>
+            <td>{{ booking.endDate }}</td>
+            <td>
+              <div class="flex justify-content-between align-items-center">
+                <div>
+                  <span class="mr-2">{{ booking.services.length }}</span>
+                  <ng-container *ngFor="let service of booking.services">
+                    <span class="mr-1">{{ service.code }}</span>
+                  </ng-container>
+                </div>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-eye"
+                  class="p-button-rounded p-button-info"
+                  (click)="openServiceDialog(booking.services)"
+                ></button>
+              </div>
+            </td>
+            <td>
+              <div class="flex justify-content-between align-items-center">
+                <div>
+                  <span class="mr-2">{{ booking.amenities.length }}</span>
+                  <ng-container *ngFor="let amenity of booking.amenities">
+                    <span class="mr-1">{{ amenity.code }}</span>
+                  </ng-container>
+                </div>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-eye"
+                  class="p-button-rounded p-button-info"
+                  (click)="openAmenityDialog(booking.amenities)"
+                ></button>
+              </div>
+            </td>
+            <td>
+              <div class="flex justify-content-between align-items-center">
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-eye"
+                  class="p-button-rounded p-button-info"
+                  (click)="openPaymentDialog(booking.payments)"
+                ></button>
+              </div>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6">No bookings found.</td>
+            <td colspan="8">No bookings found.</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="loadingbody">
           <tr>
-            <td colspan="6">Loading booking data. Please wait.</td>
+            <td colspan="8">Loading booking data. Please wait.</td>
           </tr>
         </ng-template>
       </p-table>
-      <div class="flex align-items-center justify-content-en">
+      <div class="flex align-items-center justify-content-end">
         <span class="mx-1 text-color">Items per page: </span>
         <p-dropdown
           [options]="options"
@@ -159,6 +227,111 @@
         ></p-paginator>
       </div>
     </div>
+    <!-- Service Dialog -->
+    <p-dialog
+      [(visible)]="serviceDialogVisible"
+      [style]="{ width: '600px' }"
+      header="Service Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+      <ng-template pTemplate="content">
+        <p-table [value]="selectedService">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-service>
+            <tr>
+              <td>{{ service.code }}</td>
+              <td>{{ service.name }}</td>
+              <td>{{ service.description }}</td>
+              <td>{{ service.price }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Close"
+          icon="pi pi-times"
+          (click)="closeServiceDialog()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
+    <!-- Amenity Dialog -->
+    <p-dialog
+      [(visible)]="amenityDialogVisible"
+      [style]="{ width: '600px' }"
+      header="Amenity Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+      <ng-template pTemplate="content">
+        <p-table [value]="selectedAmenity">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-amenity>
+            <tr>
+              <td>{{ amenity.code }}</td>
+              <td>{{ amenity.name }}</td>
+              <td>{{ amenity.description }}</td>
+              <td>{{ amenity.price }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Close"
+          icon="pi pi-times"
+          (click)="closeAmenityDialog()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
+
+    <!-- Payment Dialog -->
+    <p-dialog
+      [(visible)]="paymentDialogVisible"
+      [style]="{ width: '600px' }"
+      header="Payment Details"
+      [modal]="true"
+      class="p-fluid"
+    >
+      <ng-template pTemplate="content">
+        <p-table [value]="selectedPayment">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-payment>
+            <tr>
+              <td>{{ payment.amount }}</td>
+              <td>{{ payment.status }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Close"
+          icon="pi pi-times"
+          (click)="closePaymentDialog()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
   </div>
 </div>
 <app-footer-shared></app-footer-shared>

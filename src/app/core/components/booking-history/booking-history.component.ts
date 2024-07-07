@@ -1,9 +1,15 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BookingService } from '../../../services/booking.service';
 import { MessageService } from 'primeng/api';
 import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
 import { Table } from 'primeng/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AssignServiceComponent } from '../main/manage-accounts/assign-service-component/assign-service.component';
+import { Service } from '../../../interfaces/models/service';
+import { Amenity } from '../../../interfaces/models/amenity';
+import { Payment } from '../../../interfaces/models/payment';
 
 interface PageEvent {
   first?: number;
@@ -16,9 +22,15 @@ interface PageEvent {
   selector: 'app-booking-history',
   templateUrl: './booking-history.component.html',
   styleUrls: ['./booking-history.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService, DialogService]
 })
 export class BookingHistoryComponent implements OnInit {
+  serviceDialogVisible: boolean = false;
+  amenityDialogVisible: boolean = false;
+  paymentDialogVisible: boolean = false;
+  selectedService: Service[] = [];
+  selectedAmenity: Amenity[] = [];
+  selectedPayment: Payment[] = [];
   bookings: BookingHistoryDto[] = [];
   loading: boolean = true;
   totalRecords: number = 0;
@@ -39,10 +51,14 @@ export class BookingHistoryComponent implements OnInit {
   ];
   @ViewChild('filter') filter!: ElementRef;
   roomType?: string;
+  service: Service = {};
+  amenity: Amenity = {};
+  payment: Payment = {};
 
   constructor(
     private bookingService: BookingService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private dialogService: DialogService,
   ) {}
 
   ngOnInit(): void {
@@ -108,4 +124,32 @@ export class BookingHistoryComponent implements OnInit {
     this.searchTerm = undefined;
     this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
   }
+
+  openServiceDialog(service: Service[]) {
+    this.selectedService = service;
+    this.serviceDialogVisible = true;
+  }
+
+  closeServiceDialog() {
+    this.serviceDialogVisible = false;
+  }
+
+  openAmenityDialog(amenity: Amenity[]) {
+    this.selectedAmenity = amenity;
+    this.amenityDialogVisible = true;
+  }
+
+  closeAmenityDialog() {
+    this.amenityDialogVisible = false;
+  }
+
+  openPaymentDialog(payment: Payment[]) {
+    this.selectedPayment = payment;
+    this.paymentDialogVisible = true;
+  }
+
+  closePaymentDialog() {
+    this.paymentDialogVisible = false;
+  }
+
 }

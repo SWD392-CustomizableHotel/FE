@@ -9,6 +9,9 @@ import { sharedModule } from '../layout/share/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogModule } from 'primeng/dialog';
+
 @NgModule({
   imports: [
     PaginatorModule,
@@ -20,6 +23,8 @@ import { CommonModule } from '@angular/common';
     sharedModule,
     FormsModule,
     ReactiveFormsModule,
+    MatDialogModule,
+    DialogModule,
   ],
   declarations: [BookingHistoryComponent],
   providers: [],
