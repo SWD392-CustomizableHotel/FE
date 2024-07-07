@@ -1,0 +1,33 @@
+<div class="flex flex-column justify-content-between min-h-screen">
+  <app-header-shared></app-header-shared>
+
+  <div
+    class="my-6 pt-2 px-auto flex flex-column align-items-center justify-content-center"
+  >
+    <form
+      class="flex flex-column w-7 h-20rem justify-content-center align-items-center surface-100 border-round"
+    >
+      <h2><span id="payment-message" class="hidden"></span></h2>
+      <span class="hidden" id="invoiceLink"
+        >Invoice Download Link:
+        <a href="{{ invoiceDownloadLink }}">Download Link</a></span
+      >
+      <span class="hidden" id="invoicePage"
+        >Invoice Page:
+        <a href="{{ invoiceHostedPages }}" target="_blank">Hosted Page</a></span
+      >
+      <button
+        class="bg-green-400 mt-6 p-3 border-round cursor-pointer border-none w-4 hover:text-white hover:bg-green-300"
+      >
+        Re-Booking
+      </button>
+      <button
+        class="bg-blue-400 mt-3 p-3 border-round cursor-pointer border-none w-4 hover:text-white hover:bg-blue-300"
+        (click)="navigateToHome()"
+      >
+        Back To Home
+      </button>
+    </form>
+  </div>
+  <app-footer-shared></app-footer-shared>
+</div>

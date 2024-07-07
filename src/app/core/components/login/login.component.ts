@@ -9,6 +9,7 @@ import { ExternalAuthDto } from '../../../interfaces/models/externalAuthDto';
 import { BehaviorSubject } from 'rxjs';
 import { GoogleCommonService } from '../../../services/google-common.service';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { BookingService } from '../../../services/booking.service';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit {
   firstNameIsRequired!: Message[];
   lastNameIsRequired!: Message[];
   phoneNumberIsRequired!: Message[];
+  userId?: string;
 
   showError?: boolean;
   errorMessage: string = '';
@@ -43,7 +45,8 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private googleCommonService: GoogleCommonService,
     private socialAuthService: SocialAuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private bookingService: BookingService
   ) {
     if (this.authenticationService.userValue) {
       this.isLoggedIn.next(true);
@@ -151,7 +154,9 @@ export class LoginComponent implements OnInit {
       .login(this.f['username'].value, this.f['password'].value)
       .pipe(first())
       .subscribe({
-        next: () => {
+        next: (user) => {
+          this.userId = user.userId;
+          localStorage.setItem('userId', this.userId!);
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.isLoggedIn.next(true);
           this.router.navigate([returnUrl]);
@@ -173,7 +178,7 @@ export class LoginComponent implements OnInit {
 
   logout(): void {
     this.authenticationService.logOut();
-    this.googleCommonService.signOutExternal(); 
+    this.googleCommonService.signOutExternal();
     this.googleCommonService.setShowAdditionalInfoForm(false);
     this.isLoggedIn.next(false);
   }

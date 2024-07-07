@@ -37,7 +37,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
 import { RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
-import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import {
+  DatePipe,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
@@ -46,6 +50,7 @@ import { PasswordModule } from 'primeng/password';
 import { RegisterComponent } from './core/components/register/register.component';
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { StripeModule } from 'stripe-angular';
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
@@ -90,12 +95,16 @@ export function tokenGetter(): any {
     ProgressBarModule,
     ToastModule,
     PasswordModule,
+    ButtonModule,
     BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
     ButtonModule,
     ButtonModule,
     PaginatorModule,
+    StripeModule.forRoot(
+      'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
+    ),
     CalendarModule,
   ],
   exports: [
@@ -128,6 +137,7 @@ export function tokenGetter(): any {
     CalendarModule,
   ],
   providers: [
+    DatePipe,
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     ProductService,
     MessageService,
