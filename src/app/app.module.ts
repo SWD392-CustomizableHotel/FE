@@ -54,11 +54,12 @@ import { StripeModule } from 'stripe-angular';
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
+import { PaginatorModule } from 'primeng/paginator';
 import { CalendarModule } from 'primeng/calendar';
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
-
+// import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -98,6 +99,8 @@ export function tokenGetter(): any {
     BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    ButtonModule,
+    PaginatorModule,
     StripeModule.forRoot(
       'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
     ),
@@ -129,6 +132,7 @@ export function tokenGetter(): any {
     ToastModule,
     PasswordModule,
     SocialLoginModule,
+    PaginatorModule,
     CalendarModule,
   ],
   providers: [

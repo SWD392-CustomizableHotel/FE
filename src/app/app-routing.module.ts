@@ -6,6 +6,7 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
 import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
 import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
@@ -65,6 +66,19 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'booking-history',
+    component: BookingHistoryComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/booking-history/booking-history.module'
+          ).then((m) => m.BookingHistoryModule),
+      },
+    ]
+  },
+ {
     path: 'booking-room/:id',
     component: BookingRoomComponent,
     children: [

@@ -24,7 +24,7 @@ export class HotelServicesService {
     if (searchTerm && searchTerm !== '') {
       params = params.set('searchTerm', searchTerm);
     }
-    return this.http.get<any>(`${environment.BACKEND_API_URL}/api/Service`, {
+    return this.http.get<any>(`${environment.BACKEND_API_URL}/api/AssignService`, {
       params,
     });
   }
