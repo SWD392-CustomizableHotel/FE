@@ -55,13 +55,11 @@ export class BookingRoomComponent implements OnInit {
 
 
   toStripePayment(firstName?: string, lastName?: string, email?: string): void {
-    console.log(this.selectedRoomId);
     if (this.selectedRoomId !== undefined) {
       localStorage.setItem('roomId', this.selectedRoomId.toString());
     } else {
       console.error('ID is undefined');
     }
-    console.log(this.room);
     this.selectedRoom = this.rooms?.find((room) => room.id === this.selectedRoomId);
     this.router.navigate(['/stripe-payment', this.selectedRoomId, firstName, lastName, email]);
   }

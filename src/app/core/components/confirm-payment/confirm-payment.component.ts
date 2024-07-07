@@ -61,7 +61,7 @@ export class ConfirmPaymentComponent implements OnInit {
           return;
         }
         this.showMessage(
-          'Your payment for the reservation has been successfully completed. Thank you!'
+          'Your payment for the reservation has been successfully completed!'
         );
         this.bookingService.createBooking(this.bookingCode).subscribe({
           next: (response: any) => {
@@ -94,8 +94,10 @@ export class ConfirmPaymentComponent implements OnInit {
         });
         this.sendMailService.getInvoiceLink(paymentIntentId).subscribe({
           next: (response: any) => {
+            console.log(response);
             this.invoiceDownloadLink = response[0];
             this.invoiceHostedPages = response[1];
+            console.log(this.invoiceDownloadLink);
           },
           error: (error: any) => {
             console.error('Error ', error);

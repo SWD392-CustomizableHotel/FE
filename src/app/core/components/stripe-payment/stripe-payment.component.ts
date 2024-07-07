@@ -33,6 +33,7 @@ export class StripePaymentComponent implements OnInit {
   secondsRemaining: number;
   minutes: number;
   formattedSeconds: string;
+  firstName?: string;
 
   constructor(
     private http: HttpClient,
@@ -59,6 +60,8 @@ export class StripePaymentComponent implements OnInit {
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
     const emailParam = this.route.snapshot.paramMap.get('email');
     this.email = emailParam ? emailParam : '';
+    const firstNameParam = this.route.snapshot.paramMap.get('firstName');
+    this.firstName = firstNameParam ? firstNameParam : '';
     this.room = await firstValueFrom(
       this.roomService.getRoomDetails(this.selectedRoomId)
     );
@@ -90,7 +93,8 @@ export class StripePaymentComponent implements OnInit {
           this.room?.price,
           this.numOfDays,
           this.numberOfRoom,
-          this.email
+          this.email,
+          this.firstName
         )
         .subscribe({
           next: (response: any) => {
