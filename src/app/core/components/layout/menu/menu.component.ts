@@ -44,6 +44,17 @@ export class MenuComponent implements OnInit {
             ],
           },
           {
+            label: 'Services',
+            icon: 'pi pi-phone',
+            items: [
+              {
+                label: 'Manage Services',
+                icon: 'pi pi-fw pi-phone',
+                routerLink: ['/dashboard/manage-services'],
+              },
+            ],
+          },
+          {
             label: 'Management',
             icon: 'pi pi-users',
             items: [

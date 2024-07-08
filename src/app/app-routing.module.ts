@@ -8,7 +8,10 @@ import { ViewAvailableRoomComponent } from './core/components/view-available-roo
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { CustomizingRoomComponent } from './core/components/customizing-room/customizing-room.component';
 import { AuthGuard } from './_helper/auth.guard';
-
+import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
+import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
+import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
+import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 const routes: Routes = [
   {
     path: '',
@@ -67,6 +70,7 @@ const routes: Routes = [
   {
     path: 'customizing-room',
     component: CustomizingRoomComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -76,7 +80,58 @@ const routes: Routes = [
           ).then((m) => m.CustomizingRoomModule),
       },
     ],
-    canActivate: [AuthGuard]
+  },
+  {
+    path: 'booking-history',
+    component: BookingHistoryComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/booking-history/booking-history.module'
+          ).then((m) => m.BookingHistoryModule),
+      },
+    ],
+  },
+  {
+    path: 'booking-room/:id',
+    component: BookingRoomComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/booking-room/booking-room.module').then(
+            (m) => m.BookingRoomModule
+          ),
+      },
+    ],
+  },
+  {
+    path: 'stripe-payment/:id/:firstName/:lastName/:email',
+    component: StripePaymentComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./core/components/stripe-payment/stripe-payment.module').then(
+            (m) => m.StripePaymentModule
+          ),
+      },
+    ],
+  },
+  {
+    path: 'confirm-payment',
+    component: ConfirmPaymentComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/confirm-payment/confirm-payment.module'
+          ).then((m) => m.ConfirmPaymentModule),
+      },
+    ],
   },
   {
     path: '**',

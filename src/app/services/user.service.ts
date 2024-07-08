@@ -2,17 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../assets/environments/environment';
 import { User } from '../interfaces/models/user';
+import { Staff } from '../interfaces/models/service';
 import { Auth } from '../../assets/constants/constants';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAll(): Observable<User[]> {
-    return this.http.get<User[]>(`${environment.BACKEND_API_URL}/${Auth.AUTH}/${Auth.USER}`);
+    return this.http.get<User[]>(
+      `${environment.BACKEND_API_URL}/${Auth.AUTH}/${Auth.USER}`
+    );
+  }
+  getStaff(): Observable<Staff[]> {
+    const url = `${environment.BACKEND_API_URL}/api/Services/get-staff`;
+    return this.http.get<Staff[]>(url);
   }
 }
