@@ -17,6 +17,8 @@
   <app-progress-information
     [activeIndex]="activeIndex"
     (changeActiveIndex)="onActiveIndexChange($event)"
+    (amenitiesChanged)="setLimitsAmenities($event)"
+    (roomSizeChanged)="setRoomSize($event)"
   ></app-progress-information>
   <app-progress-customizing
     [isHideCustomizing]="isHideCustomizing"

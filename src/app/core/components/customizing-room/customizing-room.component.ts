@@ -32,7 +32,8 @@ export class CustomizingRoomComponent implements OnInit {
   steps: MenuItem[] | undefined;
   activeIndex: number = 0;
 
-  limits: any = { chair: 2, beds: 1, closet: 1, table: 1 };
+  limits: any;
+  roomSize!: string;
   amenities = {
     basic: { chair: 2, beds: 1, closet: 1, table: 1 },
     advanced: { chair: 4, beds: 2, closet: 1, table: 2 },
@@ -42,23 +43,57 @@ export class CustomizingRoomComponent implements OnInit {
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
+    this.limits = this.amenities.basic;
+    this.roomSize = 'Small';
+
     this.steps = [
-      { label: 'Information', command: (): void => this.onActiveIndexChange(0) },
-      { label: 'Customizing', command: (): void => this.onActiveIndexChange(1) },
+      {
+        label: 'Information',
+        command: (): void => this.onActiveIndexChange(0),
+      },
+      {
+        label: 'Customizing',
+        command: (): void => this.onActiveIndexChange(1),
+      },
       { label: 'Export', command: (): void => this.onActiveIndexChange(2) },
       { label: 'Payment', command: (): void => this.onActiveIndexChange(3) },
     ];
     if (this.canvas) {
-      this.ctx = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-      this.loadImages().then(() => {
-        this.blueprintImage.src = 'assets/furniture/hotelroom-blueprint.png';
-        this.blueprintImage.onload = (): void => {
-          this.saveState();
-          this.draw();
-        };
-      }).catch(err => console.error('Error loading images', err));
+      this.ctx = this.canvas.nativeElement.getContext(
+        '2d'
+      ) as CanvasRenderingContext2D;
+      this.loadImages()
+        .then(() => {
+          this.blueprintImage.src = 'assets/furniture/hotelroom-blueprint.png';
+          this.blueprintImage.onload = (): void => {
+            this.saveState();
+            this.draw();
+          };
+        })
+        .catch((err) => console.error('Error loading images', err));
     } else {
       console.error('Canvas element not found');
+    }
+  }
+  setLimitsAmenities(value: string): void {
+    this.furnitureList = [];
+    if (value === 'basic') {
+      this.limits = this.amenities.basic;
+    } else if (value === 'family') {
+      this.limits = this.amenities.family;
+    } else if (value === 'advanced') {
+      this.limits = this.amenities.advanced;
+    }
+  }
+
+  setRoomSize(size: string): void {
+    this.furnitureList = [];
+    if (size === 'small') {
+      this.roomSize = 'Small';
+    } else if (size === 'medium') {
+      this.roomSize = 'Medium';
+    } else {
+      this.roomSize = 'Large';
     }
   }
 
@@ -104,7 +139,8 @@ export class CustomizingRoomComponent implements OnInit {
         key: '1',
         severity: 'error',
         summary: 'Error',
-        detail: 'You cannot place your furniture outside the room or at the same position with other furniture'
+        detail:
+          'You cannot place your furniture outside the room or at the same position with other furniture',
       });
     }
   }
@@ -114,21 +150,49 @@ export class CustomizingRoomComponent implements OnInit {
   }
 
   getFurnitureCount(type: string): number {
-    return this.furnitureList.filter(f => f.type === type).length;
+    return this.furnitureList.filter((f) => f.type === type).length;
   }
 
   getFurnitureSize(type: string): number {
-    switch (type) {
-      case 'table':
-        return 100;
-      case 'beds':
-        return 150;
-      case 'closet':
-        return 100;
-      case 'chair':
-        return 50;
-      default:
-        return 50;
+    if (this.roomSize === 'Small') {
+      switch (type) {
+        case 'table':
+          return 100;
+        case 'beds':
+          return 150;
+        case 'closet':
+          return 100;
+        case 'chair':
+          return 50;
+        default:
+          return 50;
+      }
+    } else if (this.roomSize === 'Medium') {
+      switch (type) {
+        case 'table':
+          return 90;
+        case 'beds':
+          return 140;
+        case 'closet':
+          return 90;
+        case 'chair':
+          return 40;
+        default:
+          return 40;
+      }
+    } else {
+      switch (type) {
+        case 'table':
+          return 80;
+        case 'beds':
+          return 130;
+        case 'closet':
+          return 80;
+        case 'chair':
+          return 30;
+        default:
+          return 30;
+      }
     }
   }
 
@@ -141,7 +205,9 @@ export class CustomizingRoomComponent implements OnInit {
   undo(): void {
     if (this.undoStack.length > 1) {
       this.redoStack.push(this.undoStack.pop()!);
-      this.furnitureList = JSON.parse(JSON.stringify(this.undoStack[this.undoStack.length - 1]));
+      this.furnitureList = JSON.parse(
+        JSON.stringify(this.undoStack[this.undoStack.length - 1])
+      );
       this.draw();
     }
   }
@@ -149,7 +215,9 @@ export class CustomizingRoomComponent implements OnInit {
   redo(): void {
     if (this.redoStack.length > 0) {
       this.undoStack.push(this.redoStack.pop()!);
-      this.furnitureList = JSON.parse(JSON.stringify(this.undoStack[this.undoStack.length - 1]));
+      this.furnitureList = JSON.parse(
+        JSON.stringify(this.undoStack[this.undoStack.length - 1])
+      );
       this.draw();
     }
   }

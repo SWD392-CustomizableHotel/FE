@@ -17,7 +17,7 @@
                         <div class="p-field grid pt-5">
                             <div class="col-6">
                                 <p-floatLabel>
-                                    <p-dropdown [options]="hotelLocations" optionLabel="name" id="hotel"/>
+                                    <p-dropdown [options]="hotelLocations" optionLabel="code" id="hotel"/>
                                     <label for="hotel">Choose hotel's location</label>
                                 </p-floatLabel>
                             </div>
@@ -29,13 +29,13 @@
                             </div>
                             <div class="col-6 pt-4">
                                 <p-floatLabel>
-                                    <p-dropdown [options]="roomSizes" optionLabel="label" id="size"/>
+                                    <p-dropdown [options]="roomSizes" optionLabel="label" id="size" [(ngModel)]="selectedRoomSize" (onChange)="changeRoomSize(selectedRoomSize?.value!)"/>
                                     <label for="size">Room Size</label>
                                 </p-floatLabel>
                             </div>
                             <div class="col-6 pt-4">
                                 <p-floatLabel>
-                                    <p-dropdown [options]="amenitiesPackages" optionLabel="label" id="amenities"/>
+                                    <p-dropdown [options]="amenitiesPackage" optionLabel="label" id="package" [(ngModel)]="selectedAmenitiesPackage" (onChange)="changeAmenities(selectedAmenitiesPackage?.value!)"/>
                                     <label for="amenities">Amenities</label>
                                 </p-floatLabel>
                             </div>
