@@ -30,7 +30,6 @@ export class LoginComponent implements OnInit {
   lastNameIsRequired!: Message[];
   phoneNumberIsRequired!: Message[];
   userId?: string;
-
   showError?: boolean;
   errorMessage: string = '';
   showAdditionalInfoForm = false;
@@ -159,7 +158,12 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('userId', this.userId!);
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.isLoggedIn.next(true);
-          this.router.navigate([returnUrl]);
+          // this.router.navigate([returnUrl]);
+          if (user.role === 'ADMIN') {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate([returnUrl]);
+          }
         },
         error: (error) => {
           this.error = error;
