@@ -50,7 +50,6 @@ import { ProfileComponent } from './core/components/profile/profile.component';
 import { FileUploadModule } from 'primeng/fileupload';
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 import { CalendarModule } from 'primeng/calendar';
-
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';

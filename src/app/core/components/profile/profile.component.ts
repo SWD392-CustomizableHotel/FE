@@ -17,6 +17,7 @@ export class ProfileComponent implements OnInit {
   selectedFile: File | null = null;
   user?: User | null;
   certificateUrl: string | null = null;
+  uploadProgress: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -106,19 +107,32 @@ export class ProfileComponent implements OnInit {
   disableEditing(): void {
     this.editable = false;
     this.profileForm.disable();
+    this.onClear();
   }
 
   onFileSelected(event: any): void {
     this.selectedFile = event.files[0];
   }
 
-  onUpload(event: any): void {
+  onClear(): void {
+    this.selectedFile = null;
+  }
+
+  onUpload(): void {
     if (this.selectedFile) {
       this.messageService.add({
         severity: 'info',
         summary: 'File Uploaded',
         detail: this.selectedFile.name,
       });
+      // Simulate upload progress
+      this.uploadProgress = 0;
+      const interval = setInterval(() => {
+        this.uploadProgress += 10;
+        if (this.uploadProgress >= 100) {
+          clearInterval(interval);
+        }
+      }, 200);
     }
   }
 
@@ -159,6 +173,9 @@ export class ProfileComponent implements OnInit {
             detail: 'Profile updated successfully',
           });
           this.disableEditing();
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
         } else {
           this.messageService.add({
             severity: 'error',

@@ -54,14 +54,24 @@
         <p-fileUpload
           name="certificate"
           customUpload="true"
-          (uploadHandler)="onUpload($event)"
+          (uploadHandler)="onUpload()"
+          (onSelect)="onFileSelected($event)"
+          (onClear)="onClear()"
           [auto]="true"
           chooseLabel="Choose"
           uploadLabel="Upload"
           cancelLabel="Cancel"
-          mode="basic"
+          mode="advanced"
           class="custom-file-upload"
-        ></p-fileUpload>
+          [disabled]="!editable"
+          
+        >
+          <ng-template pTemplate="content" let-files>
+            <div *ngIf="selectedFile">
+              <p>Selected file: {{ selectedFile.name }}</p>
+            </div>
+          </ng-template>
+        </p-fileUpload>
       </div>
 
       <div class="p-field" style="display: none;">
