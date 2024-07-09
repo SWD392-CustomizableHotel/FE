@@ -1,44 +1,48 @@
-<div class="pt-3">
-  <div [hidden]="isHideCustomizing">
+<div class="grid pt-3">
+  <div class="col-8" [hidden]="isHideCustomizing">
     <div class="fadeinleft animation-duration-600">
       <p-toolbar
         class="flex flex-wrap justify-content-center align-items-center w-full"
       >
         <div class="p-toolbar-group-start">
           <p-button
-            (click)="selectFurniture('chair')"
+            (onClick)="selectFurniture('chair')"
             [disabled]="!canAddFurniture('chair')"
             class="mr-2"
             severity="info"
             badge="{{ getFurnitureCount('chair') }}"
             badgeClass="p-badge-contrast"
-            >Chair
+            label="Chair"
+            >
           </p-button>
           <p-button
-            (click)="selectFurniture('beds')"
             [disabled]="!canAddFurniture('beds')"
+            (onClick)="selectFurniture('beds')"
             class="mr-2"
             severity="info"
             badge="{{ getFurnitureCount('beds') }}"
             badgeClass="p-badge-contrast"
-            >Bed</p-button
+            label="Bed"
+            ></p-button
           >
           <p-button
-            (click)="selectFurniture('closet')"
             [disabled]="!canAddFurniture('closet')"
+            (onClick)="selectFurniture('closet')"
             class="mr-2"
             severity="info"
             badge="{{ getFurnitureCount('closet') }}"
             badgeClass="p-badge-contrast"
-            >Closet</p-button
+            label="Closet"
+            ></p-button
           >
           <p-button
-            (click)="selectFurniture('table')"
             [disabled]="!canAddFurniture('table')"
+            (onClick)="selectFurniture('table')"
             severity="info"
             badge="{{ getFurnitureCount('table') }}"
             badgeClass="p-badge-contrast"
-            >Table</p-button
+            label="Table"
+            ></p-button
           >
         </div>
         <div class="p-toolbar-group-end pl-6">
@@ -70,6 +74,10 @@
           />
         </div>
       </p-toolbar>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="flex flex-wrap justify-content-center align-items-center w-full">
     </div>
   </div>
 </div>

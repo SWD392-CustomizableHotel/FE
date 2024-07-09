@@ -15,6 +15,9 @@ import { ConfirmPaymentComponent } from './core/components/confirm-payment/confi
 const routes: Routes = [
   {
     path: '',
+    data: {
+      role: 'ADMIN'
+    },
     loadChildren: () =>
       import('./core/components/home/home.module').then((m) => m.HomeModule),
   },
@@ -37,6 +40,9 @@ const routes: Routes = [
           ),
       },
     ],
+    data: {
+      role: 'ADMIN'
+    }
   },
   {
     path: 'login',

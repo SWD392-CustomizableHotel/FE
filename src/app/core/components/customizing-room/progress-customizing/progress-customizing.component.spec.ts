@@ -11,7 +11,7 @@ describe('ProgressCustomizingComponent', () => {
       declarations: [ProgressCustomizingComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ProgressCustomizingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

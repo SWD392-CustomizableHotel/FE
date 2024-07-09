@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomizingRoomComponent } from './customizing-room.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
@@ -25,8 +25,12 @@ import { ToastModule } from 'primeng/toast';
 import { StepsModule } from 'primeng/steps';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { CardModule } from 'primeng/card';
+import { MessagesModule } from 'primeng/messages';
 import { ProgressCustomizingComponent } from './progress-customizing/progress-customizing.component';
 import { ProgressInformationComponent } from './progress-information/progress-information.component';
+import { SliderModule } from 'primeng/slider';
+import { ImageModule } from 'primeng/image';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
   declarations: [CustomizingRoomComponent, ProgressCustomizingComponent, ProgressInformationComponent],
@@ -55,7 +59,12 @@ import { ProgressInformationComponent } from './progress-information/progress-in
     ToolbarModule,
     ToastModule,
     ContextMenuModule,
-    CardModule
+    CardModule,
+    ReactiveFormsModule,
+    MessagesModule,
+    SliderModule,
+    ImageModule,
+    OverlayPanelModule
   ],
   providers: [],
   bootstrap: [CustomizingRoomComponent],

@@ -19,6 +19,8 @@
     (changeActiveIndex)="onActiveIndexChange($event)"
     (amenitiesChanged)="setLimitsAmenities($event)"
     (roomSizeChanged)="setRoomSize($event)"
+    (roomSelected)="handleRoomSelection($event)"
+    (dateRange)="handleDateRange($event)"
   ></app-progress-information>
   <app-progress-customizing
     [isHideCustomizing]="isHideCustomizing"
@@ -30,18 +32,63 @@
     (changeProgressIndex)="onActiveIndexChange($event)"
   >
   </app-progress-customizing>
-  <div class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center p-4">
-    <canvas
-      #canvas
-      width="700"
-      height="580"
-      [hidden]="isHideCustomizing"
-      (mousedown)="onMouseDown($event)"
-      (mousemove)="onMouseMove($event)"
-      (mouseup)="onMouseUp()"
-      class="canva-grid"
-    >
-    </canvas>
+  <div class="grid">
+    <div class="col-8">
+      <div
+        class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center pt-4"
+      >
+        <canvas
+          #canvas
+          width="700"
+          height="580"
+          [hidden]="isHideCustomizing"
+          (mousedown)="onMouseDown($event)"
+          (mousemove)="onMouseMove($event)"
+          (mouseup)="onMouseUp()"
+          (contextmenu)="onRightClick($event)"
+          class="canva-grid"
+        >
+        </canvas>
+      </div>
+    </div>
+    <div class="col-12 md:col-4" [hidden]="isHideCustomizing">
+      <div
+        class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center pt-1 mr-8 mt-8"
+      >
+        <p-card
+          styleClass="font-medium text-primary"
+          header="Your Room Information"
+          subheader="This feature is in experimental mode"
+        >
+          <p-panel header="Room" [toggleable]="true">
+            <div class="text-base font-normal mr-2 text-color-secondary" *ngIf="selectedRoom">
+              <ul class="mr-2">Room Number: {{ selectedRoom.code }}</ul>
+              <ul class="mr-2">Room Size: {{ selectedRoom.roomSize }}</ul>
+              <ul class="mr-2">Room Type: {{ selectedRoom.type }}</ul>
+              <ul class="mr-2">Nights: {{ checkInDate }} - {{ checkOutDate }} ({{ night }} Night)</ul> <!-- Nights living: Date range -->
+              <ul class="font-semibold">Subtotal: ${{ selectedRoom.price }}</ul >
+            </div>
+          </p-panel>
+          <div class="text-xl font-medium text-color-secondary">
+            Your Services
+          </div>
+          <div class="text-xl font-medium text-color-secondary">
+            Your Amenities
+          </div>
+          <p-divider></p-divider>
+          <div class="text-2xl font-medium text-color-secondary">
+            Total Price
+          </div>
+          <p-messages
+            [(value)]="warningMessage"
+            [enableService]="false"
+            [closable]="false"
+          />
+        </p-card>
+      </div>
+    </div>
   </div>
 </div>
+<p-contextMenu #cm [model]="contextMenuItems" (onHide)="onHide()" />
+
 <app-footer-shared></app-footer-shared>

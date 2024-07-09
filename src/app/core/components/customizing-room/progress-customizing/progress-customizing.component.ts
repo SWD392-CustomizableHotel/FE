@@ -32,5 +32,10 @@ export class ProgressCustomizingComponent {
 
   back(index: number): void {
     this.changeProgressIndex.emit(index);
+    window.scrollTo({
+      top: 40,
+      left: 0,
+      behavior: 'smooth'
+    });
   }
 }

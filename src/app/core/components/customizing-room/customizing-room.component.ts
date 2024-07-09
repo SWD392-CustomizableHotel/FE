@@ -1,14 +1,20 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem, Message, MessageService } from 'primeng/api';
+import { ContextMenu } from 'primeng/contextmenu';
+import { Room } from '../../../interfaces/models/room';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-customizing-room',
   templateUrl: './customizing-room.component.html',
   styleUrls: ['./customizing-room.component.scss'],
-  providers: [MessageService],
+  providers: [MessageService, DatePipe],
 })
 export class CustomizingRoomComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('cm') cm!: ContextMenu;
+  selectedRoom!: Room;
+
   ctx!: CanvasRenderingContext2D;
   selectedFurniture?: string;
   furnitureList: any[] = [];
@@ -31,6 +37,7 @@ export class CustomizingRoomComponent implements OnInit {
   isHideCustomizing: boolean = true;
   steps: MenuItem[] | undefined;
   activeIndex: number = 0;
+  night: string = '';
 
   limits: any;
   roomSize!: string;
@@ -40,12 +47,36 @@ export class CustomizingRoomComponent implements OnInit {
     family: { chair: 6, beds: 3, closet: 2, table: 2 },
   };
 
-  constructor(private messageService: MessageService) {}
+  contextMenuItems: MenuItem[] = [];
+  warningMessage!: Message[];
+  dateRange!: Date[];
+  checkInDate: string | null = '';
+  checkOutDate: string | null = '';
+
+  constructor(private messageService: MessageService, private datePipe: DatePipe) {
+    this.contextMenuItems = [
+      {
+        label: 'Delete',
+        icon: 'pi pi-times',
+        command: (): void => this.deleteFurniture(),
+      },
+    ];
+  }
 
   ngOnInit(): void {
+    window.scrollTo({
+      top: 40,
+      left: 0,
+      behavior: 'smooth'
+    });
     this.limits = this.amenities.basic;
     this.roomSize = 'Small';
-
+    this.warningMessage = [
+      {
+        severity: 'warn',
+        summary: 'You will not able to edit your room after submit this.',
+      },
+    ];
     this.steps = [
       {
         label: 'Information',
@@ -55,8 +86,8 @@ export class CustomizingRoomComponent implements OnInit {
         label: 'Customizing',
         command: (): void => this.onActiveIndexChange(1),
       },
-      { label: 'Export', command: (): void => this.onActiveIndexChange(2) },
-      { label: 'Payment', command: (): void => this.onActiveIndexChange(3) },
+      { label: 'Payment', command: (): void => this.onActiveIndexChange(2) },
+      { label: 'Export', command: (): void => this.onActiveIndexChange(3) },
     ];
     if (this.canvas) {
       this.ctx = this.canvas.nativeElement.getContext(
@@ -75,8 +106,60 @@ export class CustomizingRoomComponent implements OnInit {
       console.error('Canvas element not found');
     }
   }
+
+  handleRoomSelection(room: Room): void {
+    this.selectedRoom = room;
+  }
+
+  handleDateRange(value: Date[]): void {
+    this.dateRange = value;
+    this.checkInDate = this.datePipe.transform(this.dateRange[0], 'dd/MM/yyyy');
+    this.checkOutDate = this.datePipe.transform(this.dateRange[1], 'dd/MM/yyyy');
+    if (this.dateRange[0] && this.dateRange[1]) {
+      const timeDifference = this.dateRange[1].getTime() - this.dateRange[0].getTime();
+      const daysDifference = timeDifference / (1000 * 3600 * 24);
+      this.night = daysDifference.toPrecision(1);
+      return;
+    }
+    this.night = '1';
+  }
+
+  onRightClick(event: MouseEvent): void {
+    event.preventDefault();
+    if (this.canvas && this.selectedObjectIndex !== null) {
+      const rect = this.canvas.nativeElement.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / this.scale;
+      const y = (event.clientY - rect.top) / this.scale;
+      const index = this.findFurnitureIndex(x, y);
+      if (index !== null) {
+        this.selectedObjectIndex = index;
+        if (this.cm) {
+          console.log(`yes`);
+          this.cm.show(event);
+        }
+      } else {
+        console.log(`no`);
+        this.selectedObjectIndex = null;
+      }
+    }
+  }
+
+  onHide(): void {
+    this.selectedObjectIndex = null;
+  }
+
+  deleteFurniture(): void {
+    if (this.selectedObjectIndex !== null) {
+      this.furnitureList.splice(this.selectedObjectIndex, 1);
+      this.selectedObjectIndex = null;
+      this.saveState();
+      this.draw();
+    }
+  }
+
   setLimitsAmenities(value: string): void {
     this.furnitureList = [];
+    this.draw();
     if (value === 'basic') {
       this.limits = this.amenities.basic;
     } else if (value === 'family') {
@@ -88,6 +171,7 @@ export class CustomizingRoomComponent implements OnInit {
 
   setRoomSize(size: string): void {
     this.furnitureList = [];
+    this.draw();
     if (size === 'small') {
       this.roomSize = 'Small';
     } else if (size === 'medium') {
@@ -124,7 +208,6 @@ export class CustomizingRoomComponent implements OnInit {
 
   selectFurniture(type: string): void {
     this.selectedFurniture = type;
-    console.log(`Selected furniture: ${type}`);
   }
 
   addFurniture(x: number, y: number): void {
