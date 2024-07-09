@@ -20,12 +20,17 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SliderModule } from 'primeng/slider';
+import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
 @NgModule({
     declarations: [
         ViewAvailableRoomComponent,
     ],
     imports: [
         CommonModule,
+        SliderModule,
+        ToastModule,
         ButtonModule,
         RippleModule,
         DividerModule,
@@ -44,7 +49,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
         InputTextModule,
         DataViewModule,
         TagModule,
-        ScrollPanelModule
+        ScrollPanelModule,
+        DialogModule
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

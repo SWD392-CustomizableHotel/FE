@@ -4,6 +4,8 @@ import { MessageService } from 'primeng/api';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { User } from '../../../interfaces/models/user';
 import { UserService } from '../../../services/user.service';
+import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common'; // Import DatePipe
 
 @Component({
   selector: 'app-profile',
@@ -18,12 +20,14 @@ export class ProfileComponent implements OnInit {
   user?: User | null;
   certificateUrl: string | null = null;
   uploadProgress: number = 0;
+  datePipe: DatePipe = new DatePipe('en-US'); // Initialize DatePipe
 
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
     private authService: AuthenticationService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -53,7 +57,9 @@ export class ProfileComponent implements OnInit {
       ],
       dob: [
         {
-          value: this.user?.dob ? new Date(this.user.dob) : '',
+          value: this.user?.dob
+            ? this.datePipe.transform(this.user.dob, 'dd/MM/yyyy')
+            : '',
           disabled: true,
         },
         Validators.required,
@@ -72,7 +78,9 @@ export class ProfileComponent implements OnInit {
           if (response.isSucceed) {
             this.profileForm.patchValue({
               ...response.result,
-              dob: response.result.dob ? new Date(response.result.dob) : '',
+              dob: response.result.dob
+                ? this.datePipe.transform(response.result.dob, 'dd/MM/yyyy')
+                : '',
             });
             this.certificateUrl = response.result.certificatePath || null;
           }
@@ -155,7 +163,7 @@ export class ProfileComponent implements OnInit {
     Object.keys(this.profileForm.controls).forEach((key) => {
       let value = this.profileForm.get(key)?.value;
       if (key === 'dob' && value) {
-        value = value.toISOString(); // Convert dob to ISO string
+        value = this.datePipe.transform(value, 'yyyy-MM-dd'); // Convert dob to ISO string
       }
       formData.append(key, value);
     });
@@ -194,5 +202,9 @@ export class ProfileComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  navigateHome(): void {
+    this.router.navigate(['/']);
   }
 }

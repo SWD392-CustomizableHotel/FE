@@ -18,7 +18,7 @@
                 <!-- Box 1: Choose Location -->
                 <div class="box">
                     <p-floatLabel>
-                        <p-dropdown id="location" [options]="cities" optionLabel="name"></p-dropdown>
+                        <p-dropdown id="location" [options]="hotels" optionLabel="address" (ngModelChange)="onLocationChange($event)" [(ngModel)]="location"></p-dropdown>
                         <label for="location">Choose a location:</label>
                     </p-floatLabel>
                 </div>
@@ -41,6 +41,7 @@
                       NumberOfRoom + ' rooms, ' + NumberOfAdult + ' adults, ' + NumberOfChildren + ' children'
                     "
                   />
+
                   <div *ngIf="showSliders" class="slider-container">
                     <div class="slider-title">Number of People</div>
                     <div class="slider-item">
@@ -60,12 +61,13 @@
                       <span>{{ NumberOfChildren }}</span>
                     </div>
                   </div>
+                  
                 </div>
               </div>
         
               <!-- Box 5: Booking -->
               <div class="box">
-                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined"></button>
+                  <button pButton pRipple type="button" label="Booking" class="p-button-outlined" (click)="toAvailableRoomPage()"></button>
               </div>
           </div>
         </div>
@@ -179,7 +181,7 @@
             <div class="feature-card-popularroom">
               <div class="img-container-popularroom">
                 <img
-                  src="assets/images/family_room.png"                 
+                  [src]="room.image"                 
                   alt="Family Room"
                   class="feature-image"
                 />
@@ -200,13 +202,13 @@
                   <span class="original-price">$799</span>
                 </div>
                 <div class="box">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Booking"
-                    class="p-button-outlined"
-                  ></button>
+                  <p-button
+                    (click)="toBookingPage(room.id)"
+                    (keyup.enter)="toBookingPage(room.id)"
+                    icon="pi pi-shopping-cart"
+                    class="flex-auto md:flex-initial white-space-nowrap mt-2"
+                    label="Booking "
+                  />
                 </div>
               </div>
             </div>
@@ -214,6 +216,7 @@
         </div>
       </div>
       </div>
+      <button (click)="goToBookingHistory()">View Booking History</button>
       <app-footer-shared></app-footer-shared>
   </div>
 </div>

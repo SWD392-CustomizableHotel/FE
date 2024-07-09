@@ -40,7 +40,7 @@ import { MessageService } from 'primeng/api';
         RatingModule,
         FormsModule,
         SliderModule,
-        ToastModule,
+        ToastModule
     ],
     providers: [MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

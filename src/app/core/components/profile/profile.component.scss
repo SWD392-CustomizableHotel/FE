@@ -78,3 +78,13 @@
 .p-fluid .p-field label {
   font-weight: bold;
 }
+.home-button {
+  font-size: 1.5rem; /* Increase the font size */
+  display: flex;
+  align-items: center;
+}
+
+.home-button .pi-home {
+  font-size: 2rem; /* Increase the icon size */
+  margin-right: 0.5rem;
+}

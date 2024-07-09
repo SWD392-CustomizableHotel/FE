@@ -13,7 +13,7 @@ $input-focus-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   margin-bottom: 10px;
   background-color: $background-color;
   box-shadow: $box-shadow;
-  height: 2 00px;
+  height: 400px;
 
   h5 {
     margin-bottom: 10px;
@@ -81,19 +81,100 @@ $input-focus-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   text-decoration: underline;
 }
 
-// @media screen and (max-width: 1200px) {
-//   .container{
-//     display: flex;
-//     flex-direction: column;
-//   }
-//   .search-room-container{
-//     margin: 0 auto;
-//     width: 100%;
-//   }
-    
-//     .room-image{
-//       width: 150px;
-//       height: 150px;
-//     }
-// }
 
+// form input 
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+  width: 100%;
+}
+
+.form-box {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap */
+  justify-content: center; /* Center items */
+  max-width: 2500px;
+
+}
+
+.box {
+  margin-right: 1rem;
+  min-width: 200px;
+  margin-bottom: 16px;
+}
+
+.box:last-child {
+  margin-right: 0;
+}
+
+@media (max-width: 768px) {
+  .form-box {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .box {
+      margin-right: 0;
+  }
+}
+
+.number-of-people-box {
+  position: relative;
+  display: inline-block;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 200px;
+  height: 40px;
+  background-color: white;
+}
+
+.number-of-people-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  flex: 1;
+}
+
+.slider-container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.slider-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.slider-item {
+  margin-bottom: 15px;
+}
+
+.slider-item label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.slider-item span {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.slider-container p-slider {
+  width: 100%;
+}

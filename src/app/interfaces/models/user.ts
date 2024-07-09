@@ -10,4 +10,5 @@ export interface User {
   address?: string;
   dob?: Date;
   certificatePath?: string | null;
+  userId?: string;
 }

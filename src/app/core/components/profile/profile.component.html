@@ -1,10 +1,13 @@
 <div class="profile-container p-fluid p-card" style="background-image: url('assets/images/sheriton-hotel.jpeg'); background-size: cover; background-position: center;">
+  <div class="back-button">
+    <button pButton type="button" icon="pi pi-home" (click)="navigateHome()" class="p-button-text home-button">Home</button>
+  </div>
   <div class="profile-left">
     <p-avatar image="assets/images/logo2.png" shape="circle" size="xlarge"></p-avatar>
     <div class="user-info">
       <h4>{{ user?.email }}</h4>
       <p>{{ user?.role }}</p>
-      <div *ngIf="certificateUrl">
+      <div *ngIf="user?.role === 'STAFF' && certificateUrl">
         <a [href]="certificateUrl" target="_blank">View Certificate</a>
       </div>
     </div>
@@ -43,7 +46,7 @@
         <p-calendar
           id="dob"
           formControlName="dob"
-          dateFormat="yy-mm-dd"
+          dateFormat="dd/mm/yy"
           showIcon="true"
           appendTo="body"
         ></p-calendar>
@@ -64,7 +67,6 @@
           mode="advanced"
           class="custom-file-upload"
           [disabled]="!editable"
-          
         >
           <ng-template pTemplate="content" let-files>
             <div *ngIf="selectedFile">

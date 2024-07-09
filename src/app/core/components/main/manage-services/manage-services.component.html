@@ -1,0 +1,532 @@
+<!-- Service List -->
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <h5>Service List</h5>
+            <p-table
+                #dt1
+                [value]="services"
+                [columns]="cols"
+                dataKey="id"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [globalFilterFields]="['serviceStatus', 'name', 'description']"
+                responsiveLayout="scroll"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-content-between flex-column sm:flex-row">
+                        <div class="flex">
+                            <button
+                                pButton
+                                label="Clear"
+                                class="p-button-outlined mr-2"
+                                icon="pi pi-filter-slash"
+                                (click)="clear(dt1)"
+                            > </button>
+                            <button
+                                pButton
+                                pRipple
+                                label="New"
+                                icon="pi pi-plus"
+                                class="p-button-success mr-2"
+                                (click)="openNew()"
+                            > </button>
+                        </div>
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt1, $event)"
+                                placeholder="Search Keyword"
+                                class="w-full"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem" pSortableColumn="name">
+                            <div class="flex justify-content-between align-items-center">
+                                Service Name
+                                <p-sortIcon field="name"></p-sortIcon>
+                                <p-columnFilter
+                                    type="text"
+                                    field="name"
+                                    display="menu"
+                                    placeholder="Search by Service Name"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem" pSortableColumn="price">
+                            <div class="flex justify-content-between align-items-center">
+                                Price
+                                <p-sortIcon field="price"></p-sortIcon>
+                                <p-columnFilter
+                                    type="numeric"
+                                    field="price"
+                                    display="menu"
+                                    currency="USD"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem" pSortableColumn="description">
+                            <div class="flex justify-content-between align-items-center">
+                                Description
+                                <p-sortIcon field="description"></p-sortIcon>
+                                <p-columnFilter
+                                    type="text"
+                                    field="description"
+                                    display="menu"
+                                    placeholder="Search by Description"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem" pSortableColumn="serviceStatus">
+                            <div class="flex justify-content-between align-items-center">
+                                Status
+                                <p-sortIcon field="serviceStatus"></p-sortIcon>
+                                <p-columnFilter
+                                    field="serviceStatus"
+                                    matchMode="equals"
+                                    display="menu"
+                                >
+                                    <ng-template
+                                        pTemplate="filter"
+                                        let-value
+                                        let-filter="filterCallback"
+                                    >
+                                        <p-dropdown
+                                            [(ngModel)]="serviceStatus"
+                                            [options]="serviceStatusOptions"
+                                            optionLabel="label"
+                                            (onChange)="filter($event.value)"
+                                            placeholder="Any"
+                                            [style]="{ 'min-width': '12rem' }"
+                                        >
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem" pSortableColumn="startDate">
+                            <div class="flex justify-content-between align-items-center">
+                                Start Date
+                                <p-sortIcon field="startDate"></p-sortIcon>
+                                <p-columnFilter
+                                    type="date"
+                                    field="startDate"
+                                    display="menu"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem" pSortableColumn="endDate">
+                            <div class="flex justify-content-between align-items-center">
+                                End Date
+                                <p-sortIcon field="endDate"></p-sortIcon>
+                                <p-columnFilter
+                                    type="date"
+                                    field="endDate"
+                                    display="menu"
+                                ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-service>
+                    <tr>
+                        <td>{{ service.name }}</td>
+                        <td>{{ service.price | currency }}</td>
+                        <td>{{ service.description }}</td>
+                        <td>{{ getServiceStatusLabel(service.status) }}</td>
+                        <td>{{ service.startDate | date:'short' }}</td>
+                        <td>{{ service.endDate | date:'short' }}</td>
+                        <td>
+                            <div class="flex">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editService(service)"
+                                > </button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-warning"
+                                    (click)="deleteService(service)"
+                                > </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No services found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="5">Loading services data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div class="flex align-items-center justify-content-end">
+                <span class="mx-1 text-color">Items per page: </span>
+                <p-dropdown
+                    [options]="options"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(ngModel)]="rows"
+                    (ngModelChange)="onRowsChange($event)"
+                ></p-dropdown>
+                <p-paginator
+                    (onPageChange)="onPageChange($event)"
+                    [showCurrentPageReport]="true"
+                    [first]="first"
+                    [rows]="rows"
+                    [totalRecords]="totalRecords"
+                    currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                    [showPageLinks]="false"
+                    [showFirstLastIcon]="false"
+                ></p-paginator>
+            </div>
+        </div>
+
+        <!-- New Service Dialog -->
+        <p-dialog
+            [(visible)]="createServiceDialog"
+            [style]="{ width: '700px' }"
+            header="New Service"
+            [modal]="true"
+            class="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                <div class="formgrid grid">
+                    <div class="field col-6">
+                        <label for="name">Name</label>
+                        <input
+                            type="text"
+                            pInputText
+                            id="name"
+                            [(ngModel)]="service.name"
+                            required
+                            [ngClass]="{
+                                'ng-invalid ng-dirty': submitted && !service.name
+                            }"
+                        />
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.name"
+                        >Name is required.</small>
+                    </div>
+                    <div class="field col-6">
+                        <label for="price">Price($)</label>
+                        <input
+                            type="number"
+                            pInputText
+                            id="price"
+                            [(ngModel)]="service.price"
+                            required
+                            [ngClass]="{
+                                'ng-invalid ng-dirty': submitted && !service.price
+                            }"
+                        />
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.price"
+                        >Price is required.</small>
+                    </div>                   
+                    <div class="field col-6">
+                        <label for="startDate">Start Date</label>
+                        <p-calendar
+                            id="startDate"
+                            [(ngModel)]="service.startDate"
+                            showIcon="true"
+                            [showTime]="true"
+                            [hourFormat]="'12'"
+                            appendTo="body"
+                        ></p-calendar>
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.startDate"
+                        >Start Date is required.</small>
+                    </div>
+                    <div class="field col-6">
+                        <label for="endDate">End Date</label>
+                        <p-calendar
+                            id="endDate"
+                            [(ngModel)]="service.endDate"
+                            showIcon="true"
+                            [showTime]="true"
+                            [hourFormat]="'12'"
+                            appendTo="body"
+                        ></p-calendar>
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.endDate"
+                        >End Date is required.</small>
+                    </div>
+                    <div class="field col-6">
+                        <label for="description">Description</label>
+                        <textarea
+                            type="text"
+                            pInputText
+                            id="description"
+                            [(ngModel)]="service.description"
+                            required
+                            [ngClass]="{
+                                'ng-invalid ng-dirty': submitted && !service.description
+                            }"
+                        ></textarea>
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.description"
+                        >Description is required.</small>
+                    </div>
+                    <div class="field col-6">
+                        <label for="hotelId">Hotel</label>
+                        <p-dropdown
+                            id="hotelId"
+                            [(ngModel)]="service.hotelId"
+                            optionLabel="code"
+                            optionValue="id"
+                            [options]="hotels"
+                            appendTo="body"
+                        ></p-dropdown>
+                        <small
+                            class="ng-dirty ng-invalid"
+                            *ngIf="submitted && !service.hotelId"
+                        >Hotel is required.</small>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <p-button
+                    label="Cancel"
+                    severity="secondary"
+                    icon="pi pi-times"
+                    (onClick)="hideDialog()"
+                ></p-button>
+                <p-button
+                    label="Save"
+                    icon="pi pi-check"
+                    (onClick)="saveService()"
+                ></p-button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Edit Service Dialog -->
+        <p-dialog
+  [(visible)]="serviceDialog"
+  [style]="{ width: '700px' }"
+  header="Service Details"
+  [modal]="true"
+  class="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="formgrid grid">
+      <div class="field col-6">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          pInputText
+          id="name"
+          [(ngModel)]="service.name"
+          required
+          [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !service.name
+          }"
+        />
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.name"
+        >Name is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="price">Price</label>
+        <input
+          type="number"
+          pInputText
+          id="price"
+          [(ngModel)]="service.price"
+          required
+          [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !service.price
+          }"
+        />
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.price"
+        >Price is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="startDate">Start Date</label>
+        <p-calendar
+          id="startDate"
+          [(ngModel)]="service.startDate"
+          showIcon="true"
+          [showTime]="true"
+          [hourFormat]="'12'"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.startDate"
+        >Start Date is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="endDate">End Date</label>
+        <p-calendar
+          id="endDate"
+          [(ngModel)]="service.endDate"
+          showIcon="true"
+          [showTime]="true"
+          [hourFormat]="'12'"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.endDate"
+        >End Date is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="description">Description</label>
+        <textarea
+          type="text"
+          pInputText
+          id="description"
+          [(ngModel)]="service.description"
+          required
+          [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !service.description
+          }"
+        ></textarea>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.description"
+        >Description is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="serviceStatus">Status</label>
+        <p-dropdown
+          id="serviceStatus"
+          placeholder="Please choose a status"
+          required
+          [showClear]="true"
+          [checkmark]="true"
+          [(ngModel)]="selectedServiceStatus"
+          [options]="serviceStatusOptions"
+          optionLabel="label"
+          appendTo="body"
+          (onChange)="updateServiceStatus(service, $event.value)"
+        ></p-dropdown>
+      </div>
+      <div class="field col-6">
+        <label for="hotelId">Hotel</label>
+        <p-dropdown
+          id="hotelId"
+          [(ngModel)]="service.hotelId"
+          optionLabel="code"
+          optionValue="id"
+          [options]="hotels"
+          appendTo="body"
+        ></p-dropdown>
+        <small
+          class="ng-dirty ng-invalid"
+          *ngIf="submitted && !service.hotelId"
+        >Hotel is required.</small>
+      </div>
+      <div class="field col-6">
+        <label for="assignedStaff">Assign Staff</label>
+        <p-multiSelect
+          id="assignedStaff"
+          [options]="staff"
+          [(ngModel)]="selectedStaff"
+          optionLabel="userName"
+          appendTo="body"
+          display="chip"
+          placeholder="Select staff members"
+        >
+          <ng-template let-option pTemplate="item">
+            <div class="flex align-items-center">
+              <div>{{ option.userName }}: {{ option.firstName }} {{ option.lastName }}</div>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      icon="pi pi-times"
+      (onClick)="hideDialog()"
+    ></p-button>
+    <p-button
+      label="Save"
+      icon="pi pi-check"
+      (onClick)="saveService()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+        <!-- Confirm Delete Dialog -->
+        <p-dialog
+            [(visible)]="deleteServiceDialog"
+            header="Confirm"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="service">Are you sure you want to delete Service <b>{{ service.name }}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <p-button
+                    icon="pi pi-times"
+                    severity="secondary"
+                    label="No"
+                    (click)="deleteServiceDialog = false"
+                ></p-button>
+                <p-button
+                    icon="pi pi-check"
+                    label="Yes"
+                    (click)="confirmDelete()"
+                ></p-button>
+            </ng-template>
+        </p-dialog>
+
+        <!-- Confirm Status Change Dialog -->
+<p-dialog
+[(visible)]="confirmStatusChangeDialog"
+header="Confirm Status Change"
+[modal]="true"
+[style]="{ width: '450px' }"
+>
+<div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure you want to change the status of Service <b>{{ service.name }}</b> to <b>{{ newStatus }}</b>?</span>
+</div>
+<ng-template pTemplate="footer">
+    <p-button
+        icon="pi pi-times"
+        severity="secondary"
+        label="No"
+        (click)="confirmStatusChangeDialog = false"
+    ></p-button>
+    <p-button
+        icon="pi pi-check"
+        label="Yes"
+        (click)="confirmStatusChange()"
+    ></p-button>
+</ng-template>
+</p-dialog>
+    </div>
+</div>

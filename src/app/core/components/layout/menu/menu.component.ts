@@ -6,6 +6,7 @@ import { LayoutService } from '../services/app.layout.service';
   templateUrl: './menu.component.html',
 })
 export class MenuComponent implements OnInit {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: any[] = [];
 
   constructor(public layoutService: LayoutService) {}
@@ -21,7 +22,7 @@ export class MenuComponent implements OnInit {
             routerLink: ['/dashboard'],
           },
           {
-            label: 'Management',
+            label: 'Room',
             icon: 'pi pi-users',
             items: [
               {
@@ -29,6 +30,34 @@ export class MenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-home',
                 routerLink: ['/dashboard/rooms/all-rooms'],
               },
+            ],
+          },
+          {
+            label: 'Amenities',
+            icon: 'pi pi-cog',
+            items: [
+              {
+                label: 'Manage Amenities',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/dashboard/manage-amenities'],
+              },
+            ],
+          },
+          {
+            label: 'Services',
+            icon: 'pi pi-phone',
+            items: [
+              {
+                label: 'Manage Services',
+                icon: 'pi pi-fw pi-phone',
+                routerLink: ['/dashboard/manage-services'],
+              },
+            ],
+          },
+          {
+            label: 'Management',
+            icon: 'pi pi-users',
+            items: [
               {
                 label: 'All Accounts',
                 icon: 'pi pi-fw pi-user',

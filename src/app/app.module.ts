@@ -37,7 +37,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { NotfoundComponent } from './core/components/notfound/notfound.component';
 import { RouterModule } from '@angular/router';
 import { ProductService } from './services/product.service';
-import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import {
+  DatePipe,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
@@ -50,14 +54,15 @@ import { ProfileComponent } from './core/components/profile/profile.component';
 import { FileUploadModule } from 'primeng/fileupload';
 // import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 import { CalendarModule } from 'primeng/calendar';
+import { StripeModule } from 'stripe-angular';
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
-
+import { PaginatorModule } from 'primeng/paginator';
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
-
+// import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -98,8 +103,13 @@ export function tokenGetter(): any {
     BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
-    FileUploadModule,
+    ButtonModule,
+    PaginatorModule,
+    StripeModule.forRoot(
+      'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
+    ),
     CalendarModule,
+    FileUploadModule,
   ],
   exports: [
     BrowserModule,
@@ -128,9 +138,12 @@ export function tokenGetter(): any {
     PasswordModule,
     SocialLoginModule,
     FileUploadModule,
+    PaginatorModule,
     CalendarModule,
+    FileUploadModule,
   ],
   providers: [
+    DatePipe,
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     ProductService,
     MessageService,
