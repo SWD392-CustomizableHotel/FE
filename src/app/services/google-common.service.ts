@@ -1,8 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@angular/core';
-import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  SocialAuthService,
+  SocialUser,
+} from '@abacritt/angularx-social-login';
 import { ExternalAuthDto } from '../interfaces/models/externalAuthDto';
-import { BehaviorSubject, Observable, Subject, catchError, map, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  catchError,
+  map,
+  tap,
+} from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../interfaces/models/user';
 import { environment } from '../../assets/environments/environment';
@@ -65,20 +76,22 @@ export class GoogleCommonService {
   }
 
   externalLogin(route: string, externalAuth: ExternalAuthDto): Observable<any> {
-    return this.http.post<any>(`${environment.BACKEND_API_URL}/${route}`, externalAuth).pipe(
-      map((res) => {
-        if (res.token) {
-          this.saveSocialUser(res);
-          this.setLoggedIn(true);
-          this.sendAuthStateChangeNotification(true, res.role);
-        }
-        return res;
-      }),
-      catchError((error) => {
-        console.error('External login error:', error);
-        throw error;
-      })
-    );
+    return this.http
+      .post<any>(`${environment.BACKEND_API_URL}/${route}`, externalAuth)
+      .pipe(
+        map((res) => {
+          if (res.token) {
+            this.saveSocialUser(res);
+            this.setLoggedIn(true);
+            this.sendAuthStateChangeNotification(true, res.role);
+          }
+          return res;
+        }),
+        catchError((error) => {
+          console.error('External login error:', error);
+          throw error;
+        })
+      );
   }
 
   saveSocialUser(res: any): void {
@@ -88,14 +101,17 @@ export class GoogleCommonService {
       lastName: res.lastName,
       phoneNumber: res.phoneNumber,
       token: res.token,
-      role: res.role
+      role: res.role,
     };
     localStorage.setItem('socialUser', JSON.stringify(socialUser));
     localStorage.setItem('user', JSON.stringify(res));
     this.userSocialSubject.next(socialUser);
   }
 
-  registerAdditionalInfo(socialUser: User, additionalInfo: any): Observable<any> {
+  registerAdditionalInfo(
+    socialUser: User,
+    additionalInfo: any
+  ): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Auth/RegisterAdditionalInfo`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -103,7 +119,7 @@ export class GoogleCommonService {
     });
     const body = {
       ...additionalInfo,
-      UserName: socialUser.email
+      UserName: socialUser.email,
     };
 
     return this.http.post<any>(url, body, { headers }).pipe(
@@ -115,7 +131,10 @@ export class GoogleCommonService {
   }
 
   //navigate when login with role Admin or Staff
-  sendAuthStateChangeNotification(isAuthenticated: boolean, role: string): void {
+  sendAuthStateChangeNotification(
+    isAuthenticated: boolean,
+    role: string
+  ): void {
     this.authStateSubject.next(isAuthenticated);
     this.isLoggedInSubject.next(isAuthenticated);
     this.setShowAdditionalInfoForm(false);

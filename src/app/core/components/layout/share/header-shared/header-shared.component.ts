@@ -5,6 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { Component } from '@angular/core';
 import { GoogleCommonService } from '../../../../../services/google-common.service';
 import { BehaviorSubject } from 'rxjs';
+
 @Component({
   selector: 'app-header-shared',
   templateUrl: './header-shared.component.html',
@@ -19,6 +20,48 @@ export class HeaderSharedComponent {
     { label: 'Home', route: 'home' },
     { label: 'View Available Room', route: 'view-available-room' },
     { label: 'Customizing Room', route: 'customizing-room' }
+  ];
+  profileItems: MenuItem[] = [
+    {
+      label: 'History',
+      items: [
+        {
+          label: 'View Order History',
+          icon: 'pi pi-search',
+          shortcut: '⌘+S',
+        },
+      ],
+    },
+    {
+      label: 'Profile',
+      items: [
+        {
+          label: 'Update Profile',
+          icon: 'pi pi-cog',
+          shortcut: '⌘+O',
+          command: () => this.navigateTo('update-profile'),
+        },
+        {
+          label: 'Logout',
+          icon: 'pi pi-sign-out',
+          shortcut: '⌘+Q',
+          command: () => this.logout(),
+        },
+      ],
+    },
+    {
+      separator: true,
+    },
+    {
+      template: () => `
+        <div class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
+          <span class="inline-flex flex-column">
+            <span class="font-bold">${this.user?.firstName} ${this.user?.lastName}</span>
+            <span class="text-sm">${this.user?.role}</span>
+          </span>
+        </div>
+      `,
+    },
   ];
 
   constructor(
@@ -44,6 +87,7 @@ export class HeaderSharedComponent {
       }
     });
   }
+
   onMenuItemClick(route: string): void {
     this.router.navigate([route]);
   }
@@ -73,6 +117,7 @@ export class HeaderSharedComponent {
     } else {
       this.router.navigate(['/landing'], { fragment: route });
     }
+    this.router.navigate([route]);
   }
 
   getIsLoggedIn(): boolean {
@@ -82,12 +127,6 @@ export class HeaderSharedComponent {
   setLoggedIn(value: boolean): void {
     this.isLoggedIn.next(value);
   }
-
-  // ngOnInit(): void {
-  //   this.authService.isLoggedIn.subscribe((loggedIn) => {
-  //     this.isLoggedIn = loggedIn;
-  //   });
-  // }
 
   logout(): void {
     this.authService.logOut();

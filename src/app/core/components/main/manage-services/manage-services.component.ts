@@ -30,7 +30,6 @@ export class ManageServicesComponent implements OnInit {
   serviceDialog: boolean = false;
   createServiceDialog: boolean = false;
   deleteServiceDialog: boolean = false;
-  assignStaffDialog: boolean = false;
   confirmStatusChangeDialog: boolean = false;
   submitted: boolean = false;
   loading: boolean = true;
@@ -49,17 +48,17 @@ export class ManageServicesComponent implements OnInit {
   searchTerm?: string;
   serviceStatus?: string;
   serviceStatusOptions = [
-    { status: 'Open' },
-    { status: 'Closed' },
-    { status: 'On Demand' },
-    { status: 'Daily Service' },
+    { label: 'Open', value: 'Open' },
+    { label: 'Closed', value: 'Closed' },
+    { label: 'On Demand', value: 'OnDemand' },
+    { label: 'Daily Service', value: 'DailyService' },
   ];
   options = [
     { label: 5, value: 5 },
     { label: 10, value: 10 },
     { label: 20, value: 20 },
   ];
-  selectedServiceStatus: { status: string } | undefined;
+  selectedServiceStatus: { label: string; value: string } | undefined;
   newStatus: string | undefined;
   @ViewChild('filter') filter!: ElementRef;
 
@@ -96,20 +95,14 @@ export class ManageServicesComponent implements OnInit {
       .getAllServices(pageNumber, pageSize, serviceStatus, searchTerm)
       .subscribe({
         next: (data) => {
-          this.services = data.data.map((service: Service) => {
-            return {
-              ...service,
-              serviceStatus: this.serviceStatusOptions.find(
-                (option) => option.status === service.status
-              ),
-            };
-          });
+          this.services = data.data;
           this.loading = false;
           this.totalRecords = data.totalRecords;
           this.totalPages = data.totalPages;
         },
         error: (error) => {
           console.error('There was an error!', error);
+          this.loading = false; // Ensure loading stops on error
         },
       });
   }
@@ -140,7 +133,7 @@ export class ManageServicesComponent implements OnInit {
     this.service = {
       status: 'Closed',
     };
-    this.selectedServiceStatus = { status: 'Closed' };
+    this.selectedServiceStatus = { label: 'Closed', value: 'Closed' };
     this.submitted = false;
     this.createServiceDialog = true;
   }
@@ -162,7 +155,7 @@ export class ManageServicesComponent implements OnInit {
     }
 
     this.selectedServiceStatus = this.serviceStatusOptions.find(
-      (option) => option.status === service.status
+      (option) => option.value === service.status
     );
 
     this.selectedStaff = service.assignedStaff || [];
@@ -340,7 +333,7 @@ export class ManageServicesComponent implements OnInit {
             },
           });
       } else {
-        this.service.status = this.selectedServiceStatus?.status || 'Closed';
+        this.service.status = this.selectedServiceStatus?.value || 'Closed';
         if (
           this.service.name &&
           this.service.price !== undefined &&
@@ -427,7 +420,7 @@ export class ManageServicesComponent implements OnInit {
   }
 
   updateServiceStatus(service: Service, newStatus: any): void {
-    this.newStatus = newStatus.status;
+    this.newStatus = newStatus.value;
     this.confirmStatusChangeDialog = true;
   }
 
@@ -500,5 +493,11 @@ export class ManageServicesComponent implements OnInit {
     if (!this.service.startDate) emptyFields.push('Start Date');
     if (!this.service.endDate) emptyFields.push('End Date');
     return emptyFields;
+  }
+  getServiceStatusLabel(value: string): string {
+    const statusOption = this.serviceStatusOptions.find(
+      (option) => option.value === value
+    );
+    return statusOption ? statusOption.label : value;
   }
 }
