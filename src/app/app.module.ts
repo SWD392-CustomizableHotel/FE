@@ -50,15 +50,19 @@ import { PasswordModule } from 'primeng/password';
 import { RegisterComponent } from './core/components/register/register.component';
 import { MessageService } from 'primeng/api';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { ProfileComponent } from './core/components/profile/profile.component';
+import { FileUploadModule } from 'primeng/fileupload';
+// import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
+import { CalendarModule } from 'primeng/calendar';
 import { StripeModule } from 'stripe-angular';
 import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
-import { CalendarModule } from 'primeng/calendar';
+import { PaginatorModule } from 'primeng/paginator';
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
-
+// import { KebabCaseInterceptor } from './_helper/kebab-interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,6 +71,7 @@ export function tokenGetter(): any {
     ResetPasswordComponent,
     RegisterComponent,
     VerifyEmailComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -98,10 +103,13 @@ export function tokenGetter(): any {
     BrowserAnimationsModule,
     SocialLoginModule,
     GoogleSigninButtonModule,
+    ButtonModule,
+    PaginatorModule,
     StripeModule.forRoot(
       'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
     ),
     CalendarModule,
+    FileUploadModule,
   ],
   exports: [
     BrowserModule,
@@ -129,7 +137,10 @@ export function tokenGetter(): any {
     ToastModule,
     PasswordModule,
     SocialLoginModule,
+    FileUploadModule,
+    PaginatorModule,
     CalendarModule,
+    FileUploadModule,
   ],
   providers: [
     DatePipe,

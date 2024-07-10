@@ -11,32 +11,38 @@ import { DropdownModule } from 'primeng/dropdown';
 import { HeaderSharedComponent } from './header-shared/header-shared.component';
 import { FooterSharedComponent } from './footer-shared/footer-shared.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { MenuModule } from 'primeng/menu';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
+import { BadgeModule } from 'primeng/badge';
 @NgModule({
+  declarations: [
+    FooterComponent,
+    HeaderComponent,
+    HeaderSharedComponent,
+    FooterSharedComponent,
+  ],
 
-    declarations: [
-        FooterComponent,
-        HeaderComponent,
-        HeaderSharedComponent,
-        FooterSharedComponent,
-    ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    CalendarModule,
+    FloatLabelModule,
+    InputNumberModule,
+    ButtonModule,
+    DropdownModule,
+    MatMenuModule,
+    MenuModule,
+    AvatarModule,
+    AvatarGroupModule,
+    BadgeModule,
+  ],
 
-    imports: [
-         CommonModule,
-         RouterModule,
-         CalendarModule,
-         FloatLabelModule,
-         InputNumberModule,
-         ButtonModule,
-         DropdownModule,
-         MatMenuModule,
-    ],
-
-    exports: [
-        FooterComponent,
-        HeaderComponent,
-        HeaderSharedComponent,
-        FooterSharedComponent,
-    ],
+  exports: [
+    FooterComponent,
+    HeaderComponent,
+    HeaderSharedComponent,
+    FooterSharedComponent,
+  ],
 })
-
-export class sharedModule { }
+export class sharedModule {}

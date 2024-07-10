@@ -1,5 +1,6 @@
 export interface Amenity {
   id?: number;
+  code?: string;
   createdBy?: string;
   createdDate?: Date;
   startDate?: Date;

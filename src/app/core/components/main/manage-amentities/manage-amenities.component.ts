@@ -104,6 +104,7 @@ export class ManageAmenitiesComponent implements OnInit {
           console.log(this.amenities);
         },
         error: (error) => {
+          this.loading = false;
           console.error('There was an error!', error);
         },
       });
