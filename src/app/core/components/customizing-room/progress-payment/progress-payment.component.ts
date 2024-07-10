@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { CustomizeRequest } from '../../../../interfaces/models/customize-request';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-progress-payment',
@@ -7,6 +6,5 @@ import { CustomizeRequest } from '../../../../interfaces/models/customize-reques
   styleUrl: './progress-payment.component.scss'
 })
 export class ProgressPaymentComponent {
-  @Input() isHideCustomizing: boolean = false;
-  @Input() customizeRequest!: (type: CustomizeRequest) => CustomizeRequest;
+
 }

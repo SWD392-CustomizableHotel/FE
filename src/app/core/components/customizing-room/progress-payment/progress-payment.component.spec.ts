@@ -11,7 +11,7 @@ describe('ProgressPaymentComponent', () => {
       declarations: [ProgressPaymentComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ProgressPaymentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
