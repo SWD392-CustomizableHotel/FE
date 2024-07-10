@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
   NumberOfAdult: number;
   NumberOfChildren: number;
   location?: string;
-  realLocation?:string;
+  realLocation?: string;
   rooms?: Room[];
   rangeDates: Date[];
   value: number = 5;
@@ -37,12 +37,20 @@ export class HomeComponent implements OnInit {
     { name: 'Ho Chi Minh City' },
     { name: 'Hue City' },
     { name: 'Da Nang City' },
-    { name: 'Ha Noi Capital' }
+    { name: 'Ha Noi Capital' },
   ];
 
-  constructor(public layoutService: LayoutService, public router: Router, private formBuilder: FormBuilder, private messageService: MessageService, public authenticationService: AuthenticationService, private userDataService: UserBookingService, private roomService: RoomService) {
+  constructor(
+    public layoutService: LayoutService,
+    public router: Router,
+    private formBuilder: FormBuilder,
+    private messageService: MessageService,
+    public authenticationService: AuthenticationService,
+    private userDataService: UserBookingService,
+    private roomService: RoomService
+  ) {
     this.formGroup = this.formBuilder.group({
-      numberOfPeople: [null]
+      numberOfPeople: [null],
     });
     this.rangeDates = [];
     this.NumberOfAdult = 1;
@@ -51,16 +59,12 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.roomService.getAvailableRoom().subscribe(
-      (response: Room[]) => {
-        this.rooms = response;
-      }
-    );
-    this.roomService.getHotel().subscribe(
-      (response: Hotel[]) => {
-        this.hotels = response;
-      }
-    );
+    this.roomService.getAvailableRoom().subscribe((response: Room[]) => {
+      this.rooms = response;
+    });
+    this.roomService.getHotel().subscribe((response: Hotel[]) => {
+      this.hotels = response;
+    });
   }
 
   toggleSeeMore(): void {
@@ -88,7 +92,7 @@ export class HomeComponent implements OnInit {
         key: 'peopleCount',
         severity: 'error',
         summary: 'Error',
-        detail: 'Adult + Children must be smaller than 8'
+        detail: 'Adult + Children must be smaller than 8',
       });
     }
   }
@@ -109,7 +113,7 @@ export class HomeComponent implements OnInit {
     this.userDataService.getPeopleCount({
       rooms: this.NumberOfRoom,
       adults: this.NumberOfAdult,
-      children: this.NumberOfChildren
+      children: this.NumberOfChildren,
     });
     this.router.navigate(['/view-available-room']);
   }

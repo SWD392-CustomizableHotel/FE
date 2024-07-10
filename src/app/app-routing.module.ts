@@ -10,6 +10,8 @@ import { BookingHistoryComponent } from './core/components/booking-history/booki
 import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
 import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
+import { ProfileComponent } from './core/components/profile/profile.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -51,6 +53,10 @@ const routes: Routes = [
   {
     path: 'verify-email',
     component: VerifyEmailComponent,
+  },
+  {
+    path: 'update-profile',
+    component: ProfileComponent,
   },
   {
     path: 'view-available-room',
@@ -140,3 +146,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
+
