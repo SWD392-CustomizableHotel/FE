@@ -10,6 +10,7 @@ import { UserBookingService } from '../../../services/user-booking.service';
 import { firstValueFrom } from 'rxjs';
 import { CancelPaymentService } from '../../../services/cancel-payment.service';
 import { environment } from '../../../../assets/environments/environment';
+
 @Component({
   selector: 'app-payment',
   templateUrl: './stripe-payment.component.html',
@@ -34,6 +35,8 @@ export class StripePaymentComponent implements OnInit {
   minutes: number;
   formattedSeconds: string;
   firstName?: string;
+  startDate?: Date;
+  endDate?: Date;
 
   constructor(
     private http: HttpClient,
@@ -66,9 +69,9 @@ export class StripePaymentComponent implements OnInit {
       this.roomService.getRoomDetails(this.selectedRoomId)
     );
 
+
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
-      console.log(rangeDates);
       if (this.rangeDates !== undefined) {
         const start = this.rangeDates[0];
         const end = this.rangeDates[1];
@@ -76,15 +79,29 @@ export class StripePaymentComponent implements OnInit {
           (end.getTime() - start.getTime()) / (1000 * 3600 * 24)
         );
       } else {
-        console.log('Unavailable range dates');
+        console.log('RangDates is undefined');
       }
       this.userBookingData.currentPeopleCount.subscribe((peopleCount) => {
-        this.numberOfRoom = peopleCount.rooms;
+          this.numberOfRoom = peopleCount.rooms;
       });
     });
 
     // Initialize Stripe
     this.stripe = await loadStripe(environment.STRIPE_PUBLIC_KEY);
+    if(this.numberOfRoom === undefined || this.numberOfRoom === 0) {
+      this.numberOfRoom = 1;
+    }
+
+    if (this.rangeDates === undefined) {
+      const start = this.room?.startDate ? new Date(this.room.startDate).getTime() : null;
+      const end = this.room?.endDate ? new Date(this.room.endDate).getTime() : null;
+      if (start !== null && end !== null) {
+        this.numOfDays = Math.round((end - start) / (1000 * 3600 * 24));
+      } else {
+        console.error('startDate or endDate is not valid');
+      }
+    }
+
     try {
       // Get client secret
       this.paymentItentService
@@ -146,7 +163,7 @@ export class StripePaymentComponent implements OnInit {
     const { error } = await this.stripe.confirmPayment({
       elements: this.elements,
       confirmParams: {
-        return_url: 'http://localhost:4200/confirm-payment',
+        return_url: environment.CONFIRM_URL,
       },
     });
     if (error.type === 'card_error' || error.type === 'validation_error') {
