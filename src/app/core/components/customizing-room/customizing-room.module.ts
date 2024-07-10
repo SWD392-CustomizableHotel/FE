@@ -31,9 +31,10 @@ import { ProgressInformationComponent } from './progress-information/progress-in
 import { SliderModule } from 'primeng/slider';
 import { ImageModule } from 'primeng/image';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ProgressPaymentComponent } from './progress-payment/progress-payment.component';
 
 @NgModule({
-  declarations: [CustomizingRoomComponent, ProgressCustomizingComponent, ProgressInformationComponent],
+  declarations: [CustomizingRoomComponent, ProgressCustomizingComponent, ProgressInformationComponent, ProgressPaymentComponent],
   imports: [
     CommonModule,
     ButtonModule,

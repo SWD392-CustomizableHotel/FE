@@ -3,6 +3,9 @@ import { MenuItem, Message, MessageService } from 'primeng/api';
 import { ContextMenu } from 'primeng/contextmenu';
 import { Room } from '../../../interfaces/models/room';
 import { DatePipe } from '@angular/common';
+import { CustomizeRequest } from '../../../interfaces/models/customize-request';
+import { CustomizingRoomService } from '../../../services/customizing-room.service';
+import { Amenity } from '../../../interfaces/models/amenity';
 
 @Component({
   selector: 'app-customizing-room',
@@ -13,8 +16,8 @@ import { DatePipe } from '@angular/common';
 export class CustomizingRoomComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('cm') cm!: ContextMenu;
-  selectedRoom!: Room;
 
+  selectedRoom!: Room;
   ctx!: CanvasRenderingContext2D;
   selectedFurniture?: string;
   furnitureList: any[] = [];
@@ -38,6 +41,9 @@ export class CustomizingRoomComponent implements OnInit {
   steps: MenuItem[] | undefined;
   activeIndex: number = 0;
   night: string = '';
+  day: string = '';
+  roomPriceSubtotal: number = 0;
+  totalPrice: number = 0;
 
   limits: any;
   roomSize!: string;
@@ -52,8 +58,17 @@ export class CustomizingRoomComponent implements OnInit {
   dateRange!: Date[];
   checkInDate: string | null = '';
   checkOutDate: string | null = '';
+  customizeRequest!: CustomizeRequest;
+  amenityType!: string;
+  amenity!: Amenity;
+  roomCode!: string;
+  room!: Room;
 
-  constructor(private messageService: MessageService, private datePipe: DatePipe) {
+  constructor(
+    private messageService: MessageService,
+    private datePipe: DatePipe,
+    private customizeService: CustomizingRoomService
+  ) {
     this.contextMenuItems = [
       {
         label: 'Delete',
@@ -67,7 +82,7 @@ export class CustomizingRoomComponent implements OnInit {
     window.scrollTo({
       top: 40,
       left: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
     this.limits = this.amenities.basic;
     this.roomSize = 'Small';
@@ -114,11 +129,16 @@ export class CustomizingRoomComponent implements OnInit {
   handleDateRange(value: Date[]): void {
     this.dateRange = value;
     this.checkInDate = this.datePipe.transform(this.dateRange[0], 'dd/MM/yyyy');
-    this.checkOutDate = this.datePipe.transform(this.dateRange[1], 'dd/MM/yyyy');
+    this.checkOutDate = this.datePipe.transform(
+      this.dateRange[1],
+      'dd/MM/yyyy'
+    );
     if (this.dateRange[0] && this.dateRange[1]) {
-      const timeDifference = this.dateRange[1].getTime() - this.dateRange[0].getTime();
+      const timeDifference =
+        this.dateRange[1].getTime() - this.dateRange[0].getTime();
       const daysDifference = timeDifference / (1000 * 3600 * 24);
       this.night = daysDifference.toPrecision(1);
+      this.day = (daysDifference + 1).toPrecision(1);
       return;
     }
     this.night = '1';
@@ -162,10 +182,13 @@ export class CustomizingRoomComponent implements OnInit {
     this.draw();
     if (value === 'basic') {
       this.limits = this.amenities.basic;
+      this.amenityType = value;
     } else if (value === 'family') {
       this.limits = this.amenities.family;
+      this.amenityType = value;
     } else if (value === 'advanced') {
       this.limits = this.amenities.advanced;
+      this.amenityType = value;
     }
   }
 
@@ -182,9 +205,27 @@ export class CustomizingRoomComponent implements OnInit {
   }
 
   onActiveIndexChange(index: number): void {
-    console.log(index);
+    this.customizeService.getAmenityByType(this.amenityType).subscribe({
+      next: (response) => {
+        if (response.isSucceed) {
+          this.amenity = response.results?.at(0) as Amenity;
+          // Tính theo đêm * giá tiền
+          const night: number = +this.night;
+          this.roomPriceSubtotal = (this.selectedRoom.price as number) * night;
+          if (this.amenity.price) {
+            this.totalPrice = this.roomPriceSubtotal + this.amenity.price;
+          }
+        } else {
+          this.activeIndex = 0;
+        }
+      },
+    });
+    this.customizeRequest = {
+      amenity: this.amenity,
+      room: this.selectedRoom,
+    };
     this.activeIndex = index;
-    this.isHideCustomizing = index !== 1 && index !== 2;
+    this.isHideCustomizing = index !== 1;
   }
 
   async loadImages(): Promise<void> {
@@ -499,7 +540,7 @@ export class CustomizingRoomComponent implements OnInit {
       x - size / 2 >= this.blueprintX &&
       x + size / 2 <= this.blueprintX + this.blueprintWidth &&
       y - size / 2 >= this.blueprintY &&
-      y + size / 2 <= this.blueprintY + this.blueprintHeight
+      y + size / 2 <= this.blueprintY + (this.blueprintHeight - 228)
     );
   }
 
@@ -508,5 +549,9 @@ export class CustomizingRoomComponent implements OnInit {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     this.addFurniture(x, y);
+  }
+
+  getCustomizeRequest(): CustomizeRequest {
+    return this.customizeRequest;
   }
 }

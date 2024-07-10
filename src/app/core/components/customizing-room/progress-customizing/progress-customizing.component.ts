@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CustomizeRequest } from '../../../../interfaces/models/customize-request';
 
 @Component({
   selector: 'app-progress-customizing',
@@ -7,6 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ProgressCustomizingComponent {
   @Input() isHideCustomizing: boolean = false;
+  @Input() customizeRequest!: CustomizeRequest;
   @Input() canAddFurniture!: (type: string) => boolean;
   @Input() getFurnitureCount!: (type: string) => number;
   @Output() furnitureSelected = new EventEmitter<string>();
