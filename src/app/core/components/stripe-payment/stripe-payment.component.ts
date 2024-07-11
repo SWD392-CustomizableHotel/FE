@@ -79,7 +79,7 @@ export class StripePaymentComponent implements OnInit {
           (end.getTime() - start.getTime()) / (1000 * 3600 * 24)
         );
       } else {
-        console.log('RangDates is undefined');
+        console.log('rangDates is undefined');
       }
       this.userBookingData.currentPeopleCount.subscribe((peopleCount) => {
           this.numberOfRoom = peopleCount.rooms;
