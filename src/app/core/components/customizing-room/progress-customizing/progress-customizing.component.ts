@@ -1,20 +1,25 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CustomizeRequest } from '../../../../interfaces/models/customize-request';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-progress-customizing',
   templateUrl: './progress-customizing.component.html',
-  styleUrls: ['./progress-customizing.component.scss']
+  styleUrls: ['./progress-customizing.component.scss'],
+  providers: [ConfirmationService],
 })
 export class ProgressCustomizingComponent {
   @Input() isHideCustomizing: boolean = false;
-  @Input() customizeRequest!: CustomizeRequest;
   @Input() canAddFurniture!: (type: string) => boolean;
   @Input() getFurnitureCount!: (type: string) => number;
   @Output() furnitureSelected = new EventEmitter<string>();
   @Output() undoAction = new EventEmitter<void>();
   @Output() redoAction = new EventEmitter<void>();
   @Output() changeProgressIndex = new EventEmitter<number>();
+  loading: boolean = false;
+
+  constructor(
+    private confirmationService: ConfirmationService,
+  ) {}
 
   selectFurniture(type: string): void {
     this.furnitureSelected.emit(type);
@@ -29,7 +34,30 @@ export class ProgressCustomizingComponent {
   }
 
   next(index: number): void {
-    this.changeProgressIndex.emit(index);
+    if (
+      this.canAddFurniture('chair') ||
+      this.canAddFurniture('table') ||
+      this.canAddFurniture('closet') ||
+      this.canAddFurniture('beds')
+    ) {
+      this.confirmationService.confirm({
+        message:
+          'You have not used all the furniture. Are you sure you want to proceed?',
+        accept: () => {
+          this.changeProgressIndex.emit(index);
+          this.loading = true;
+        },
+      });
+    } else {
+      this.confirmationService.confirm({
+        message:
+          'You will not able to edit your room again. Are you sure you want to go to payment?',
+        accept: () => {
+          this.changeProgressIndex.emit(index);
+          this.loading = true;
+        },
+      });
+    }
   }
 
   back(index: number): void {
@@ -37,7 +65,7 @@ export class ProgressCustomizingComponent {
     window.scrollTo({
       top: 40,
       left: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }
 }

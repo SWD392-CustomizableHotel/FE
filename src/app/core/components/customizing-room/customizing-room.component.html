@@ -7,7 +7,7 @@
       <p-toast />
       <p-steps
         [model]="steps"
-        [readonly]="false"
+        [readonly]="true"
         class="justify-content-between"
         [activeIndex]="activeIndex"
         (activeIndexChange)="onActiveIndexChange($event)"
@@ -39,6 +39,7 @@
       >
         <canvas
           #canvas
+          id="canvas"
           width="700"
           height="580"
           [hidden]="isHideCustomizing"
@@ -50,13 +51,18 @@
         >
         </canvas>
       </div>
+      <app-progress-payment
+        [activeIndex]="activeIndex"
+        (changeActiveIndex)="onActiveIndexChange($event)"
+        *ngIf="isHideCustomizing && activeIndex === 2"
+      ></app-progress-payment>
     </div>
     <div
       class="col-12 md:col-4"
-      [hidden]="isHideCustomizing && !(activeIndex === 1)"
+      [hidden]="isHideCustomizing && !(activeIndex === 1 || activeIndex === 2)"
     >
       <div
-        class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center pt-1 mr-8 mt-8"
+        class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center pt-1 mr-8 mt-2"
       >
         <p-card
           styleClass="font-medium text-primary"

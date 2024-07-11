@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
 import { CustomizeRequest } from '../../../interfaces/models/customize-request';
 import { CustomizingRoomService } from '../../../services/customizing-room.service';
 import { Amenity } from '../../../interfaces/models/amenity';
+import { CustomizeDataService } from '../../../services/customize-data.service';
 
 @Component({
   selector: 'app-customizing-room',
@@ -67,13 +68,37 @@ export class CustomizingRoomComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private datePipe: DatePipe,
-    private customizeService: CustomizingRoomService
+    private customizeService: CustomizingRoomService,
+    private customizeDataService: CustomizeDataService
   ) {
     this.contextMenuItems = [
       {
         label: 'Delete',
         icon: 'pi pi-times',
         command: (): void => this.deleteFurniture(),
+      },
+      {
+        label: 'Change Color',
+        icon: 'pi pi-palette',
+        items: [
+          {
+            label: 'Brown',
+            command: (): void => this.changeColor('brown'),
+          },
+          {
+            label: 'Red',
+            command: (): void => this.changeColor('red'),
+          },
+          {
+            label: 'White',
+            command: (): void => this.changeColor('white'),
+          },
+        ],
+      },
+      {
+        label: 'Export',
+        icon: 'pi pi-print',
+        command: (): void => this.downloadCanvasAsImage(),
       },
     ];
   }
@@ -128,6 +153,7 @@ export class CustomizingRoomComponent implements OnInit {
 
   handleDateRange(value: Date[]): void {
     this.dateRange = value;
+    this.customizeDataService.setDateRange(value);
     this.checkInDate = this.datePipe.transform(this.dateRange[0], 'dd/MM/yyyy');
     this.checkOutDate = this.datePipe.transform(
       this.dateRange[1],
@@ -154,11 +180,9 @@ export class CustomizingRoomComponent implements OnInit {
       if (index !== null) {
         this.selectedObjectIndex = index;
         if (this.cm) {
-          console.log(`yes`);
           this.cm.show(event);
         }
       } else {
-        console.log(`no`);
         this.selectedObjectIndex = null;
       }
     }
@@ -172,6 +196,20 @@ export class CustomizingRoomComponent implements OnInit {
     if (this.selectedObjectIndex !== null) {
       this.furnitureList.splice(this.selectedObjectIndex, 1);
       this.selectedObjectIndex = null;
+      this.saveState();
+      this.draw();
+    }
+  }
+
+  changeColor(color: string): void {
+    if (this.selectedObjectIndex !== null) {
+      if (color === 'white') {
+        this.furnitureList[this.selectedObjectIndex].color = 'gray';
+        this.saveState();
+        this.draw();
+        return;
+      }
+      this.furnitureList[this.selectedObjectIndex].color = color;
       this.saveState();
       this.draw();
     }
@@ -205,27 +243,58 @@ export class CustomizingRoomComponent implements OnInit {
   }
 
   onActiveIndexChange(index: number): void {
-    this.customizeService.getAmenityByType(this.amenityType).subscribe({
-      next: (response) => {
-        if (response.isSucceed) {
-          this.amenity = response.results?.at(0) as Amenity;
-          // Tính theo đêm * giá tiền
-          const night: number = +this.night;
-          this.roomPriceSubtotal = (this.selectedRoom.price as number) * night;
-          if (this.amenity.price) {
-            this.totalPrice = this.roomPriceSubtotal + this.amenity.price;
+    if (index === 1) {
+      this.customizeService.getAmenityByType(this.amenityType).subscribe({
+        next: (response) => {
+          if (response.isSucceed) {
+            this.amenity = response.results?.at(0) as Amenity;
+            // Tính theo đêm * giá tiền
+            const night: number = +this.night;
+            this.roomPriceSubtotal =
+              (this.selectedRoom.price as number) * night;
+            if (this.amenity.price) {
+              this.totalPrice = this.roomPriceSubtotal + this.amenity.price;
+            }
+            this.customizeRequest = {
+              amenityId: this.amenity.id!,
+              amenityPrice: this.amenity.price!,
+              roomId: this.selectedRoom.id!.toString(),
+              roomPrice: this.selectedRoom.price!,
+              numberOfDay: night,
+              numberOfRoom: this.customizeDataService.getNumberOfRooms(),
+            };
+            this.customizeDataService.setCustomizeRequest(
+              this.customizeRequest
+            );
+          } else {
+            this.activeIndex = 0;
           }
-        } else {
-          this.activeIndex = 0;
-        }
-      },
-    });
-    this.customizeRequest = {
-      amenity: this.amenity,
-      room: this.selectedRoom,
-    };
+        },
+      });
+    }
+    if (index === 2) {
+      // Tạo blob canvas
+      const canvas: HTMLCanvasElement = document.getElementById(
+        'canvas'
+      ) as HTMLCanvasElement;
+      this.exportCanvasToBlob(canvas).then((s) => {
+        this.customizeDataService.setCanvasBlobImage(s!);
+      });
+    }
     this.activeIndex = index;
     this.isHideCustomizing = index !== 1;
+  }
+
+  async exportCanvasToBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          canvas.toBlob((blob) => {
+            resolve(blob);
+          }, 'image/png');
+        }, 3000);
+      });
+    });
   }
 
   async loadImages(): Promise<void> {
@@ -255,7 +324,13 @@ export class CustomizingRoomComponent implements OnInit {
     if (!this.selectedFurniture) return;
     const size = this.getFurnitureSize(this.selectedFurniture);
     if (this.isInsideBlueprint(x, y, size) && !this.isOverlapping(x, y, size)) {
-      this.furnitureList.push({ x, y, size, type: this.selectedFurniture });
+      this.furnitureList.push({
+        x,
+        y,
+        size,
+        type: this.selectedFurniture,
+        color: 'gray',
+      });
       this.saveState();
       this.draw();
     } else {
@@ -322,7 +397,7 @@ export class CustomizingRoomComponent implements OnInit {
 
   saveState(): void {
     this.undoStack.push(JSON.parse(JSON.stringify(this.furnitureList)));
-    if (this.undoStack.length > 10) this.undoStack.shift();
+    if (this.undoStack.length > 20) this.undoStack.shift();
     this.redoStack = [];
   }
 
@@ -384,26 +459,45 @@ export class CustomizingRoomComponent implements OnInit {
       this.furnitureList.forEach((furniture, index) => {
         const img = this.images[furniture.type];
         if (img) {
-          this.ctx.save();
-          this.ctx.translate(furniture.x, furniture.y);
-          if (this.selectedObjectIndex === index) {
-            this.ctx.strokeStyle = 'lightgreen';
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeRect(
+          // Create an off-screen canvas
+          const offScreenCanvas = document.createElement('canvas');
+          offScreenCanvas.width = img.width;
+          offScreenCanvas.height = img.height;
+          const offScreenCtx = offScreenCanvas.getContext('2d');
+
+          if (offScreenCtx) {
+            // Draw the furniture image onto the off-screen canvas
+            offScreenCtx.drawImage(img, 0, 0, img.width, img.height);
+
+            // Change the composite operation to source-in to keep only the image
+            offScreenCtx.globalCompositeOperation = 'source-in';
+
+            // Fill the off-screen canvas with the color
+            offScreenCtx.fillStyle = furniture.color || 'gray';
+            offScreenCtx.fillRect(0, 0, img.width, img.height);
+
+            this.ctx.save();
+            this.ctx.translate(furniture.x, furniture.y);
+            this.ctx.drawImage(
+              offScreenCanvas,
               -furniture.size / 2,
               -furniture.size / 2,
               furniture.size,
               furniture.size
             );
+
+            if (this.selectedObjectIndex === index) {
+              this.ctx.strokeStyle = 'lightgreen';
+              this.ctx.lineWidth = 2;
+              this.ctx.strokeRect(
+                -furniture.size / 2,
+                -furniture.size / 2,
+                furniture.size,
+                furniture.size
+              );
+            }
+            this.ctx.restore();
           }
-          this.ctx.drawImage(
-            img,
-            -furniture.size / 2,
-            -furniture.size / 2,
-            furniture.size,
-            furniture.size
-          );
-          this.ctx.restore();
         }
       });
 
@@ -480,6 +574,7 @@ export class CustomizingRoomComponent implements OnInit {
       this.draw();
     }
   }
+
   findFurnitureIndex(x: number, y: number): number | null {
     for (let i = 0; i < this.furnitureList.length; i++) {
       const furniture = this.furnitureList[i];
@@ -549,6 +644,21 @@ export class CustomizingRoomComponent implements OnInit {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     this.addFurniture(x, y);
+  }
+
+  downloadCanvasAsImage(): void {
+    if (this.canvas) {
+      this.canvas.nativeElement.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'customized-room.png';
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
+    }
   }
 
   getCustomizeRequest(): CustomizeRequest {

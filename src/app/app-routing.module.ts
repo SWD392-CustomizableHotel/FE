@@ -7,7 +7,6 @@ import { ResetPasswordComponent } from './core/components/reset-password/reset-p
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
 import { CustomizingRoomComponent } from './core/components/customizing-room/customizing-room.component';
-import { AuthGuard } from './_helper/auth.guard';
 import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
 import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
@@ -82,7 +81,6 @@ const routes: Routes = [
   {
     path: 'customizing-room',
     component: CustomizingRoomComponent,
-    canActivate: [AuthGuard],
     children: [
       {
         path: '',

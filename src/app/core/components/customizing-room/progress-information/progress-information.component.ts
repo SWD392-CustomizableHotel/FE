@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Room } from '../../../../interfaces/models/room';
 import { CustomizingRoomService } from '../../../../services/customizing-room.service';
+import { CustomizeDataService } from '../../../../services/customize-data.service';
 
 @Component({
   selector: 'app-progress-information',
@@ -44,7 +45,8 @@ export class ProgressInformationComponent implements OnInit {
     private hotelService: HotelService,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private roomService: CustomizingRoomService
+    private roomService: CustomizingRoomService,
+    private customizeDataService: CustomizeDataService
   ) {
     this.form = this.fb.group({
       hotel: ['', Validators.required],
@@ -78,9 +80,9 @@ export class ProgressInformationComponent implements OnInit {
     this.maxDate.setFullYear(nextYear);
 
     this.roomSizes = [
-      { label: 'Small (178x324)', value: 'small' },
-      { label: 'Medium (204x398)', value: 'medium' },
-      { label: 'Large (288x451)', value: 'large' },
+      { label: 'Small (≤ 2 people)', value: 'small' },
+      { label: 'Medium (≤ 4 people)', value: 'medium' },
+      { label: 'Large (≥ 4 people)', value: 'large' },
     ];
     this.amenitiesPackage = [
       { label: 'Basic', value: 'basic' },
@@ -195,6 +197,7 @@ export class ProgressInformationComponent implements OnInit {
     this.roomSelected.emit(room);
     this.dateRange.emit(dateRange);
     this.changeActiveIndex.emit(index);
+    this.customizeDataService.setNumberOfRooms(this.numberOfRoom);
     window.scrollTo({
       top: 80,
       left: 0,

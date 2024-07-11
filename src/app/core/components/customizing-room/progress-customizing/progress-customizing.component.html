@@ -13,6 +13,7 @@
             badge="{{ getFurnitureCount('chair') }}"
             badgeClass="p-badge-contrast"
             label="Chair"
+            [loading]="loading"
             >
           </p-button>
           <p-button
@@ -23,6 +24,7 @@
             badge="{{ getFurnitureCount('beds') }}"
             badgeClass="p-badge-contrast"
             label="Bed"
+            [loading]="loading"
             ></p-button
           >
           <p-button
@@ -33,6 +35,7 @@
             badge="{{ getFurnitureCount('closet') }}"
             badgeClass="p-badge-contrast"
             label="Closet"
+            [loading]="loading"
             ></p-button
           >
           <p-button
@@ -42,6 +45,7 @@
             badge="{{ getFurnitureCount('table') }}"
             badgeClass="p-badge-contrast"
             label="Table"
+            [loading]="loading"
             ></p-button
           >
         </div>
@@ -52,6 +56,7 @@
             severity="secondary"
             class="mr-2"
             label="Undo"
+            [loading]="loading"
           />
           <p-button
             (click)="redo()"
@@ -59,12 +64,14 @@
             severity="secondary"
             class="mr-2"
             label="Redo"
+            [loading]="loading"
           />
           <p-button
             (click)="next(2)"
             class="mr-2"
             icon="pi pi-reply"
             label="Next"
+            [loading]="loading"
           />
           <p-button
             (click)="back(0)"
@@ -81,3 +88,4 @@
     </div>
   </div>
 </div>
+<p-confirmDialog></p-confirmDialog>

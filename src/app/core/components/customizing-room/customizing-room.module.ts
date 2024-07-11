@@ -32,9 +32,12 @@ import { SliderModule } from 'primeng/slider';
 import { ImageModule } from 'primeng/image';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ProgressPaymentComponent } from './progress-payment/progress-payment.component';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DynamicConfirmPaymentComponent } from './dynamic-confirm-payment/dynamic-confirm-payment.component';
 
 @NgModule({
-  declarations: [CustomizingRoomComponent, ProgressCustomizingComponent, ProgressInformationComponent, ProgressPaymentComponent],
+  declarations: [CustomizingRoomComponent, ProgressCustomizingComponent, ProgressInformationComponent, ProgressPaymentComponent, DynamicConfirmPaymentComponent],
   imports: [
     CommonModule,
     ButtonModule,
@@ -65,9 +68,10 @@ import { ProgressPaymentComponent } from './progress-payment/progress-payment.co
     MessagesModule,
     SliderModule,
     ImageModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    ConfirmDialogModule
   ],
-  providers: [],
+  providers: [ConfirmationService],
   bootstrap: [CustomizingRoomComponent],
 })
 export class CustomizingRoomModule {}

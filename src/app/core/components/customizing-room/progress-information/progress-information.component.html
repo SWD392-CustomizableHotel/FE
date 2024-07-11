@@ -1,6 +1,6 @@
 <!-- eslint-disable @angular-eslint/template/elements-content -->
 <p-toast key="2"></p-toast>
-<div class="container" [hidden]="activeIndex !== 0">
+<div class="container"[hidden]="activeIndex !== 0">
   <div
     class="flex flex-column justify-content-center align-items-center pt-4 gap-4"
   >
@@ -156,7 +156,7 @@
             </div>
             <div class="feature-content">
               <h3 class="feature-title">{{room.roomSize}} {{room.type}} Room</h3>
-              <div class="text-sm font-light text-400">Room Number {{room.code}}</div>
+              <div class="text-sm font-light text-400">{{room.description}}</div>
               <div class="rating pt-1">
                 <span>5.0</span>
                 <p-rating
