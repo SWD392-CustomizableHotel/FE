@@ -17,9 +17,7 @@ export class ProgressCustomizingComponent {
   @Output() changeProgressIndex = new EventEmitter<number>();
   loading: boolean = false;
 
-  constructor(
-    private confirmationService: ConfirmationService,
-  ) {}
+  constructor(private confirmationService: ConfirmationService) {}
 
   selectFurniture(type: string): void {
     this.furnitureSelected.emit(type);
@@ -41,6 +39,11 @@ export class ProgressCustomizingComponent {
       this.canAddFurniture('beds')
     ) {
       this.confirmationService.confirm({
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        acceptIcon: 'none',
+        rejectIcon: 'none',
+        rejectButtonStyleClass: 'p-button-text',
         message:
           'You have not used all the furniture. Are you sure you want to proceed?',
         accept: () => {
@@ -50,6 +53,11 @@ export class ProgressCustomizingComponent {
       });
     } else {
       this.confirmationService.confirm({
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        acceptIcon: 'none',
+        rejectIcon: 'none',
+        rejectButtonStyleClass: 'p-button-text',
         message:
           'You will not able to edit your room again. Are you sure you want to go to payment?',
         accept: () => {

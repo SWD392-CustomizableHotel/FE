@@ -1,22 +1,91 @@
-<div class="flex flex-column justify-content-between min-h-screen">
-  <form
-    class="flex flex-column w-7 h-20rem justify-content-center align-items-center surface-100 border-round"
-  >
-    <h2><span id="payment-message" class="hidden"></span></h2>
-    <span class="hidden" id="invoiceLink"
-      >Invoice Download Link:
-      <a href="{{ invoiceDownloadLink }}">Download Link</a></span
-    >
-    <span class="hidden" id="invoicePage"
-      >Invoice Page:
-      <a href="{{ invoiceHostedPages }}" target="_blank">Hosted Page</a></span
-    >
-    <button
-      class="bg-green-400 mt-6 p-3 border-round cursor-pointer border-none w-4 hover:text-white hover:bg-green-300"
-      (click)="closeDialog()"
-    >
-      Close
-    </button>
-  </form>
+<div *ngIf="status === 'success'">
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <i
+        class="pi pi-check text-3xl border-circle mr-2 w-4rem h-4rem flex align-items-center justify-content-center bg-green-200 mt-8 fadein animation-duration-1000"
+        style="color: green"
+      ></i>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-2xl font-semibold text-primary">
+        Successful transaction
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12 mt-2">
+      <div class="text-center text-3xl font-light text-color-secondary">
+        ${{ totalPrice }}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="invoiceDownloadLink && invoiceHostedPages" class="grid">
+    <div class="flex justify-content-center align-items-center col-12 mt-6">
+      <div class="flex justify-content-center align-items-center col-auto">
+        <a
+          [href]="invoiceDownloadLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-0 font-semibold p-button font-bold"
+          >Download Invoice</a
+        >
+      </div>
+      <div
+        class="flex justify-content-center align-items-center col-auto col-offset-2"
+      >
+        <a
+          [href]="invoiceHostedPages"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-0 font-semibold p-button font-bold"
+          >Your Invoice</a
+        >
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-base font-normal mt-4">
+        Tell us if you have any problems about your payment
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12 mt-6">
+      <p-button
+        icon="pi pi-arrow-circle-right"
+        label="Continue"
+        [outlined]="true"
+        severity="info"
+        (onClick)="closeDialog()"
+      ></p-button>
+    </div>
+  </div>
 </div>
-  
+<div *ngIf="status !== 'success'">
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <i
+        class="pi pi-times text-3xl border-circle mr-2 w-4rem h-4rem flex align-items-center justify-content-center bg-red-200 mt-8 fadein animation-duration-1000"
+        style="color: red"
+      ></i>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-2xl font-semibold text-primary">
+        Payment failed or canceled
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-base font-normal mt-4">
+        Tell us if you have any problems about your payment
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12 mt-6">
+      <p-button
+        icon="pi pi-arrow-circle-right"
+        label="Back"
+        [outlined]="true"
+        severity="info"
+        (onClick)="closeDialog()"
+      ></p-button>
+    </div>
+  </div>
+</div>

@@ -9,6 +9,7 @@ import { CustomizingRoomService } from '../../../../services/customizing-room.se
 import { loadStripe } from '@stripe/stripe-js';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicConfirmPaymentComponent } from '../dynamic-confirm-payment/dynamic-confirm-payment.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-progress-payment',
@@ -41,13 +42,15 @@ export class ProgressPaymentComponent implements OnInit {
   ref: DynamicDialogRef | undefined;
   paymentStatus?: string;
   disabledState: boolean = true;
+  paymentMessage: string = '';
 
   constructor(
     private customizeDataService: CustomizeDataService,
     private fb: FormBuilder,
     private cancelPaymentService: CancelPaymentService,
     private customizeRoomService: CustomizingRoomService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private router: Router
   ) {
     this.paymentForm = this.fb.group({
       name: [''],
@@ -67,7 +70,6 @@ export class ProgressPaymentComponent implements OnInit {
         ?.createStripePayment(this.customizeRequest as CustomizeRequest)
         .subscribe({
           next: (response) => {
-            console.log(response);
             this.clientSecret = response.results?.at(0);
             this.paymentIntentId = response.results?.at(1);
 
@@ -97,8 +99,8 @@ export class ProgressPaymentComponent implements OnInit {
             this.startCountdown(this.secondsRemaining);
             this.disabledState = false;
           },
-          error: (err: any) => {
-            console.error('Error creating payment:', err);
+          error: () => {
+            this.router.navigate(['/login']);
           },
         });
     } catch (error) {
@@ -133,11 +135,16 @@ export class ProgressPaymentComponent implements OnInit {
               clientSecret: this.clientSecret,
               status: 'canceled',
             },
+            closable: false,
             header: 'Payment Result',
           });
+
+          this.ref.onClose.subscribe(() => {
+            this.changeActiveIndex.emit(0);
+          });
         },
-        error: (error: any) => {
-          console.error('Error canceling payment:', error);
+        error: () => {
+          this.router.navigate(['/login']);
         },
       });
     } catch (error) {
@@ -156,16 +163,15 @@ export class ProgressPaymentComponent implements OnInit {
     const { error, paymentIntent } = await this.stripe.confirmPayment({
       elements: this.elements,
       confirmParams: {
-        // Remove the return_url parameter
       },
-      redirect: 'if_required', // Prevent automatic redirection
+      redirect: 'if_required',
     });
 
     if (error) {
       if (error.type === 'card_error' || error.type === 'validation_error') {
-        this.showMessage(error.message);
+        this.paymentMessage = error.message;
       } else {
-        this.showMessage('An unexpected error occurred.');
+        this.paymentMessage = 'An unexpected error occurred.';
       }
     } else {
       // Open the dynamic dialog based on payment status
@@ -194,13 +200,15 @@ export class ProgressPaymentComponent implements OnInit {
           status: status,
           paymentIntentId: paymentIntent.id,
           clientSecret: paymentIntent.client_secret,
+          paymentMessage: this.paymentMessage,
         },
+        closable: false
       });
 
       this.ref.onClose.subscribe(() => {
         if (status === 'success') {
-          // di den phan export
-          this.changeActiveIndex.emit(3);
+          // quay ve home
+          this.router.navigate(['/']);
         } else {
           this.changeActiveIndex.emit(0);
         }
@@ -217,36 +225,19 @@ export class ProgressPaymentComponent implements OnInit {
       );
       switch (paymentIntent.status) {
         case 'succeeded':
-          this.showMessage('Payment succeed');
+          this.paymentMessage = 'Payment succeed';
           break;
         case 'processing':
-          this.showMessage('Payment processing');
+          this.paymentMessage = 'Payment processing';
           break;
         case 'requires_payment_method':
-          this.showMessage('Payment failed');
+          this.paymentMessage = 'Payment failed';
           break;
         default:
-          this.showMessage('Something went wrong');
+          this.paymentMessage = 'Something went wrong';
           break;
       }
     }
-  }
-
-  // UI Helpers
-  showMessage(messageText: string): void {
-    console.log(messageText);
-    const messageContainer = document.querySelector('#payment-message');
-    if (messageContainer !== null) {
-      messageContainer.classList.remove('hidden');
-      messageContainer.textContent = messageText;
-    }
-
-    setTimeout(function () {
-      if (messageContainer !== null) {
-        messageContainer.classList.add('hidden');
-        messageContainer.textContent = '';
-      }
-    }, 4000);
   }
 
   setLoading(isLoading: boolean): void {

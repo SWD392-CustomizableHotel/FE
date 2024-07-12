@@ -96,6 +96,9 @@ export class CustomizingRoomComponent implements OnInit {
         ],
       },
       {
+        separator: true,
+      },
+      {
         label: 'Export',
         icon: 'pi pi-print',
         command: (): void => this.downloadCanvasAsImage(),
@@ -114,7 +117,8 @@ export class CustomizingRoomComponent implements OnInit {
     this.warningMessage = [
       {
         severity: 'warn',
-        summary: 'You will not able to edit your room after submit this.',
+        summary:
+          'You will not able to edit your room after customizing section',
       },
     ];
     this.steps = [
@@ -127,7 +131,6 @@ export class CustomizingRoomComponent implements OnInit {
         command: (): void => this.onActiveIndexChange(1),
       },
       { label: 'Payment', command: (): void => this.onActiveIndexChange(2) },
-      { label: 'Export', command: (): void => this.onActiveIndexChange(3) },
     ];
     if (this.canvas) {
       this.ctx = this.canvas.nativeElement.getContext(
@@ -159,15 +162,27 @@ export class CustomizingRoomComponent implements OnInit {
       this.dateRange[1],
       'dd/MM/yyyy'
     );
+
     if (this.dateRange[0] && this.dateRange[1]) {
-      const timeDifference =
-        this.dateRange[1].getTime() - this.dateRange[0].getTime();
-      const daysDifference = timeDifference / (1000 * 3600 * 24);
-      this.night = daysDifference.toPrecision(1);
-      this.day = (daysDifference + 1).toPrecision(1);
+      const checkIn = new Date(this.dateRange[0]);
+      const checkOut = new Date(this.dateRange[1]);
+
+      // Calculate the difference in days
+      const timeDifference = checkOut.getTime() - checkIn.getTime();
+      const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+
+      // Update the night and day calculations
+      this.night = daysDifference.toString();
+      if (this.night === '0') {
+        this.night = '1';
+      }
+      this.day = (daysDifference + 1).toString();
       return;
     }
+
+    // Default value for a single night stay
     this.night = '1';
+    this.day = '1';
   }
 
   onRightClick(event: MouseEvent): void {
@@ -513,17 +528,17 @@ export class CustomizingRoomComponent implements OnInit {
       this.ctx.strokeStyle = '#ddd';
       this.ctx.lineWidth = 0.5;
 
-      for (let x = 0; x <= width; x += gridSize) {
+      for (let x = 0; x <= width / this.scale; x += gridSize) {
         this.ctx.beginPath();
         this.ctx.moveTo(x, 0);
-        this.ctx.lineTo(x, height);
+        this.ctx.lineTo(x, height / this.scale);
         this.ctx.stroke();
       }
 
-      for (let y = 0; y <= height; y += gridSize) {
+      for (let y = 0; y <= height / this.scale; y += gridSize) {
         this.ctx.beginPath();
         this.ctx.moveTo(0, y);
-        this.ctx.lineTo(width, y);
+        this.ctx.lineTo(width / this.scale, y);
         this.ctx.stroke();
       }
     }
@@ -534,10 +549,10 @@ export class CustomizingRoomComponent implements OnInit {
       const { width, height } = this.canvas.nativeElement;
       const imgWidth = this.blueprintImage.width;
       const imgHeight = this.blueprintImage.height;
-      const scaledWidth = imgWidth * this.scale;
-      const scaledHeight = imgHeight * this.scale;
-      this.blueprintX = (width - scaledWidth) / 2 / this.scale;
-      this.blueprintY = (height - scaledHeight) / 2 / this.scale;
+
+      // Calculate the position to center the blueprint
+      this.blueprintX = (width / this.scale - imgWidth) / 2;
+      this.blueprintY = (height / this.scale - imgHeight) / 2;
 
       this.ctx.drawImage(
         this.blueprintImage,
@@ -635,7 +650,7 @@ export class CustomizingRoomComponent implements OnInit {
       x - size / 2 >= this.blueprintX &&
       x + size / 2 <= this.blueprintX + this.blueprintWidth &&
       y - size / 2 >= this.blueprintY &&
-      y + size / 2 <= this.blueprintY + (this.blueprintHeight - 228)
+      y + size / 2 <= this.blueprintY + (this.blueprintHeight - 238)
     );
   }
 

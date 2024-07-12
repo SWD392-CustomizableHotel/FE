@@ -52,6 +52,9 @@
                 />
                 <label for="dateRange">Checkin - Checkout Date</label>
               </p-floatLabel>
+              <div *ngIf="form.get('dateRange')?.hasError('dateRangeInvalid') && form.get('dateRange')?.touched">
+                <small class="p-error">Both start and end dates are required.</small>
+              </div>
             </div>
             <div class="col-6 pt-4">
               <p-floatLabel>

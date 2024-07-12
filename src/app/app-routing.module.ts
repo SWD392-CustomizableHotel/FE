@@ -12,6 +12,7 @@ import { BookingRoomComponent } from './core/components/booking-room/booking-roo
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
 import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 import { ProfileComponent } from './core/components/profile/profile.component';
+import { AuthGuard } from './_helper/auth.guard';
 
 const routes: Routes = [
   {
@@ -90,6 +91,7 @@ const routes: Routes = [
           ).then((m) => m.CustomizingRoomModule),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: 'booking-history',

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SendInvoiceService } from '../../../../services/send-invoice.service';
-import { PaymentService } from '../../../../services/payment.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Router } from '@angular/router';
 import { loadStripe } from '@stripe/stripe-js';
 import { environment } from '../../../../../assets/environments/environment';
 import { CustomizeDataService } from '../../../../services/customize-data.service';
@@ -10,16 +8,17 @@ import { CustomizingRoomService } from '../../../../services/customizing-room.se
 import { CustomizeBooking } from '../../../../interfaces/models/customize-booking';
 import { CustomizeRequest } from '../../../../interfaces/models/customize-request';
 import { Payment } from '../../../../interfaces/models/payment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dynamic-confirm-payment',
   templateUrl: './dynamic-confirm-payment.component.html',
-  styleUrl: './dynamic-confirm-payment.component.scss',
+  styleUrls: ['./dynamic-confirm-payment.component.scss'],
 })
 export class DynamicConfirmPaymentComponent implements OnInit {
   stripe: any;
-  invoiceDownloadLink?: string;
-  invoiceHostedPages?: string;
+  invoiceDownloadLink = '';
+  invoiceHostedPages = '';
   bookingCode?: string;
   paymentCode?: string;
   bookingAmenityCode?: string;
@@ -32,19 +31,22 @@ export class DynamicConfirmPaymentComponent implements OnInit {
   customizeBookingRequest!: CustomizeBooking;
   customizeRequest!: CustomizeRequest;
   payment?: Payment;
+  paymentMessage: string = '';
 
   constructor(
     private sendMailService: SendInvoiceService,
-    private paymentService: PaymentService,
     private customizeRoomService: CustomizingRoomService,
     public ref: DynamicDialogRef,
     public refConfig: DynamicDialogConfig,
-    private router: Router,
-    private customizeDataService: CustomizeDataService
+    private customizeDataService: CustomizeDataService,
+    private router: Router
   ) {
-    this.status = this.refConfig.data.status;
-    this.paymentIntentId = this.refConfig.data.paymentIntentId;
-    this.clientSecret = this.refConfig.data.clientSecret;
+    if (this.refConfig.data) {
+      this.status = this.refConfig.data.status;
+      this.paymentIntentId = this.refConfig.data.paymentIntentId;
+      this.clientSecret = this.refConfig.data.clientSecret;
+      this.paymentMessage = this.refConfig.data.paymentMessage;
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -151,8 +153,8 @@ export class DynamicConfirmPaymentComponent implements OnInit {
                 console.error('Cannot create booking room and amenity');
               }
             },
-            error: (error) => {
-              console.error(error);
+            error: () => {
+              this.router.navigate(['/login']);
             },
           });
         this.sendMailService.getInvoiceLink(this.paymentIntentId).subscribe({
@@ -162,8 +164,8 @@ export class DynamicConfirmPaymentComponent implements OnInit {
             this.invoiceHostedPages = response[1];
             console.log(this.invoiceDownloadLink);
           },
-          error: (error: any) => {
-            console.error('Error ', error);
+          error: () => {
+            this.router.navigate(['/login']);
           },
         });
         break;

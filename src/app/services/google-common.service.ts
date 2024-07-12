@@ -18,6 +18,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../interfaces/models/user';
 import { environment } from '../../assets/environments/environment';
 import { Router } from '@angular/router';
+import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +41,7 @@ export class GoogleCommonService {
 
   constructor(
     private externalAuthService: SocialAuthService,
+    private authService: AuthenticationService,
     private http: HttpClient,
     private router: Router
   ) {
@@ -81,6 +83,7 @@ export class GoogleCommonService {
       .pipe(
         map((res) => {
           if (res.token) {
+            this.authService.setUserValue(res);
             this.saveSocialUser(res);
             this.setLoggedIn(true);
             this.sendAuthStateChangeNotification(true, res.role);
@@ -124,6 +127,7 @@ export class GoogleCommonService {
 
     return this.http.post<any>(url, body, { headers }).pipe(
       tap((res) => {
+        this.authService.setUserValue(res);
         this.setLoggedIn(true);
         this.sendAuthStateChangeNotification(true, res.role);
       })
@@ -145,6 +149,7 @@ export class GoogleCommonService {
     return this.http.get<any>(url).pipe(
       map((res: any) => {
         if (res && res.isSucceed) {
+          this.authService.setUserValue(res);
           this.saveSocialUser(res);
           this.setLoggedIn(true);
           this.setShowAdditionalInfoForm(false);

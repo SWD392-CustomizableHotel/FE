@@ -3,11 +3,21 @@ import { AmenitiesPackage } from '../../../../interfaces/models/amenities-packag
 import { HotelService } from '../../../../services/hotel.service';
 import { Hotel } from '../../../../interfaces/models/hotels';
 import { RoomSize } from '../../../../interfaces/models/room-size';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Room } from '../../../../interfaces/models/room';
 import { CustomizingRoomService } from '../../../../services/customizing-room.service';
 import { CustomizeDataService } from '../../../../services/customize-data.service';
+
+export function dateRangeValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const dateRange = control.value;
+    if (!dateRange || dateRange.length !== 2 || !dateRange[0] || !dateRange[1]) {
+      return { 'dateRangeInvalid': true };
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-progress-information',
@@ -50,7 +60,7 @@ export class ProgressInformationComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       hotel: ['', Validators.required],
-      dateRange: ['', Validators.required],
+      dateRange: ['', [Validators.required, dateRangeValidator()]],
       roomSize: ['', Validators.required],
       amenities: ['', Validators.required],
       numberOfRoom: [],
@@ -129,6 +139,7 @@ export class ProgressInformationComponent implements OnInit {
       });
       this.loading = false;
     } else {
+      const selectedHotel = this.form.get('hotel')?.value;
       this.roomService
         .getAvailableCustomizableRoom(
           this.selectedRoomSize?.value as string,
@@ -136,13 +147,22 @@ export class ProgressInformationComponent implements OnInit {
         )
         .subscribe({
           next: (response) => {
-            this.roomList = response.results!;
+            this.roomList = response.results!.filter(
+              room => room.hotelId === selectedHotel.id
+            );
             this.loading = false;
-            if (this.roomList) {
+            if (this.roomList.length > 0) {
               window.scrollTo({
                 top: 650,
                 left: 0,
                 behavior: 'smooth'
+              });
+            } else {
+              this.messageService.add({
+                key: '2',
+                severity: 'error',
+                summary: 'Sorry!',
+                detail: `We don't have any room based on your needs`,
               });
             }
           },

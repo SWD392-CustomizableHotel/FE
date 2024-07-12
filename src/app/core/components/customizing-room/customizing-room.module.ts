@@ -31,9 +31,9 @@ import { ProgressInformationComponent } from './progress-information/progress-in
 import { SliderModule } from 'primeng/slider';
 import { ImageModule } from 'primeng/image';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { ProgressPaymentComponent } from './progress-payment/progress-payment.component';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressPaymentComponent } from './progress-payment/progress-payment.component';
 import { DynamicConfirmPaymentComponent } from './dynamic-confirm-payment/dynamic-confirm-payment.component';
 
 @NgModule({
