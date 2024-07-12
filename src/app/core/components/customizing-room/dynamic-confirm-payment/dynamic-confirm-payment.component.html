@@ -1,0 +1,91 @@
+<div *ngIf="status === 'success'">
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <i
+        class="pi pi-check text-3xl border-circle mr-2 w-4rem h-4rem flex align-items-center justify-content-center bg-green-200 mt-8 fadein animation-duration-1000"
+        style="color: green"
+      ></i>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-2xl font-semibold text-primary">
+        Successful transaction
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12 mt-2">
+      <div class="text-center text-3xl font-light text-color-secondary">
+        ${{ totalPrice }}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="invoiceDownloadLink && invoiceHostedPages" class="grid">
+    <div class="flex justify-content-center align-items-center col-12 mt-6">
+      <div class="flex justify-content-center align-items-center col-auto">
+        <a
+          [href]="invoiceDownloadLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-0 font-semibold p-button font-bold"
+          >Download Invoice</a
+        >
+      </div>
+      <div
+        class="flex justify-content-center align-items-center col-auto col-offset-2"
+      >
+        <a
+          [href]="invoiceHostedPages"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-0 font-semibold p-button font-bold"
+          >Your Invoice</a
+        >
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-base font-normal mt-4">
+        Tell us if you have any problems about your payment
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12 mt-6">
+      <p-button
+        icon="pi pi-arrow-circle-right"
+        label="Continue"
+        [outlined]="true"
+        severity="info"
+        (onClick)="closeDialog()"
+      ></p-button>
+    </div>
+  </div>
+</div>
+<div *ngIf="status !== 'success'">
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <i
+        class="pi pi-times text-3xl border-circle mr-2 w-4rem h-4rem flex align-items-center justify-content-center bg-red-200 mt-8 fadein animation-duration-1000"
+        style="color: red"
+      ></i>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-2xl font-semibold text-primary">
+        Payment failed or canceled
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="flex justify-content-center align-items-center col-12">
+      <div class="text-center text-base font-normal mt-4">
+        Tell us if you have any problems about your payment
+      </div>
+    </div>
+    <div class="flex justify-content-center align-items-center col-12 mt-6">
+      <p-button
+        icon="pi pi-arrow-circle-right"
+        label="Back"
+        [outlined]="true"
+        severity="info"
+        (onClick)="closeDialog()"
+      ></p-button>
+    </div>
+  </div>
+</div>

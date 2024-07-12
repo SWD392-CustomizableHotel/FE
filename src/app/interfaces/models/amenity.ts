@@ -15,4 +15,5 @@ export interface Amenity {
   hotelId?: number;
   capacity?: number;
   inUse?: number;
+  amenityType?: string;
 }

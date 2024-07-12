@@ -263,9 +263,10 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         if (res?.isSucceed) {
           localStorage.setItem('socialUser', JSON.stringify(res));
+          localStorage.setItem('user', JSON.stringify(res));
           this.googleCommonService.setLoggedIn(true);
-          const role = res.role;
-          this.navigateInRole(role);
+          console.log(res.role);
+          this.navigateInRole(res.role);
         } else {
           this.showAdditionalInfoForm = true;
         }
