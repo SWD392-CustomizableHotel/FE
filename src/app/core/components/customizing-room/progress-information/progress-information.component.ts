@@ -15,6 +15,9 @@ export function dateRangeValidator(): ValidatorFn {
     if (!dateRange || dateRange.length !== 2 || !dateRange[0] || !dateRange[1]) {
       return { 'dateRangeInvalid': true };
     }
+    if (dateRange[0].getTime() === dateRange[1].getTime()) {
+      return { 'sameDate': true };
+    }
     return null;
   };
 }

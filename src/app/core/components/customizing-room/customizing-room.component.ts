@@ -264,9 +264,10 @@ export class CustomizingRoomComponent implements OnInit {
           if (response.isSucceed) {
             this.amenity = response.results?.at(0) as Amenity;
             // Tính theo đêm * giá tiền
+            const numberOfDay = this.customizeDataService.getNumberOfRooms();
             const night: number = +this.night;
             this.roomPriceSubtotal =
-              (this.selectedRoom.price as number) * night;
+              (this.selectedRoom.price as number) * night * numberOfDay;
             if (this.amenity.price) {
               this.totalPrice = this.roomPriceSubtotal + this.amenity.price;
             }
@@ -276,7 +277,7 @@ export class CustomizingRoomComponent implements OnInit {
               roomId: this.selectedRoom.id!.toString(),
               roomPrice: this.selectedRoom.price!,
               numberOfDay: night,
-              numberOfRoom: this.customizeDataService.getNumberOfRooms(),
+              numberOfRoom: numberOfDay,
             };
             this.customizeDataService.setCustomizeRequest(
               this.customizeRequest

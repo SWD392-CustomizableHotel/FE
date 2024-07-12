@@ -55,6 +55,9 @@
               <div *ngIf="form.get('dateRange')?.hasError('dateRangeInvalid') && form.get('dateRange')?.touched">
                 <small class="p-error">Both start and end dates are required.</small>
               </div>
+              <div *ngIf="form.get('dateRange')?.hasError('sameDate') && form.get('dateRange')?.touched">
+                <small class="p-error">Start date and end dates are cannot be same</small>
+              </div>
             </div>
             <div class="col-6 pt-4">
               <p-floatLabel>
