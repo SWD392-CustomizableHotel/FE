@@ -1,0 +1,193 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<p-toast key="2"></p-toast>
+<div class="container"[hidden]="activeIndex !== 0">
+  <div
+    class="flex flex-column justify-content-center align-items-center pt-4 gap-4"
+  >
+    <span class="text-4xl font-semibold text-primary">Customize Your Room</span>
+    <span class="text-xl font-normal text-500"
+      >Give us your needs in our room. The requests will be setup more
+      accurately</span
+    >
+  </div>
+  <div class="flex flex-wrap justify-content-center align-items-center pt-4">
+    <div class="grid flex justify-content-center align-items-center gap-4">
+      <div class="col-10 md:col-5">
+        <!-- Left column for hotel room image -->
+        <p-image
+          src="assets/images/customizable_room.png"
+          alt="Hotel Room"
+          width="450"
+          preview="true"
+        />
+      </div>
+
+      <div class="col-12 md:col-5">
+        <!-- Right column for input fields -->
+        <p-card class="overflow-auto" header="Provide Information">
+          <form [formGroup]="form" class="p-field grid pt-5">
+            <div class="col-6">
+              <p-floatLabel>
+                <p-dropdown
+                  formControlName="hotel"
+                  [options]="hotelLocations"
+                  optionLabel="address"
+                  id="hotel"
+                  class="w-full"
+                />
+                <label for="hotel">Hotel's location</label>
+              </p-floatLabel>
+            </div>
+            <div class="col-6">
+              <p-floatLabel>
+                <p-calendar
+                  formControlName="dateRange"
+                  selectionMode="range"
+                  dateFormat="dd/mm/yy"
+                  [readonlyInput]="true"
+                  id="dateRange"
+                  class="w-full"
+                  [minDate]="minDate" 
+                  [maxDate]="maxDate" 
+                />
+                <label for="dateRange">Checkin - Checkout Date</label>
+              </p-floatLabel>
+              <div *ngIf="form.get('dateRange')?.hasError('dateRangeInvalid') && form.get('dateRange')?.touched">
+                <small class="p-error">Both start and end dates are required.</small>
+              </div>
+              <div *ngIf="form.get('dateRange')?.hasError('sameDate') && form.get('dateRange')?.touched">
+                <small class="p-error">Start date and end dates are cannot be same</small>
+              </div>
+            </div>
+            <div class="col-6 pt-4">
+              <p-floatLabel>
+                <p-dropdown
+                  class="w-full"
+                  formControlName="roomSize"
+                  [options]="roomSizes"
+                  optionLabel="label"
+                  id="size"
+                  (onChange)="changeRoomSize($event.value.value)"
+                />
+                <label for="size">Room Size</label>
+              </p-floatLabel>
+            </div>
+            <div class="col-6 pt-4">
+              <p-floatLabel>
+                <p-dropdown
+                  class="w-full"
+                  formControlName="amenities"
+                  [options]="amenitiesPackage"
+                  optionLabel="label"
+                  id="amenities"
+                  (onChange)="changeAmenities($event.value.value)"
+                />
+                <label for="amenities">Amenities</label>
+              </p-floatLabel>
+            </div>
+            <div class="col-6 pt-4">
+              <p-floatLabel>
+                <input
+                  (click)="op.toggle($event)" 
+                  pInputText
+                  type="text"
+                  class="w-full"
+                  readonly
+                  [value]="
+                    numberOfRoom +
+                    ' rooms, ' +
+                    numberOfAdult +
+                    ' adults, ' +
+                    numberOfChildren +
+                    ' children'
+                  "
+                />
+                <label for="numberOfPeople">Number of People</label>
+              </p-floatLabel>
+            </div>
+            <p-toast key="peopleCount"></p-toast>
+            <p-overlayPanel #op [showCloseIcon]="true" [style]="{ width: '350px' }">
+                <div class="text-3xl font-semibold">Number of People</div>
+                <div class="text-sm font-light text-400">Maximum 8 people per rooms</div>
+                <div class="grid pt-2">
+                    <div class="col-12 pt-4 flex flex-wrap">
+                        <span class="text-base font-semibold mr-4">Rooms</span>
+                        <p-slider class="ml-2" formControlName="numberOfRoom" [max]="10" [min]="1" (onChange)="checkPeopleCount()" styleClass="w-12rem mt-1 mr-4"></p-slider>
+                        <span class="text-base font-normal">{{ numberOfRoom }}</span>
+                    </div>
+                    <div class="col-12 pt-4 flex flex-wrap">
+                        <span class="text-base font-semibold mr-4">Adults</span>
+                        <p-slider class="ml-3" formControlName="numberOfAdult" [max]="10" [min]="1" (onChange)="checkPeopleCount()" styleClass="w-12rem mt-1 mr-4"></p-slider>
+                        <span class="text-base font-normal">{{ numberOfAdult }}</span>
+                        <div class="text-sm font-light text-400">Above 18</div>
+                    </div>
+                    <div class="col-12 pt-4 flex flex-wrap">
+                        <span class="text-base font-semibold mr-4">Children</span>
+                        <p-slider formControlName="numberOfChildren" [max]="10" [min]="0" (onChange)="checkPeopleCount()" styleClass="w-12rem mt-1 mr-4"></p-slider>
+                        <span class="text-base font-normal">{{ numberOfChildren }}</span>
+                        <div class="text-sm font-light text-400">From 6 to below 17</div>
+                    </div>
+                </div>
+            </p-overlayPanel>
+            <div class="flex gap-3 mt-1 col-12">
+              <p-button
+                (onClick)="onSearch()"
+                [loading]="loading"
+                type="button"
+                label="Search"
+              />
+            </div>
+          </form>
+        </p-card>
+      </div>
+    </div>
+  </div>
+  <div
+    class="flex flex-column justify-content-center align-items-center pt-4 gap-4"
+  >
+    <span class="text-4xl font-semibold text-primary">Available Customizable Rooms</span>
+    <span class="text-xl font-normal text-500"
+      >Based on your information, please choose an empty customizable room</span
+    >
+    <div class="pricing py-4 px-4 lg:px-8 my-2 md:my-4">
+      <div class="grid-container">
+        <div class="col p-0 md:p-3" *ngFor="let room of roomList">
+          <div class="feature-card-popularroom">
+            <div class="img-container-popularroom">
+              <img
+                [src]='room.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYsdyBhzi95TSHSTQyZ67YDPssJKrawu97GA&s"'              
+                alt="Family Room"
+                class="feature-image"
+              />
+            </div>
+            <div class="feature-content">
+              <h3 class="feature-title">{{room.roomSize}} {{room.type}} Room</h3>
+              <div class="text-sm font-light text-400">{{room.description}}</div>
+              <div class="rating pt-1">
+                <span>5.0</span>
+                <p-rating
+                  [(ngModel)]="value"
+                  [readonly]="false"
+                  [cancel]="false"
+                ></p-rating>
+                <span>(91)</span>
+              </div>
+              <div class="price">
+                <span class="current-price">${{room.price}}</span>
+                <span class="original-price">$799</span>
+              </div>
+              <div class="box">
+                <p-button
+                  icon="pi pi-shopping-cart"
+                  class="flex-auto md:flex-initial white-space-nowrap mt-2"
+                  label="Booking"
+                  (onClick)="navigateToCustomizingSection(1, room)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

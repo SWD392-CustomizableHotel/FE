@@ -1,0 +1,14 @@
+canvas {
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 8px rgba(18, 18, 18, 0.2);
+}
+
+.canva-grid {
+  background-image: linear-gradient(#ddd 1px, transparent 1px), linear-gradient(90deg, #ddd 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.selected {
+  border: 2px solid lightgreen;
+}
