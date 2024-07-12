@@ -16,12 +16,7 @@ export class HeaderSharedComponent {
   private isLoggedIn = new BehaviorSubject<boolean>(false);
   private role = new BehaviorSubject<string>('');
   user?: User | null;
-  menuItems: MenuItem[] = [
-    { label: 'Home', route: 'home' },
-    { label: 'Features', route: 'features' },
-    { label: 'Highlights', route: 'highlights' },
-    { label: 'Pricing', route: 'pricing' },
-  ];
+  menuItems: MenuItem[] = [];
   profileItems: MenuItem[] = [
     {
       label: 'History',
