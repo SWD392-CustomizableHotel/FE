@@ -386,7 +386,7 @@ export class CustomizingRoomComponent implements OnInit {
         case 'table':
           return 90;
         case 'beds':
-          return 140;
+          return 130;
         case 'closet':
           return 90;
         case 'chair':
@@ -399,7 +399,7 @@ export class CustomizingRoomComponent implements OnInit {
         case 'table':
           return 80;
         case 'beds':
-          return 130;
+          return 100;
         case 'closet':
           return 80;
         case 'chair':
