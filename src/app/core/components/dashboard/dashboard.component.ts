@@ -98,23 +98,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         x: {
           ticks: {
             color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false,
+            grid: {
+              color: surfaceBorder,
+              drawBorder: false,
+            },
           },
         },
         y: {
           ticks: {
             color: textColorSecondary,
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            callback: function (value: any) {
+            callback: (value: any): string => {
               return '$' + value;
             },
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false,
+            grid: {
+              color: surfaceBorder,
+              drawBorder: false,
+            },
           },
         },
       },
@@ -171,8 +170,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               color: getComputedStyle(
                 document.documentElement
               ).getPropertyValue('--text-color-secondary'),
-              // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-              callback: function (value: any) {
+              callback: (value: any): string => {
                 return '$' + value;
               },
             },
