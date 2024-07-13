@@ -63,6 +63,7 @@
               [min]="1"
               [step]="1"
               (onChange)="checkPeopleCount()"
+              (ngModelChange)="onAdultsChange($event)"
             ></p-slider>
             <span>{{ NumberOfAdult }}</span>
           </div>
@@ -74,6 +75,7 @@
               [min]="0"
               [step]="1"
               (onChange)="checkPeopleCount()"
+              (ngModelChange)="onChildrenChange($event)"
             ></p-slider>
             <span>{{ NumberOfChildren }}</span>
           </div>
@@ -113,71 +115,93 @@
     >
       <div
         *ngFor="let room of filteredRooms"
-        class="mx-4 px-4 mb-4 bg-white-alpha-90"
+        class="mx-4 p-4 mb-4 bg-white-alpha-90"
       >
         <div
-          *ngIf="
-            rangeDates &&
-            rangeDates[0] &&
-            rangeDates[1] &&
-            rangeDates[0].getDate() === room.startDate.getDate() &&
-            rangeDates[1].getDate() <= room.endDate.getDate() &&
-            NumberOfAdult + NumberOfChildren === room.numberOfPeople
-          "
-          class=""
+          class="flex align-items-center flex-wrap"
+          
         >
-          <div
-            class="flex justify-content-between border-bottom-1 border-bluegray-200"
-          >
-            <h3 class="pt-2 font-bold text-4xl">{{ room.type }}</h3>
-            <h5
-              class="cursor-pointer view-more"
-              (click)="openModal(room.id)"
-              (keyup.enter)="openModal(room.id)"
-              tabindex="0"
-            >
-              view more
-            </h5>
+          <div class="xl:w-22rem xl:h-16rem w-2 border-round-md">
+            <img
+              class="room-image w-full overflow-auto border-round-md"
+              [src]="room.image"
+              alt=""
+            />
           </div>
-          <div class="flex justify-content-between flex-wrap mb-4 pb-2">
-            <div class="xl:w-3 w-2">
-              <img
-                class="room-image w-full overflow-auto"
-                [src]="room.image"
-                alt=""
-              />
+
+          <div
+            class="flex flex-column flex-1 ml-4 gap-4 justify-content-between xl:w-3 flex-grow-1"
+          >
+            <div class="">
+              <div class="flex justify-content-between align-items-center">
+                <h3 class="mb-0 font-bold text-4xl">{{ room.type }}</h3>
+                <h5
+                  class="cursor-pointer view-more mt-0 mb-0"
+                  (click)="openModal(room.id)"
+                  (keyup.enter)="openModal(room.id)"
+                  tabindex="0"
+                >
+                  view more
+                </h5>
+              </div>
             </div>
+
             <div
-              class="border-bluegray-200 flex justify-content-between align-items-center xl:h-12rem h-8rem flex-1 ex:pt-6 xl:border-bottom-1 ml-4 pb-3"
+              class="border-bluegray-200 flex flex-column xl:h-12rem h-8rem flex-1 ex:pt-6"
             >
-              <div class="xl:w-4 w-2 overflow-auto xl:text-xl">
-                <div class="">{{ room.description }}</div>
+              <div class="xl:w-full w-2 overflow-auto xl:text-xl">
                 <div class="">
-                  <i class="pi pi-users text-xl mt-2"></i>
+                  <i class="pi pi-map-marker"></i> {{ location }}
+                </div>
+                <div class="flex justify-content-between align-items-center gap-8">
+                  <div class="py-2 text-justify">
+                    {{ room.description }}
+                  </div>
+                  <div class="pb-2 flex gap-2">
+                    <div class="">{{ startDate }}</div>
+                    <span class="">-</span>
+                    <div class="">{{ endDate }}</div>
+                  </div>
+                </div>
+                <div class="pb-2">
+                  <i class="pi pi-users text-2xl mt-2"></i>
                   {{ room.numberOfPeople }}
                 </div>
               </div>
-              <div class="flex flex-column align-items-center">
-                <span class="original-price xl:text-xl">$799</span>
-                <span class="font-bold mb-2 xl:text-3xl mt-2"
-                  >${{ room.price }}</span
-                >
-              </div>
-              <div class="flex flex-column text-right">
-                <p-button
-                  (click)="toBookingPage(room.id)"
-                  (keyup.enter)="toBookingPage(room.id)"
-                  icon="pi pi-shopping-cart"
-                  class="flex-auto md:flex-initial white-space-nowrap mt-2"
-                  label="Booking "
-                />
+              <div class="flex justify-content-between">
+                <div class="flex align-items-center">
+                  <div class="flex flex-column">
+                    <span class="original-price xl:text-2xl">$199</span>
+                    <span
+                      class="current-price font-bold xl:text-3xl mt-2 mb-2"
+                      >{{ room.price | currency }}</span
+                    >
+                  </div>
+                  <div class="mt-4">
+                    <span class="px-2 text-2xl">/</span>
+                    <span class="">night</span>
+                  </div>
+                </div>
+                <div class="flex flex-column justify-content-end">
+                  <p-button
+                    (click)="toBookingPage(room.id)"
+                    (keyup.enter)="toBookingPage(room.id)"
+                    icon="pi pi-shopping-cart"
+                    class="flex-auto md:flex-initial white-space-nowrap mt-2"
+                    label="Booking "
+                  />
+                </div>
               </div>
             </div>
           </div>
+          
         </div>
       </div>
-       <!-- This is validation -->
-       <div *ngIf="!filteredRooms.length || undefined" class="px-auto text-center">
+      <!-- This is validation -->
+      <div
+        *ngIf="!filteredRooms.length || undefined"
+        class="px-auto text-center"
+      >
         <p class="">No rooms found</p>
       </div>
       <!-- This is validation -->

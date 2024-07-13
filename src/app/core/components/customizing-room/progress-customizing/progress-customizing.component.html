@@ -1,0 +1,91 @@
+<div class="grid pt-3">
+  <div class="col-8" [hidden]="isHideCustomizing">
+    <div class="fadeinleft animation-duration-600">
+      <p-toolbar
+        class="flex flex-wrap justify-content-center align-items-center w-full"
+      >
+        <div class="p-toolbar-group-start">
+          <p-button
+            (onClick)="selectFurniture('chair')"
+            [disabled]="!canAddFurniture('chair')"
+            class="mr-2"
+            severity="info"
+            badge="{{ getFurnitureCount('chair') }}"
+            badgeClass="p-badge-contrast"
+            label="Chair"
+            [loading]="loading"
+            >
+          </p-button>
+          <p-button
+            [disabled]="!canAddFurniture('beds')"
+            (onClick)="selectFurniture('beds')"
+            class="mr-2"
+            severity="info"
+            badge="{{ getFurnitureCount('beds') }}"
+            badgeClass="p-badge-contrast"
+            label="Bed"
+            [loading]="loading"
+            ></p-button
+          >
+          <p-button
+            [disabled]="!canAddFurniture('closet')"
+            (onClick)="selectFurniture('closet')"
+            class="mr-2"
+            severity="info"
+            badge="{{ getFurnitureCount('closet') }}"
+            badgeClass="p-badge-contrast"
+            label="Closet"
+            [loading]="loading"
+            ></p-button
+          >
+          <p-button
+            [disabled]="!canAddFurniture('table')"
+            (onClick)="selectFurniture('table')"
+            severity="info"
+            badge="{{ getFurnitureCount('table') }}"
+            badgeClass="p-badge-contrast"
+            label="Table"
+            [loading]="loading"
+            ></p-button
+          >
+        </div>
+        <div class="p-toolbar-group-end pl-6">
+          <p-button
+            (click)="undo()"
+            icon="pi pi-refresh"
+            severity="secondary"
+            class="mr-2"
+            label="Undo"
+            [loading]="loading"
+          />
+          <p-button
+            (click)="redo()"
+            icon="pi pi-replay"
+            severity="secondary"
+            class="mr-2"
+            label="Redo"
+            [loading]="loading"
+          />
+          <p-button
+            (click)="next(2)"
+            class="mr-2"
+            icon="pi pi-reply"
+            label="Next"
+            [loading]="loading"
+          />
+          <p-button
+            (click)="back(0)"
+            icon="pi pi-arrow-left"
+            label="Back"
+            severity="warning"
+          />
+        </div>
+      </p-toolbar>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="flex flex-wrap justify-content-center align-items-center w-full">
+    </div>
+  </div>
+</div>
+<p-confirmDialog></p-confirmDialog>

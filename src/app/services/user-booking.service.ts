@@ -12,6 +12,9 @@ export class UserBookingService {
   private rangeDatesSource = new BehaviorSubject<any>(null);
   currentRangeDates = this.rangeDatesSource.asObservable();
 
+  private startDateSource = new BehaviorSubject<any>(null);
+  currentStartDate = this.startDateSource.asObservable();
+
   private peopleCountSource = new BehaviorSubject<{ rooms: number, adults: number, children: number }>({ rooms: 0, adults: 0, children: 0 });
   currentPeopleCount = this.peopleCountSource.asObservable();
 
@@ -22,6 +25,10 @@ export class UserBookingService {
 
   getRangeDates(rangeDates: Date[]) : void {
       this.rangeDatesSource.next(rangeDates);
+  }
+
+  getStartDate(startDate: Date) : void {
+    this.rangeDatesSource.next(startDate);
   }
 
   setRangeDates(rangeDates: Date[]): void {

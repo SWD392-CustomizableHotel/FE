@@ -19,7 +19,7 @@ export class WebSocketService {
   }
 
   public sendMessage(message: string): void {
-    this.socket.emit('message: ', message);
+    this.socket.emit('message', message);
   }
 
   public receiveMessage(): void {
