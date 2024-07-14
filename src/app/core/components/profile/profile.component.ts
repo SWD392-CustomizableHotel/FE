@@ -5,7 +5,7 @@ import { AuthenticationService } from '../../../services/authentication.service'
 import { User } from '../../../interfaces/models/user';
 import { UserService } from '../../../services/user.service';
 import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common'; // Import DatePipe
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
   user?: User | null;
   certificateUrl: string | null = null;
   uploadProgress: number = 0;
-  datePipe: DatePipe = new DatePipe('en-US'); // Initialize DatePipe
+  datePipe: DatePipe = new DatePipe('en-US');
 
   constructor(
     private fb: FormBuilder,
@@ -28,10 +28,11 @@ export class ProfileComponent implements OnInit {
     private authService: AuthenticationService,
     private userService: UserService,
     private router: Router
-  ) {}
+  ) {
+    this.user = this.authService.userValue;
+  }
 
   ngOnInit(): void {
-    this.user = this.authService.userValue;
     this.certificateUrl = this.user?.certificatePath || null;
     this.initializeForm();
     this.loadProfile();
@@ -57,9 +58,7 @@ export class ProfileComponent implements OnInit {
       ],
       dob: [
         {
-          value: this.user?.dob
-            ? this.datePipe.transform(this.user.dob, 'dd/MM/yyyy')
-            : '',
+          value: this.user?.dob ? new Date(this.user.dob) : '',
           disabled: true,
         },
         Validators.required,
@@ -78,9 +77,7 @@ export class ProfileComponent implements OnInit {
           if (response.isSucceed) {
             this.profileForm.patchValue({
               ...response.result,
-              dob: response.result.dob
-                ? this.datePipe.transform(response.result.dob, 'dd/MM/yyyy')
-                : '',
+              dob: response.result.dob ? new Date(response.result.dob) : '',
             });
             this.certificateUrl = response.result.certificatePath || null;
           }
@@ -103,6 +100,7 @@ export class ProfileComponent implements OnInit {
         summary: 'Error',
         detail: 'User email not found',
       });
+      this.router.navigate(['/login']);
     }
   }
 
@@ -183,7 +181,7 @@ export class ProfileComponent implements OnInit {
           this.disableEditing();
           setTimeout(() => {
             window.location.reload();
-          }, 3000);
+          }, 2000);
         } else {
           this.messageService.add({
             severity: 'error',

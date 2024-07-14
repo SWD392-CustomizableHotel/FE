@@ -17,9 +17,9 @@ export class HeaderSharedComponent {
   private role = new BehaviorSubject<string>('');
   user?: User | null;
   menuItems: MenuItem[] = [
-    { label: 'Home', route: 'home' },
+    { label: 'Home', route: '' },
     { label: 'View Available Room', route: 'view-available-room' },
-    { label: 'Customizing Room', route: 'customizing-room' }
+    { label: 'Customizing Room', route: 'customizing-room' },
   ];
   profileItems: MenuItem[] = [
     {

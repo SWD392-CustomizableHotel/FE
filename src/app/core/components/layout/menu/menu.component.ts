@@ -22,46 +22,28 @@ export class MenuComponent implements OnInit {
             routerLink: ['/dashboard'],
           },
           {
-            label: 'Room',
+            label: 'Management',
             icon: 'pi pi-users',
             items: [
               {
-                label: 'All Rooms',
-                icon: 'pi pi-fw pi-home',
-                routerLink: ['/dashboard/rooms/all-rooms'],
+                label: 'Manage Accounts',
+                icon: 'pi pi-fw pi-user',
+                routerLink: ['/dashboard/accounts/all-accounts'],
               },
-            ],
-          },
-          {
-            label: 'Amenities',
-            icon: 'pi pi-cog',
-            items: [
-              {
-                label: 'Manage Amenities',
-                icon: 'pi pi-fw pi-cog',
-                routerLink: ['/dashboard/manage-amenities'],
-              },
-            ],
-          },
-          {
-            label: 'Services',
-            icon: 'pi pi-phone',
-            items: [
               {
                 label: 'Manage Services',
                 icon: 'pi pi-fw pi-phone',
                 routerLink: ['/dashboard/manage-services'],
               },
-            ],
-          },
-          {
-            label: 'Management',
-            icon: 'pi pi-users',
-            items: [
               {
-                label: 'All Accounts',
-                icon: 'pi pi-fw pi-user',
-                routerLink: ['/dashboard/accounts/all-accounts'],
+                label: 'Manage Amenities',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/dashboard/manage-amenities'],
+              },
+              {
+                label: 'Manage Rooms',
+                icon: 'pi pi-fw pi-home',
+                routerLink: ['/dashboard/rooms/all-rooms'],
               },
             ],
           },

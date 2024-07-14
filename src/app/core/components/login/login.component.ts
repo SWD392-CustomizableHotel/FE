@@ -10,6 +10,8 @@ import { BehaviorSubject } from 'rxjs';
 import { GoogleCommonService } from '../../../services/google-common.service';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { BookingService } from '../../../services/booking.service';
+import { jwtDecode } from 'jwt-decode';
+import { User } from '../../../interfaces/models/user';
 
 @Component({
   selector: 'app-login',
@@ -81,14 +83,15 @@ export class LoginComponent implements OnInit {
         const storedSocialUser = localStorage.getItem('socialUser');
         if (storedSocialUser) {
           this.socialUser = JSON.parse(storedSocialUser);
-          this.googleCommonService.checkUserRegistrationStatus(this.socialUser.idToken)
-          .subscribe((res) => {
-            if(res && res.isSucceed) {
-              this.showAdditionalInfoForm = false;
-            } else {
-              this.showAdditionalInfoForm = true;
-            }
-          });
+          this.googleCommonService
+            .checkUserRegistrationStatus(this.socialUser.idToken)
+            .subscribe((res) => {
+              if (res && res.isSucceed) {
+                this.showAdditionalInfoForm = false;
+              } else {
+                this.showAdditionalInfoForm = true;
+              }
+            });
         }
       }
     });
@@ -123,7 +126,11 @@ export class LoginComponent implements OnInit {
       },
     ];
     this.lastNameIsRequired = [
-      { severity: 'error', summary: 'Invalid', detail: 'Password is required' },
+      {
+        severity: 'error',
+        summary: 'Invalid',
+        detail: 'Last Name is required',
+      },
     ];
     this.phoneNumberIsRequired = [
       {
@@ -158,7 +165,6 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('userId', this.userId!);
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.isLoggedIn.next(true);
-          // this.router.navigate([returnUrl]);
           if (user.role === 'ADMIN') {
             this.router.navigate(['/dashboard']);
           } else {
@@ -168,15 +174,17 @@ export class LoginComponent implements OnInit {
         error: (error) => {
           this.error = error;
           this.loading = false;
+          console.error('Login error:', error);
         },
       });
   }
 
   navigateInRole(role: string): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     if (role === 'ADMIN') {
       this.router.navigate(['', 'dashboard']);
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate([returnUrl]);
     }
   }
 
@@ -211,7 +219,10 @@ export class LoginComponent implements OnInit {
             user.lastName = additionalInfo.lastName;
             user.phoneNumber = additionalInfo.phoneNumber;
           }
-          this.googleCommonService.sendAuthStateChangeNotification(true, res.role);
+          this.googleCommonService.sendAuthStateChangeNotification(
+            true,
+            res.role
+          );
           this.router.navigate(['/']);
         },
         error: (err: HttpErrorResponse) => {
@@ -243,9 +254,10 @@ export class LoginComponent implements OnInit {
       .externalLogin('/api/Auth/ExternalLogin', externalAuth)
       .subscribe({
         next: (res) => {
-          localStorage.setItem('socialUser', res);
+          localStorage.setItem('socialUser', JSON.stringify(res));
           this.googleCommonService.sendAuthStateChangeNotification(
-            res.isAuthSuccessful, res.role
+            res.isAuthSuccessful,
+            res.role
           );
           this.googleCommonService.setLoggedIn(true);
           this.router.navigate(['/']);
@@ -253,6 +265,7 @@ export class LoginComponent implements OnInit {
         error: (err: HttpErrorResponse) => {
           this.errorMessage = err.message;
           this.showError = true;
+          console.error('External login error:', err);
           this.googleCommonService.signOutExternal();
         },
       });
@@ -262,17 +275,32 @@ export class LoginComponent implements OnInit {
     this.googleCommonService.checkUserRegistrationStatus(idToken).subscribe({
       next: (res) => {
         if (res?.isSucceed) {
-          localStorage.setItem('socialUser', JSON.stringify(res));
-          localStorage.setItem('user', JSON.stringify(res));
-          this.googleCommonService.setLoggedIn(true);
-          console.log(res.role);
-          this.navigateInRole(res.role);
+          try {
+            const decodedToken: any = jwtDecode(res.token);
+
+            const user: User = {
+              email: decodedToken.email,
+              firstName: decodedToken.FirstName,
+              lastName: decodedToken.LastName,
+              phoneNumber: decodedToken.phoneNumber,
+              token: res.token,
+              role: res.role,
+            };
+
+            localStorage.setItem('socialUser', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(user));
+            this.googleCommonService.setLoggedIn(true);
+            this.navigateInRole(res.role);
+          } catch (error) {
+            this.showAdditionalInfoForm = true;
+          }
         } else {
           this.showAdditionalInfoForm = true;
         }
       },
       error: (err: HttpErrorResponse) => {
         this.error = err.message || 'Unknown error';
+        console.error('Check registration status error:', err);
       },
     });
   }
