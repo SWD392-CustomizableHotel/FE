@@ -22,7 +22,12 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="min-width: 12rem" pSortableColumn="roomNumber">
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                              Room Image                        
+                            </div>
+                          </th>
+                        <th style="min-width: 8rem" pSortableColumn="roomNumber">
                             <div class="flex justify-content-between align-items-center">
                                 Room Number
                                 <p-sortIcon field="roomNumber"></p-sortIcon>
@@ -36,7 +41,7 @@
                                 <p-columnFilter type="numeric" field="roomPrice" display="menu" currency="USD"></p-columnFilter>
                             </div>
                         </th>
-						<th style="min-width: 12rem" pSortableColumn="roomType">
+						<th style="min-width: 8rem" pSortableColumn="roomType">
 							<div class="flex justify-content-between align-items-center">
 								Room Type
                                 <p-sortIcon field="roomType"></p-sortIcon>
@@ -49,18 +54,27 @@
                                 <p-sortIcon field="roomStatus"></p-sortIcon>
                                 <p-columnFilter field="roomStatus.status" matchMode="equals" display="menu">
                                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                      <p-dropdown [(ngModel)]="room.roomStatus" [options]="roomStatusOptions" optionLabel="status"
+                                      <p-dropdown [(ngModel)]="room.roomStatus" [options]="roomStatusOptions" optionLabel="status" appendTo="body"
                                         (onChange)="filter($event.value.status)" placeholder="Any" [style]="{'min-width': '12rem'}">
                                       </p-dropdown>
                                     </ng-template>
                                 </p-columnFilter>
                             </div>
                         </th>
+                        <th style="min-width: 5rem" pSortableColumn="numberOfPeople">
+							<div class="flex justify-content-between align-items-center">
+								Occupancy
+                                <p-sortIcon field="numberOfPeople"></p-sortIcon>                         
+							</div>
+						</th>
                         <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-room>
                     <tr>
+                        <td>
+                            <img [src]="room.imagePath" alt="Room Image" width="150" height="100"/>
+                        </td>
                         <td>
                             {{room.roomNumber}}
                         </td>
@@ -74,8 +88,11 @@
                             <div class="hidden">
                                 {{room.roomStatus.status}}
                             </div>
-                            <p-dropdown id="roomStatus" [options]="roomStatusOptions" [showClear]="true"
+                            <p-dropdown id="roomStatus" [options]="roomStatusOptions" [showClear]="true" appendTo="body"
                             [(ngModel)]="room.roomStatus" optionLabel="status" [style]="{'width':'100%'}" (onChange)="updateRoomStatus(room, $event.value)"></p-dropdown>
+                        </td>
+                        <td>
+                            {{room.numberOfPeople}}
                         </td>
                         <td>
                             <div class="flex">
@@ -98,7 +115,7 @@
             </p-table>
             <div class="flex align-items-center justify-content-en">
                 <span class="mx-1 text-color">Items per page: </span>
-                <p-dropdown [options]="options" optionLabel="label" optionValue="value" [(ngModel)]="rows" (ngModelChange)="onRowsChange($event)" />
+                <p-dropdown appendTo="body" [options]="options" appendTo="body" optionLabel="label" optionValue="value" [(ngModel)]="rows" (ngModelChange)="onRowsChange($event)" />
                 <p-paginator (onPageChange)="onPageChange($event)"
                 [showCurrentPageReport]="true" 
                 [first]="first"
@@ -110,19 +127,26 @@
             </div>
         </div>
 
+        <!-- Update Room Dialog -->
         <p-dialog [(visible)]="roomDialog" [style]="{width: '450px'}" header="Room Details" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="formgrid grid flex justify-content space-between">
                     <div style="flex: 1; margin-right: 40px;">
                         <div class="field">
                             <label for="roomType">Room Type</label>
-                            <input type="string" pInputText id="roomType" [(ngModel)]="room.roomType" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomType}">
+                            <p-dropdown id="roomType" placeholder="Please choose a room type" required [showClear]="true" [checkmark]="true" appendTo="body"
+                            [(ngModel)]="selectedRoomType" [options]="roomTypeOptions" optionLabel="label"></p-dropdown>
                             <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomType">Room Type is required.</small>
                         </div>
                         <div class="field">
                             <label for="roomPrice">Room Price</label>
                             <input type="number" pInputText id="roomPrice" [(ngModel)]="room.roomPrice" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomPrice}">
                             <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomPrice">Room Number is required.</small>
+                        </div>
+                        <div class="field">
+                            <label for="imageUpload">Upload Image</label>
+                            <p-fileUpload mode="basic" name="roomImage" chooseLabel="Choose" chooseIcon="pi pi-upload" accept="image/*" maxFileSize="1000000"
+                            (onSelect)="onImageSelect($event)" [auto]="false"></p-fileUpload>
                         </div>
                     </div>
                 </div>
@@ -134,6 +158,7 @@
             </ng-template>
         </p-dialog>
 
+        <!--Delete Room Dialog-->
         <p-dialog [(visible)]="deleteRoomDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
@@ -145,51 +170,82 @@
             </ng-template>
         </p-dialog>
 
+        <!--Create Room Dialog-->
         <p-dialog [(visible)]="createRoomDialog" [style]="{width: '700px'}" header="New Room Details" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="formgrid grid flex justify-content space-between">
                     <div style="flex: 1; margin-right: 40px;">
                         <div class="field">
                             <label for="hotelId">Hotel</label>
-                            <p-dropdown id="id"
+                            <p-dropdown id="id" appendTo="body"
                             [(ngModel)]="room.hotelId" optionLabel="code" optionValue="id" [options]="hotels"></p-dropdown>
                             <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.hotelId">Hotel is required.</small>
                         </div>
                         <div class="field">
                             <label for="roomPrice">Room Price</label>
                             <input type="number" pInputText id="roomPrice" [(ngModel)]="room.roomPrice" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomPrice}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomPrice">Room Number is required.</small>
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomPrice">Room Price is required.</small>
                         </div>
                         <div class="field">
                             <label for="roomDescription">Room Description</label>
                             <input type="string" pInputText id="roomDescription" [(ngModel)]="room.roomDescription" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomDescription}">
                             <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomDescription">Room Description is required.</small>
                         </div>
+                        <div class="field">
+                            <label for="startDate">Start Date</label>
+                            <p-calendar id="startDate" [(ngModel)]="room.startDate" dateFormat="yy-mm-dd" showIcon appendTo="body" [minDate]="minStartDate" 
+                            (onSelect)="onStartDateSelect()"></p-calendar>
+                        </div>
+                        <div class="field">
+                            <label for="imageUpload">Upload Image</label>
+                            <p-fileUpload mode="basic" name="roomImage" chooseLabel="Choose" chooseIcon="pi pi-upload" accept="image/*" maxFileSize="1000000"
+                            (onSelect)="onImageSelect($event)" [auto]="false"></p-fileUpload>
+                        </div>
                     </div>
                     <div style="flex: 1;">
                         <div class="field">
                             <label for="roomStatus">Room Status</label>
-                             <p-dropdown id="roomStatus"  placeholder="Please choose a status" required [showClear]="true"  [checkmark]="true" 
-                             [(ngModel)]="selectedRoomStatus" [options]="roomStatusOptions" optionLabel="status"></p-dropdown> 
-                        </div>   
+                            <p-dropdown id="roomStatus" placeholder="Please choose a status" required [showClear]="true" [checkmark]="true" appendTo="body"
+                            [(ngModel)]="selectedRoomStatus" [options]="roomStatusOptions" optionLabel="status"></p-dropdown>
+                        </div>
                         <div class="field">
-                            <label for="roomNumber">Room Number</label>
-                            <input type="string" pInputText id="roomNumber" [(ngModel)]="room.roomNumber" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomNumber}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomNumber">Room Number is required.</small>
-                        </div>   
-                        <div class="field">
+                            <label for="roomSize">Room Size</label>
+                            <p-dropdown
+                                appendTo="body"
+                                [options]="roomSizeOptions"
+                                [(ngModel)]="selectedRoomSize"
+                                optionLabel="label"
+                                name="roomSize"
+                                placeholder="Select Room Size"
+                                required
+                            ></p-dropdown>
+                          </div>
+                          <div class="field">
                             <label for="roomType">Room Type</label>
-                            <input type="string" pInputText id="roomType" [(ngModel)]="room.roomType" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.roomType}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomType">Room Type is required.</small>
-                        </div>             
+                            <p-dropdown
+                                appendTo="body"
+                                [options]="roomTypeOptions"
+                                [(ngModel)]="selectedRoomType"
+                                optionLabel="label"
+                                name="roomType"
+                                placeholder="Select Room Type"
+                                required
+                            ></p-dropdown>
+                          </div>
+                          <div class="field">
+                            <label for="endDate">End Date</label>
+                            <p-calendar id="endDate" [(ngModel)]="room.endDate" 
+                            dateFormat="yy-mm-dd" showIcon appendTo="body" [minDate]="minEndDate"></p-calendar>
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && room.endDate && room.startDate && room.startDate.getTime() === room.endDate.getTime()">End Date cannot be the same as Start Date.</small>
+                        </div>
                     </div>
                 </div>
             </ng-template>
-
+        
             <ng-template pTemplate="footer">
                 <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="hideDialog()" ></p-button>
                 <p-button label="Save" icon="pi pi-check" (onClick)="saveRoom()" ></p-button>
             </ng-template>
-        </p-dialog>
+        </p-dialog>        
     </div>
 </div>
