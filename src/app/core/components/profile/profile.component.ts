@@ -28,10 +28,11 @@ export class ProfileComponent implements OnInit {
     private authService: AuthenticationService,
     private userService: UserService,
     private router: Router
-  ) {}
+  ) {
+    this.user = this.authService.userValue;
+  }
 
   ngOnInit(): void {
-    this.user = this.authService.userValue;
     this.certificateUrl = this.user?.certificatePath || null;
     this.initializeForm();
     this.loadProfile();
@@ -99,6 +100,7 @@ export class ProfileComponent implements OnInit {
         summary: 'Error',
         detail: 'User email not found',
       });
+      this.router.navigate(['/login']);
     }
   }
 

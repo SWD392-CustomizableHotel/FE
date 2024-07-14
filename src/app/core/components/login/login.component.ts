@@ -180,13 +180,11 @@ export class LoginComponent implements OnInit {
   }
 
   navigateInRole(role: string): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     if (role === 'ADMIN') {
       this.router.navigate(['', 'dashboard']);
     } else {
-      this.router.navigate(['/']);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      this.router.navigate([returnUrl]);
     }
   }
 
@@ -274,18 +272,11 @@ export class LoginComponent implements OnInit {
   }
 
   private checkUserRegistrationStatus(idToken: string): void {
-    console.log('Checking user registration status with idToken:', idToken); // Log the idToken
-
     this.googleCommonService.checkUserRegistrationStatus(idToken).subscribe({
       next: (res) => {
-        console.log('Response from checkUserRegistrationStatus:', res); // Log the response
-
         if (res?.isSucceed) {
           try {
-            console.log('Token to be decoded:', res.token); // Log the token to be decoded
-
             const decodedToken: any = jwtDecode(res.token);
-            console.log('Decoded Token:', decodedToken); // Log the decoded token
 
             const user: User = {
               email: decodedToken.email,
@@ -296,15 +287,11 @@ export class LoginComponent implements OnInit {
               role: res.role,
             };
 
-            console.log('User to be saved:', user); // Log the user information to be saved
-
             localStorage.setItem('socialUser', JSON.stringify(user));
             localStorage.setItem('user', JSON.stringify(user));
             this.googleCommonService.setLoggedIn(true);
-            console.log('User role:', user.role); // Log the user role
             this.navigateInRole(res.role);
           } catch (error) {
-            console.error('Token decoding error:', error);
             this.showAdditionalInfoForm = true;
           }
         } else {
