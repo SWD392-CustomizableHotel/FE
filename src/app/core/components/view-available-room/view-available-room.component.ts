@@ -33,6 +33,8 @@ export class ViewAvailableRoomComponent implements OnInit {
   NumberOfChildren: number;
   startDateFilter?: Date;
   hotelId?: number;
+  startDate?: string;
+  endDate?: string;
 
   constructor(
     private userBookingData: UserBookingService,
@@ -47,7 +49,6 @@ export class ViewAvailableRoomComponent implements OnInit {
     this.NumberOfRoom = 1;
   }
   visible: boolean = false;
-
 
   ngOnInit(): void {
     this.sortType = ['Price Low To High', 'Price High To Low'];
@@ -68,6 +69,11 @@ export class ViewAvailableRoomComponent implements OnInit {
         this.rooms.forEach((room) => {
           room.startDate = new Date(Date.parse(room.startDate));
           room.endDate = new Date(Date.parse(room.endDate));
+          const start =
+            this.datePipe.transform(room.startDate, 'dd/MM/yyyy') || '';
+          this.startDate = start;
+          const end = this.datePipe.transform(room.endDate, 'dd/MM/yyyy') || '';
+          this.endDate = end;
         });
         this.filteredRooms = [...this.rooms]; // Copy the rooms array
         resolve();
@@ -87,12 +93,16 @@ export class ViewAvailableRoomComponent implements OnInit {
       this.NumberOfAdult = peopleCount.adults;
       this.NumberOfChildren = peopleCount.children;
       this.NumberOfRoom = peopleCount.rooms;
+      if (this.rooms) {
+        this.filterRooms();
+      }
     });
 
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
       if (rangeDates && rangeDates.length === 2) {
-        const start = this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
+        const start =
+          this.datePipe.transform(rangeDates[0], 'dd/MM/yyyy') || '';
         const end = this.datePipe.transform(rangeDates[1], 'dd/MM/yyyy') || '';
         this.formattedRangeDates = `${start} - ${end}`;
       } else {
@@ -103,7 +113,6 @@ export class ViewAvailableRoomComponent implements OnInit {
       }
     });
   }
-
 
   getHotels(): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -139,6 +148,14 @@ export class ViewAvailableRoomComponent implements OnInit {
         room.type?.toLowerCase().includes(this.filterText.toLowerCase())
       );
     }
+
+    if (this.NumberOfAdult !== null && this.NumberOfChildren !== null) {
+      this.filteredRooms = this.filteredRooms.filter(
+          (room) =>
+              this.NumberOfAdult + this.NumberOfChildren === room.numberOfPeople
+      );
+  }
+
 
     // Lọc theo địa điểm
     if (this.location) {
@@ -179,9 +196,9 @@ export class ViewAvailableRoomComponent implements OnInit {
     this.showDialog();
   }
 
-  showDialog() : void {
+  showDialog(): void {
     this.visible = true;
-}
+  }
 
   closeModal(): void {
     this.displayModal = false;
@@ -197,9 +214,19 @@ export class ViewAvailableRoomComponent implements OnInit {
   onLocationChange(event: any): void {
     this.location = event.address;
     this.filterRooms();
+
+  }
+  onAdultsChange(event: any):void {
+    this.NumberOfAdult = event;
+    this.filterRooms();
   }
 
-  onDateChange():void {
+  onChildrenChange(event: any):void {
+    this.NumberOfChildren = event;
+    this.filterRooms();
+  }
+
+  onDateChange(): void {
     this.filterRooms();
   }
 

@@ -5,7 +5,7 @@
   <div class="profile-left">
     <p-avatar image="assets/images/logo2.png" shape="circle" size="xlarge"></p-avatar>
     <div class="user-info">
-      <h4>{{ user?.email }}</h4>
+      <h5>{{ user?.email }}</h5>
       <p>{{ user?.role }}</p>
       <div *ngIf="user?.role === 'STAFF' && certificateUrl">
         <a [href]="certificateUrl" target="_blank">View Certificate</a>

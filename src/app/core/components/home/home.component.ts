@@ -103,6 +103,7 @@ export class HomeComponent implements OnInit {
 
   toBookingPage(id?: number): void {
     this.selectedRoomId = id;
+    this.userDataService.getStartDate(this.selectedRoom?.startDate);
     this.selectedRoom = this.rooms?.find((room) => room.id === id);
     this.router.navigate(['/booking-room', id]);
   }

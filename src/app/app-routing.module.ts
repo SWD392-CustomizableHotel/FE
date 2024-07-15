@@ -6,16 +6,21 @@ import { NotfoundComponent } from './core/components/notfound/notfound.component
 import { ResetPasswordComponent } from './core/components/reset-password/reset-password.component';
 import { ViewAvailableRoomComponent } from './core/components/view-available-room/view-available-room.component';
 import { VerifyEmailComponent } from './core/components/verify-email/verify-email.component';
+import { CustomizingRoomComponent } from './core/components/customizing-room/customizing-room.component';
 import { BookingHistoryComponent } from './core/components/booking-history/booking-history.component';
 import { BookingRoomComponent } from './core/components/booking-room/booking-room.component';
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
 import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 import { ProfileComponent } from './core/components/profile/profile.component';
+import { AuthGuard } from './_helper/auth.guard';
 import { CheckOutComponent } from './core/components/check-out/check-out.component';
 
 const routes: Routes = [
   {
     path: '',
+    data: {
+      role: 'ADMIN',
+    },
     loadChildren: () =>
       import('./core/components/home/home.module').then((m) => m.HomeModule),
   },
@@ -38,6 +43,9 @@ const routes: Routes = [
           ),
       },
     ],
+    data: {
+      role: 'ADMIN',
+    },
   },
   {
     path: 'login',
@@ -58,6 +66,7 @@ const routes: Routes = [
   {
     path: 'update-profile',
     component: ProfileComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'view-available-room',
@@ -73,6 +82,20 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'customizing-room',
+    component: CustomizingRoomComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/customizing-room/customizing-room.module'
+          ).then((m) => m.CustomizingRoomModule),
+      },
+    ],
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'booking-history',
     component: BookingHistoryComponent,
     children: [
@@ -83,9 +106,9 @@ const routes: Routes = [
             './core/components/booking-history/booking-history.module'
           ).then((m) => m.BookingHistoryModule),
       },
-    ]
+    ],
   },
- {
+  {
     path: 'booking-room/:id',
     component: BookingRoomComponent,
     children: [
@@ -118,9 +141,9 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./core/components/confirm-payment/confirm-payment.module').then(
-            (m) => m.ConfirmPaymentModule
-          ),
+          import(
+            './core/components/confirm-payment/confirm-payment.module'
+          ).then((m) => m.ConfirmPaymentModule),
       },
     ],
   },
@@ -160,4 +183,3 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
-
