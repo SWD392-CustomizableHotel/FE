@@ -1,12 +1,13 @@
-import { BookingService } from '../../../services/booking.service';
+/* eslint-disable no-empty-function */
+/* eslint-disable @angular-eslint/no-empty-lifecycle-method */
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
-import { Table } from 'primeng/table';
-import { DialogService } from 'primeng/dynamicdialog';
-import { Service } from '../../../interfaces/models/service';
+import { BookingService } from '../../../services/booking.service';
 import { Amenity } from '../../../interfaces/models/amenity';
 import { Payment } from '../../../interfaces/models/payment';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
+import { DialogService } from 'primeng/dynamicdialog';
+import { Table } from 'primeng/table';
 
 interface PageEvent {
   first?: number;
@@ -16,16 +17,13 @@ interface PageEvent {
 }
 
 @Component({
-  selector: 'app-booking-history',
-  templateUrl: './booking-history.component.html',
-  styleUrls: ['./booking-history.component.scss'],
+  selector: 'app-check-out',
+  templateUrl: './check-out.component.html',
+  styleUrl: './check-out.component.scss',
   providers: [MessageService, DialogService]
 })
-export class BookingHistoryComponent implements OnInit {
-  serviceDialogVisible: boolean = false;
-  amenityDialogVisible: boolean = false;
-  paymentDialogVisible: boolean = false;
-  selectedService: Service[] = [];
+export class CheckOutComponent implements OnInit {
+  checkoutDetailsDialog: boolean = false;
   selectedAmenity: Amenity[] = [];
   selectedPayment: Payment[] = [];
   bookings: BookingHistoryDto[] = [];
@@ -48,16 +46,16 @@ export class BookingHistoryComponent implements OnInit {
   ];
   @ViewChild('filter') filter!: ElementRef;
   roomType?: string;
-  service: Service = {};
-  amenity: Amenity = {};
-  payment: Payment = {};
+  booking: BookingHistoryDto = {};
+  selectedCheckOutDetails: BookingHistoryDto | null = null;
+  toArray(obj: any): any[] {
+    return obj ? Object.values(obj) : [];
+  }
 
   constructor(
     private bookingService: BookingService,
     private messageService: MessageService,
-    private dialogService: DialogService,
   ) {}
-
   ngOnInit(): void {
     this.cols = [
       { field: 'bookingId', header: 'Booking ID' },
@@ -71,10 +69,9 @@ export class BookingHistoryComponent implements OnInit {
     ];
     this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
   }
-
   private loadBookings(pageNumber: number, pageSize: number, roomType?: string, searchTerm?: string): void {
     this.loading = true;
-    this.bookingService.getBookingHistory(pageNumber, pageSize, roomType, searchTerm)
+    this.bookingService.checkout(pageNumber, pageSize, roomType, searchTerm)
       .subscribe({
         next: (data) => {
           this.bookings = data.data
@@ -95,6 +92,32 @@ export class BookingHistoryComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load booking history' });
         }
       });
+  }
+  viewCheckOutDetails(booking: BookingHistoryDto): void {
+    const bookingId = booking.bookingId;
+    if (bookingId !== undefined) {
+      this.bookingService.getCheckOutDetails(bookingId).subscribe({
+        next: (response) => {
+          if (response && response.isSucceed && response.result) {
+            this.selectedCheckOutDetails = response.result;
+            this.checkoutDetailsDialog = true;
+          } else {
+            console.error('Empty response or missing data:', response);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch booking details' });
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching booking details: ' + error);
+        },
+  });
+  } else {
+    console.error('Booking ID is undefined.');
+  }
+  }
+
+  hideCheckOutDetailsDialog(): void {
+    this.checkoutDetailsDialog = false;
+    this.selectedCheckOutDetails = null;
   }
 
   onGlobalFilter(dt1: any, event: Event): void {
@@ -122,31 +145,11 @@ export class BookingHistoryComponent implements OnInit {
     this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
   }
 
-  openServiceDialog(service: Service[]) : void {
-    this.selectedService = service;
-    this.serviceDialogVisible = true;
+  onCheckOut(): void {
+    console.log('CheckOut clicked');
   }
 
-  closeServiceDialog() : void {
-    this.serviceDialogVisible = false;
+  onPayment(): void {
+    console.log('Payment clicked');
   }
-
-  openAmenityDialog(amenity: Amenity[]) : void {
-    this.selectedAmenity = amenity;
-    this.amenityDialogVisible = true;
-  }
-
-  closeAmenityDialog() : void {
-    this.amenityDialogVisible = false;
-  }
-
-  openPaymentDialog(payment: Payment[]) : void {
-    this.selectedPayment = payment;
-    this.paymentDialogVisible = true;
-  }
-
-  closePaymentDialog() : void {
-    this.paymentDialogVisible = false;
-  }
-
 }

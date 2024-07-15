@@ -11,6 +11,7 @@ import { BookingRoomComponent } from './core/components/booking-room/booking-roo
 import { StripePaymentComponent } from './core/components/stripe-payment/stripe-payment.component';
 import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 import { ProfileComponent } from './core/components/profile/profile.component';
+import { CheckOutComponent } from './core/components/check-out/check-out.component';
 
 const routes: Routes = [
   {
@@ -122,6 +123,19 @@ const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    path: 'check-out',
+    component: CheckOutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/check-out/check-out.module'
+          ).then((m) => m.CheckOutModule),
+      },
+    ]
   },
   {
     path: '**',
