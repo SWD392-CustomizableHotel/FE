@@ -3,6 +3,7 @@ export const environment = {
   BACKEND_API_URL: 'https://sheritonhotel.azurewebsites.net',
   googleClientId: '334776513295-504mhcogp67fv8gju337bcd38jr9d6n1.apps.googleusercontent.com',
   FRONTEND_URL: 'https://fe-customizablehotel.vercel.app',
-  STRIPE_PUBLIC_KEY: 'pk_test_51PZTGERt4Jb0KcASqJvZReNwjK5oiWEzZvp27FpjQ8HadaXWg8WKlKO1kfoIcV7AyuI68Trx4ZdTOne1KPrnNP7e00RBCAu2mn'
+  STRIPE_PUBLIC_KEY: 'pk_test_51PZTGERt4Jb0KcASqJvZReNwjK5oiWEzZvp27FpjQ8HadaXWg8WKlKO1kfoIcV7AyuI68Trx4ZdTOne1KPrnNP7e00RBCAu2mn',
+  // FPT_AI_KEY: 'fotbSj7h62oZMPQirjkiS17eLY89agHW'
 };
 // Production Server URL, can be replaced into deployed API

@@ -6,6 +6,7 @@ import { Staff } from '../interfaces/models/service';
 import { Auth } from '../../assets/constants/constants';
 import { Observable } from 'rxjs';
 import { BaseResponse } from '../interfaces/models/base-response';
+import { Customer } from '../interfaces/models/customer';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +29,14 @@ export class UserService {
     const url = `${environment.BACKEND_API_URL}/api/Auth/update-profile`;
     return this.http.post<BaseResponse<any>>(url, profileData);
   }
+
   getStaff(): Observable<Staff[]> {
     const url = `${environment.BACKEND_API_URL}/api/Services/get-staff`;
     return this.http.get<Staff[]>(url);
+  }
+
+  getCustomers(): Observable<Customer[]> {
+    const url = `${environment.BACKEND_API_URL}/api/IdentityCard/get-customers`;
+    return this.http.get<Customer[]>(url);
   }
 }

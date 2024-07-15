@@ -44,4 +44,9 @@ export class PaymentService {
       'status': this.roomStatus
     });
   }
+
+  getPaymentByBookingId(bookingId?: number): Observable<any> {
+    const url = `${environment.BACKEND_API_URL}/api/Payment/get-payment?BookingId=${bookingId}`;
+    return this.http.get<any>(url);
+  }
 }
