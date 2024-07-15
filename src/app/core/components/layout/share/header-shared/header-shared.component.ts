@@ -17,10 +17,9 @@ export class HeaderSharedComponent {
   private role = new BehaviorSubject<string>('');
   user?: User | null;
   menuItems: MenuItem[] = [
-    { label: 'Home', route: 'home' },
-    { label: 'Features', route: 'features' },
-    { label: 'Highlights', route: 'highlights' },
-    { label: 'Pricing', route: 'pricing' },
+    { label: 'Home', route: '' },
+    { label: 'View Available Room', route: 'view-available-room' },
+    { label: 'Customizing Room', route: 'customizing-room' },
   ];
   profileItems: MenuItem[] = [
     {
@@ -107,6 +106,17 @@ export class HeaderSharedComponent {
   }
 
   navigateTo(route: string): void {
+    if (route === 'view-available-room') {
+      this.router.navigate(['/view-available-room'], {
+        fragment: 'view-available-room',
+      });
+    } else if (route === 'customizing-room') {
+      this.router.navigate(['/customizing-room'], {
+        fragment: 'customizing-room',
+      });
+    } else {
+      this.router.navigate(['/landing'], { fragment: route });
+    }
     this.router.navigate([route]);
   }
 

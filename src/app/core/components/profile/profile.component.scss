@@ -25,18 +25,19 @@
   justify-content: center;
   background-color: #ffffff;
   border-radius: 50%;
-  width: 200px;
-  height: 200px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 2px solid #6a1b9a; /* Purple border */
+  min-width: 200px;
+  width: auto;
   padding: 1rem;
   position: relative;
   z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #6a1b9a; /* Purple border */
 }
 
 .profile-left .user-info {
   text-align: center;
   margin-top: 1rem;
+  word-break: break-word; /* To ensure long email addresses break correctly */
 }
 
 .profile-right {
@@ -78,6 +79,7 @@
 .p-fluid .p-field label {
   font-weight: bold;
 }
+
 .home-button {
   font-size: 1.5rem; /* Increase the font size */
   display: flex;

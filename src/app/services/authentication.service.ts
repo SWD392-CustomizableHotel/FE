@@ -38,6 +38,10 @@ export class AuthenticationService {
     return this.userSubject.value;
   }
 
+  public setUserValue(user: User | null): void {
+    this.userSubject.next(user);
+  }
+
   register(payload: any): Observable<BaseResponse<User>> {
     return this.http.post<BaseResponse<User>>(
       `${environment.BACKEND_API_URL}/api/Auth/register`,
@@ -72,6 +76,7 @@ export class AuthenticationService {
 
   logOut(): void {
     localStorage.removeItem('user');
+    localStorage.removeItem('socialUser');
     this.userSubject.next(null);
     this.socialAuthService.signOut();
     this.router.navigate(['/login']);

@@ -44,6 +44,14 @@ export class BookingRoomComponent implements OnInit {
 
     this.userBookingData.currentRangeDates.subscribe((rangeDates) => {
       this.rangeDates = rangeDates;
+      if(rangeDates === undefined) {
+        const start =
+          this.datePipe.transform(this.room!.startDate, 'dd/MM/yyyy') || '';
+        this.startDate = start;
+        const end = this.datePipe.transform(this.room!.endDate, 'dd/MM/yyyy') || '';
+        this.endDate = end;
+        this.formattedRangeDates = `${start} - ${end}`;
+      }
       localStorage.setItem('rangeDate[0]', rangeDates[0]);
       localStorage.setItem('rangeDate[1]', rangeDates[1]);
       if (rangeDates && rangeDates.length === 2) {
