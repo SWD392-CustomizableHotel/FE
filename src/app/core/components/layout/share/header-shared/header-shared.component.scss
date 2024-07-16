@@ -79,21 +79,9 @@
         width: 100%;
         padding: 0;
         margin: 0;
-        display: flex;
         flex-direction: column;
     }
-    .topbar-nav ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        justify-content: left;
-    }
-    
-    .topbar-nav li {
-        margin-right: 20px;
-    }
-    
+
     .topbar-nav li {
         width: 100%;
         text-align: left;
@@ -107,8 +95,8 @@
         justify-content: space-between;
         border-top: solid 1px #000;
     }
-    .topbar-actions button{
+
+    .topbar-actions button {
         margin: 0;
     }
-    
 }

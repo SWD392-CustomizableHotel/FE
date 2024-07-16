@@ -12,7 +12,7 @@
                 [loading]="loading"
                 [rowHover]="true"
                 styleClass="p-datatable-gridlines"
-                [globalFilterFields]="['serviceStatus.status', 'name', 'description']"
+                [globalFilterFields]="['serviceStatus', 'name', 'description']"
                 responsiveLayout="scroll"
             >
                 <ng-template pTemplate="caption">
@@ -85,12 +85,12 @@
                                 ></p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 12rem" pSortableColumn="serviceStatus.status">
+                        <th style="min-width: 12rem" pSortableColumn="serviceStatus">
                             <div class="flex justify-content-between align-items-center">
                                 Status
                                 <p-sortIcon field="serviceStatus"></p-sortIcon>
                                 <p-columnFilter
-                                    field="serviceStatus.status"
+                                    field="serviceStatus"
                                     matchMode="equals"
                                     display="menu"
                                 >
@@ -100,10 +100,10 @@
                                         let-filter="filterCallback"
                                     >
                                         <p-dropdown
-                                            [(ngModel)]="service.status"
+                                            [(ngModel)]="serviceStatus"
                                             [options]="serviceStatusOptions"
-                                            optionLabel="status"
-                                            (onChange)="filter($event.value.status)"
+                                            optionLabel="label"
+                                            (onChange)="filter($event.value)"
                                             placeholder="Any"
                                             [style]="{ 'min-width': '12rem' }"
                                         >
@@ -142,7 +142,7 @@
                         <td>{{ service.name }}</td>
                         <td>{{ service.price | currency }}</td>
                         <td>{{ service.description }}</td>
-                        <td>{{ service.serviceStatus.status }}</td>
+                        <td>{{ getServiceStatusLabel(service.status) }}</td>
                         <td>{{ service.startDate | date:'short' }}</td>
                         <td>{{ service.endDate | date:'short' }}</td>
                         <td>
@@ -423,7 +423,7 @@
           [checkmark]="true"
           [(ngModel)]="selectedServiceStatus"
           [options]="serviceStatusOptions"
-          optionLabel="status"
+          optionLabel="label"
           appendTo="body"
           (onChange)="updateServiceStatus(service, $event.value)"
         ></p-dropdown>

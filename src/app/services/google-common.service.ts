@@ -1,12 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@angular/core';
-import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  SocialAuthService,
+  SocialUser,
+} from '@abacritt/angularx-social-login';
 import { ExternalAuthDto } from '../interfaces/models/externalAuthDto';
-import { BehaviorSubject, Observable, Subject, catchError, map, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  catchError,
+  map,
+  tap,
+} from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../interfaces/models/user';
 import { environment } from '../../assets/environments/environment';
 import { Router } from '@angular/router';
+import { AuthenticationService } from './authentication.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +42,7 @@ export class GoogleCommonService {
 
   constructor(
     private externalAuthService: SocialAuthService,
+    private authService: AuthenticationService,
     private http: HttpClient,
     private router: Router
   ) {
@@ -45,7 +59,6 @@ export class GoogleCommonService {
   signOutExternal(): void {
     this.externalAuthService.signOut();
     this.setLoggedIn(false);
-    // this.setShowAdditionalInfoForm(false);
     this.clearLocalStorage();
     this.router.navigate(['/login']);
   }
@@ -65,20 +78,35 @@ export class GoogleCommonService {
   }
 
   externalLogin(route: string, externalAuth: ExternalAuthDto): Observable<any> {
-    return this.http.post<any>(`${environment.BACKEND_API_URL}/${route}`, externalAuth).pipe(
-      map((res) => {
-        if (res.token) {
-          this.saveSocialUser(res);
-          this.setLoggedIn(true);
-          this.sendAuthStateChangeNotification(true, res.role);
-        }
-        return res;
-      }),
-      catchError((error) => {
-        console.error('External login error:', error);
-        throw error;
-      })
-    );
+    return this.http
+      .post<any>(`${environment.BACKEND_API_URL}/${route}`, externalAuth)
+      .pipe(
+        map((res) => {
+          if (res.token) {
+            console.log('Response from server:', res);
+            const decodedToken: any = jwtDecode(res.token);
+            console.log('Decoded Token:', decodedToken);
+            const user: User = {
+              email: decodedToken.email,
+              firstName: decodedToken.FirstName,
+              lastName: decodedToken.LastName,
+              phoneNumber: decodedToken.phoneNumber,
+              token: res.token,
+              role: res.role,
+            };
+
+            this.authService.setUserValue(user);
+            this.saveSocialUser(user);
+            this.setLoggedIn(true);
+            this.sendAuthStateChangeNotification(true, res.role);
+          }
+          return res;
+        }),
+        catchError((error) => {
+          console.error('External login error:', error);
+          throw error;
+        })
+      );
   }
 
   saveSocialUser(res: any): void {
@@ -88,14 +116,17 @@ export class GoogleCommonService {
       lastName: res.lastName,
       phoneNumber: res.phoneNumber,
       token: res.token,
-      role: res.role
+      role: res.role,
     };
     localStorage.setItem('socialUser', JSON.stringify(socialUser));
     localStorage.setItem('user', JSON.stringify(res));
     this.userSocialSubject.next(socialUser);
   }
 
-  registerAdditionalInfo(socialUser: User, additionalInfo: any): Observable<any> {
+  registerAdditionalInfo(
+    socialUser: User,
+    additionalInfo: any
+  ): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/api/Auth/RegisterAdditionalInfo`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -103,19 +134,22 @@ export class GoogleCommonService {
     });
     const body = {
       ...additionalInfo,
-      UserName: socialUser.email
+      UserName: socialUser.email,
     };
 
     return this.http.post<any>(url, body, { headers }).pipe(
       tap((res) => {
+        this.authService.setUserValue(res);
         this.setLoggedIn(true);
         this.sendAuthStateChangeNotification(true, res.role);
       })
     );
   }
 
-  //navigate when login with role Admin or Staff
-  sendAuthStateChangeNotification(isAuthenticated: boolean, role: string): void {
+  sendAuthStateChangeNotification(
+    isAuthenticated: boolean,
+    role: string
+  ): void {
     this.authStateSubject.next(isAuthenticated);
     this.isLoggedInSubject.next(isAuthenticated);
     this.setShowAdditionalInfoForm(false);
@@ -126,6 +160,7 @@ export class GoogleCommonService {
     return this.http.get<any>(url).pipe(
       map((res: any) => {
         if (res && res.isSucceed) {
+          this.authService.setUserValue(res);
           this.saveSocialUser(res);
           this.setLoggedIn(true);
           this.setShowAdditionalInfoForm(false);

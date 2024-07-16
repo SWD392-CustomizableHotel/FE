@@ -1,6 +1,7 @@
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/elements-content -->
+
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/images/logo2.png" alt="logo" width="40px" height="40px">
@@ -9,7 +10,7 @@
 
     <button pButton icon="pi pi-bars" class="layout-menu-button" (click)="menuVisible = !menuVisible"></button>
     <div class="topbar-content" [ngClass]="{'topbar-content-visible': menuVisible}">
-        <ul class="topbar-nav"> 
+        <ul class="topbar-nav">
             <li *ngFor="let menuItem of menuItems">
                 <a (click)="navigateTo(menuItem['route'])" (keydown.enter)="navigateTo(menuItem['route'])" pRipple class="nav-link">
                     <span>{{ menuItem.label }}</span>
@@ -22,7 +23,8 @@
                 <button pButton pRipple label="Register" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-blue-500 text-white" [routerLink]="'/register'"></button>
             </ng-container>
             <ng-container *ngIf="getIsLoggedIn()">
-                <button pButton pRipple label="Logout" class="p-button-rounded border-none ml-5 font-light line-height-2 bg-red-500 text-white" (click)="logout()"></button>
+                <p-menu #menu [model]="profileItems" [popup]="true"></p-menu>
+                <p-button (click)="menu.toggle($event)" icon="pi pi-ellipsis-v"></p-button>
             </ng-container>
         </div>
     </div>

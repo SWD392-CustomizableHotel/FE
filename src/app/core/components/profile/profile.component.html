@@ -1,0 +1,92 @@
+<div class="profile-container p-fluid p-card" style="background-image: url('assets/images/sheriton-hotel.jpeg'); background-size: cover; background-position: center;">
+  <div class="back-button">
+    <button pButton type="button" icon="pi pi-home" (click)="navigateHome()" class="p-button-text home-button">Home</button>
+  </div>
+  <div class="profile-left">
+    <p-avatar image="assets/images/logo2.png" shape="circle" size="xlarge"></p-avatar>
+    <div class="user-info">
+      <h5>{{ user?.email }}</h5>
+      <p>{{ user?.role }}</p>
+      <div *ngIf="user?.role === 'STAFF' && certificateUrl">
+        <a [href]="certificateUrl" target="_blank">View Certificate</a>
+      </div>
+    </div>
+  </div>
+  <div class="profile-right">
+    <h2 class="p-card-title">My Profile</h2>
+
+    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="firstName">First Name</label>
+            <input pInputText type="text" id="firstName" formControlName="firstName" />
+          </div>
+        </div>
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="lastName">Last Name</label>
+            <input pInputText type="text" id="lastName" formControlName="lastName" />
+          </div>
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="phoneNumber">Phone Number</label>
+        <input pInputText type="text" id="phoneNumber" formControlName="phoneNumber" />
+      </div>
+
+      <div class="p-field">
+        <label for="address">Address</label>
+        <input pInputText type="text" id="address" formControlName="address" />
+      </div>
+
+      <div class="p-field">
+        <label for="dob">Date of Birth</label>
+        <p-calendar
+          id="dob"
+          formControlName="dob"
+          dateFormat="dd/mm/yy"
+          showIcon="true"
+          appendTo="body"
+        ></p-calendar>
+      </div>
+
+      <div class="p-field" *ngIf="user?.role === 'STAFF'">
+        <label for="certificate">Certificate</label>
+        <p-fileUpload
+          name="certificate"
+          customUpload="true"
+          (uploadHandler)="onUpload()"
+          (onSelect)="onFileSelected($event)"
+          (onClear)="onClear()"
+          [auto]="true"
+          chooseLabel="Choose"
+          uploadLabel="Upload"
+          cancelLabel="Cancel"
+          mode="advanced"
+          class="custom-file-upload"
+          [disabled]="!editable"
+        >
+          <ng-template pTemplate="content" let-files>
+            <div *ngIf="selectedFile">
+              <p>Selected file: {{ selectedFile.name }}</p>
+            </div>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+
+      <div class="p-field" style="display: none;">
+        <input pInputText type="text" formControlName="email" />
+      </div>
+
+      <div class="button-group">
+        <button pButton type="button" label="Edit" icon="pi pi-pencil" (click)="enableEditing()" *ngIf="!editable" class="p-button-text p-mr-2"> </button>
+        <button pButton type="submit" label="Save" icon="pi pi-check" *ngIf="editable" class="p-button-primary p-mr-2"> </button>
+        <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="disableEditing()" *ngIf="editable" class="p-button-secondary"> </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<p-toast></p-toast>

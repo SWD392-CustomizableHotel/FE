@@ -1,0 +1,176 @@
+<p-toast key="1" position="top-center"></p-toast>
+<div style="height: 100px"></div>
+<app-header-shared></app-header-shared>
+<div class="surface-0">
+  <div class="flex justify-content-center align-items-center">
+    <div class="card w-9">
+      <p-toast />
+      <p-steps
+        [model]="steps"
+        [readonly]="true"
+        class="justify-content-between"
+        [activeIndex]="activeIndex"
+        (activeIndexChange)="onActiveIndexChange($event)"
+      />
+    </div>
+  </div>
+  <app-progress-information
+    [activeIndex]="activeIndex"
+    (changeActiveIndex)="onActiveIndexChange($event)"
+    (amenitiesChanged)="setLimitsAmenities($event)"
+    (roomSizeChanged)="setRoomSize($event)"
+    (roomSelected)="handleRoomSelection($event)"
+    (dateRange)="handleDateRange($event)"
+  ></app-progress-information>
+  <app-progress-customizing
+    [isHideCustomizing]="isHideCustomizing"
+    [canAddFurniture]="canAddFurniture.bind(this)"
+    [getFurnitureCount]="getFurnitureCount.bind(this)"
+    (furnitureSelected)="selectFurniture($event)"
+    (undoAction)="undo()"
+    (redoAction)="redo()"
+    (changeProgressIndex)="onActiveIndexChange($event)"
+  >
+  </app-progress-customizing>
+  <div class="grid">
+    <div class="col-8">
+      <div
+        class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center pt-4"
+      >
+        <canvas
+          #canvas
+          id="canvas"
+          width="700"
+          height="580"
+          [hidden]="isHideCustomizing"
+          (mousedown)="onMouseDown($event)"
+          (mousemove)="onMouseMove($event)"
+          (mouseup)="onMouseUp()"
+          (contextmenu)="onRightClick($event)"
+          class="canva-grid"
+        >
+        </canvas>
+      </div>
+      <app-progress-payment
+        [activeIndex]="activeIndex"
+        (changeActiveIndex)="onActiveIndexChange($event)"
+        *ngIf="isHideCustomizing && activeIndex === 2"
+      ></app-progress-payment>
+    </div>
+    <div
+      class="col-12 md:col-4"
+      [hidden]="isHideCustomizing && !(activeIndex === 1 || activeIndex === 2)"
+    >
+      <div
+        class="fadeinleft animation-duration-600 flex flex-wrap align-items-center justify-content-center pt-1 mr-8 mt-2"
+      >
+        <p-card
+          styleClass="font-medium text-primary"
+          header="Your Room Information"
+          subheader="This feature is in experimental mode"
+        >
+          <p-panel header="Room" [toggleable]="true">
+            <div
+              class="text-base font-normal mr-2 text-color-secondary"
+              *ngIf="selectedRoom"
+            >
+              <ul class="mr-2">
+                Room Number:
+                {{
+                  selectedRoom.code
+                }}
+              </ul>
+              <ul class="mr-2">
+                Room Size:
+                {{
+                  selectedRoom.roomSize
+                }}
+              </ul>
+              <ul class="mr-2">
+                Room Type:
+                {{
+                  selectedRoom.type
+                }}
+              </ul>
+              <ul class="mr-2">
+                Nights:
+                {{
+                  checkInDate
+                }}
+                -
+                {{
+                  checkOutDate
+                }}
+                ({{
+                  day
+                }}
+                Day,
+                {{
+                  night
+                }}
+                Night)
+              </ul>
+              <!-- Nights living: Date range -->
+              <ul class="font-semibold">
+                Subtotal: ${{
+                  this.roomPriceSubtotal
+                }}
+              </ul>
+            </div>
+          </p-panel>
+          <p-panel header="Amenity" [toggleable]="true">
+            <div
+              class="text-base font-normal mr-2 text-color-secondary pt-1"
+              *ngIf="amenity"
+            >
+              <ul class="mr-2">
+                Amenity Name:
+                {{
+                  amenity.name
+                }}
+              </ul>
+              <ul class="mr-2">
+                Description:
+                {{
+                  amenity.description
+                }}
+              </ul>
+              <ul class="mr-2">
+                Amenity Type:
+                {{
+                  amenity.amenityType
+                }}
+              </ul>
+              <ul class="mr-2">
+                Amenity Price: ${{
+                  amenity.price
+                }}
+              </ul>
+              <!-- Nights living: Date range -->
+              <ul class="font-semibold">
+                Subtotal: ${{
+                  amenity.price
+                }}
+              </ul>
+            </div>
+          </p-panel>
+          <p-divider></p-divider>
+          <div class="text-2xl font-medium text-color-secondary">
+            Total Price:
+            <div class="font-semibold text-2xl text-color-secondary">
+              ${{ this.totalPrice }}
+            </div>
+          </div>
+          <p-messages
+            [(value)]="warningMessage"
+            [enableService]="false"
+            [closable]="false"
+          />
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+<p-contextMenu #cm [model]="contextMenuItems" (onHide)="onHide()" />
+
+<app-footer-shared></app-footer-shared>

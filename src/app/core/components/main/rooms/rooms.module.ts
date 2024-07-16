@@ -17,27 +17,32 @@ import { RoomsRoutingModule } from './rooms-routing.module';
 import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
 import { PaginatorModule } from 'primeng/paginator';
+import { FileUploadModule } from 'primeng/fileupload';
+import { CalendarModule } from 'primeng/calendar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @NgModule({
-	imports: [
-        RoomsRoutingModule,
-		CommonModule,
-		FormsModule,
-		TableModule,
-		RatingModule,
-		ButtonModule,
-		SliderModule,
-		InputTextModule,
-		ToggleButtonModule,
-		RippleModule,
-		MultiSelectModule,
-		DropdownModule,
-		ProgressBarModule,
-		ToastModule,
-		ToolbarModule,
-		DialogModule,
-		PaginatorModule
-	],
-	declarations: [RoomsComponent]
+  imports: [
+    RoomsRoutingModule,
+    CommonModule,
+    FormsModule,
+    TableModule,
+    RatingModule,
+    ButtonModule,
+    SliderModule,
+    InputTextModule,
+    ToggleButtonModule,
+    RippleModule,
+    MultiSelectModule,
+    DropdownModule,
+    ProgressBarModule,
+    ToastModule,
+    ToolbarModule,
+    DialogModule,
+    PaginatorModule,
+    FileUploadModule,
+    CalendarModule,
+    ProgressSpinnerModule,
+  ],
+  declarations: [RoomsComponent],
 })
-
-export class RoomsModule { }
+export class RoomsModule {}
