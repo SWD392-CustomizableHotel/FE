@@ -31,6 +31,8 @@ export class RoomsComponent implements OnInit {
   roomDialog: boolean = false;
   createRoomDialog: boolean = false;
   deleteRoomDialog: boolean = false;
+  canvasImageDialog: boolean = false;
+  canvasImageSrc: string | undefined = '';
   submitted: boolean = false;
   loading: boolean = true;
   rooms: Room[] = [];
@@ -446,6 +448,15 @@ export class RoomsComponent implements OnInit {
       if (this.room.endDate && this.room.endDate <= this.room.startDate) {
         this.room.endDate = null; // Reset end date if it is before or on the start date
       }
+    }
+  }
+
+  customizeRoom(room: Room) {
+    if (room.canvasImage) {
+      this.canvasImageSrc = room.canvasImage;
+      this.canvasImageDialog = true;
+    } else {
+      console.error('No canvas image found for this room');
     }
   }
 }

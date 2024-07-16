@@ -13,4 +13,5 @@ export interface Room {
   endDate?: any;
   imagePath?: string;
   roomSize?: string;
+  canvasImage?: string;
 }

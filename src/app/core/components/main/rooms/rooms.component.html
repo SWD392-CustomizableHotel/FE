@@ -27,7 +27,7 @@
                               Room Image                        
                             </div>
                           </th>
-                        <th style="min-width: 8rem" pSortableColumn="roomNumber">
+                        <th style="min-width: 4rem" pSortableColumn="roomNumber">
                             <div class="flex justify-content-between align-items-center">
                                 Room Number
                                 <p-sortIcon field="roomNumber"></p-sortIcon>
@@ -61,12 +61,6 @@
                                 </p-columnFilter>
                             </div>
                         </th>
-                        <th style="min-width: 5rem" pSortableColumn="numberOfPeople">
-							<div class="flex justify-content-between align-items-center">
-								Occupancy
-                                <p-sortIcon field="numberOfPeople"></p-sortIcon>                         
-							</div>
-						</th>
                         <th></th>
                     </tr>
                 </ng-template>
@@ -82,7 +76,7 @@
                             {{ room.roomPrice | currency }}
                         </td>
                         <td>    
-                            {{room.roomType}}
+                            {{room.roomType}} 
                         </td>
                         <td>
                             <div class="hidden">
@@ -92,12 +86,10 @@
                             [(ngModel)]="room.roomStatus" optionLabel="status" [style]="{'width':'100%'}" (onChange)="updateRoomStatus(room, $event.value)"></p-dropdown>
                         </td>
                         <td>
-                            {{room.numberOfPeople}}
-                        </td>
-                        <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRoom(room)"></button>
                                 <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" [disabled]="room.roomStatus.status === 'Occupied'" (click)="deleteRoom(room)"></button>
+                                <button *ngIf="room.roomType === 'Customizable' && room.roomStatus.status === 'Booked'" pButton pRipple icon="pi pi-cog" class="p-button-rounded p-button-info ml-2" (click)="customizeRoom(room)"></button>
                             </div>
                         </td>
                     </tr>
@@ -247,5 +239,11 @@
                 <p-button label="Save" icon="pi pi-check" (onClick)="saveRoom()"[disabled]="isCreating" ></p-button>
             </ng-template>
         </p-dialog>   
+
+        <p-dialog header="Customize Room" [(visible)]="canvasImageDialog" [modal]="true" [closable]="true" [resizable]="false" [draggable]="false">
+             <div class="customize-room-dialog">
+                <img *ngIf="canvasImageSrc" [src]="canvasImageSrc" alt="Canvas Image" />
+            </div>
+        </p-dialog>
     </div>
 </div>
