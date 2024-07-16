@@ -164,12 +164,14 @@
                 <tr>
                   <th>Amount</th>
                   <th>Status</th>
+                  <th>Method</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-payment>
                 <tr>
                   <td>{{ payment.amount | currency:'USD':'symbol':'1.0-0' }}</td>
                   <td>{{ payment.status }}</td>
+                  <td>{{ payment.paymentMethod }}</td>
                 </tr>
               </ng-template>
             </p-table>
@@ -182,12 +184,39 @@
           <p-button label="Close" icon="pi pi-times" (click)="hideCheckOutDetailsDialog()"></p-button>
           <ng-container *ngIf="selectedCheckOutDetails?.payments">
             <ng-container *ngFor="let payment of toArray(selectedCheckOutDetails?.payments)">
-              <p-button *ngIf="payment.status === 'Successful'" label="CheckOut" icon="pi pi-check"
+              <p-button *ngIf="payment.status === 'Success'" label="CheckOut" icon="pi pi-check"
                 (click)="onCheckOut()"></p-button>
-              <p-button *ngIf="payment.status === 'NotYet'" label="Payment" icon="pi pi-credit-card"
-                (click)="onPayment()"></p-button>
+                <p-button *ngIf="payment.status === 'NotYet'" label="Payment" icon="pi pi-credit-card"
+                (click)="showPaymentDialog()"></p-button>
             </ng-container>
           </ng-container>
+        </div>
+      </ng-template>
+    </p-dialog>
+     <!-- Payment dialog -->
+     <p-dialog [(visible)]="paymentDialog" [style]="{ width: '400px' }" header="Make Payment" [modal]="true" class="p-fluid" (onHide)="hidePaymentDialog()">
+      <ng-template pTemplate="content">
+        <div class="field">
+          <label for="paymentMethod">Payment Method:</label>
+          <p-dropdown id="paymentMethod" [options]="paymentMethods" [(ngModel)]="selectedPaymentMethod" placeholder="Select a payment method" (onChange)="onPaymentMethodChange()"></p-dropdown>
+        </div>
+        <div class="field" *ngIf="selectedPaymentMethod === 'cash'">
+          <label for="customerCash">Customer Cash:</label>
+          <input type="number" pInputText id="customerCash" [(ngModel)]="customerCash" (ngModelChange)="calculateReturnAmount()"/>
+        </div>
+        <div class="field" *ngIf="selectedPaymentMethod === 'cash'">
+          <label for="returnAmount">Return Amount:</label>
+          <input type="text" pInputText id="returnAmount" [value]="returnAmount | currency:'USD':'symbol':'1.0-0'" disabled/>
+        </div>
+        <div class="field">
+          <label for="totalPrice">Total Amount:</label>
+          <input type="text" pInputText id="totalPrice" [value]="selectedCheckOutDetails?.totalPrice | currency:'USD':'symbol':'1.0-0'" disabled/>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="flex justify-content-end">
+          <p-button label="Cancel" icon="pi pi-times" (click)="hidePaymentDialog()"></p-button>
+          <p-button label="Pay" icon="pi pi-credit-card" (click)="makePayment()"></p-button>
         </div>
       </ng-template>
     </p-dialog>

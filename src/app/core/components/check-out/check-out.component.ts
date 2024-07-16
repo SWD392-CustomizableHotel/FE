@@ -24,6 +24,7 @@ interface PageEvent {
 })
 export class CheckOutComponent implements OnInit {
   checkoutDetailsDialog: boolean = false;
+  paymentDialog: boolean = false;
   selectedAmenity: Amenity[] = [];
   selectedPayment: Payment[] = [];
   bookings: BookingHistoryDto[] = [];
@@ -34,6 +35,15 @@ export class CheckOutComponent implements OnInit {
   searchTerm?: string;
   selectedRoomType: { type: string } | undefined;
   cols: any[] = [];
+  night: string = '';
+  day: string = '';
+  roomPriceSubtotal: number = 0;
+  totalPrice: number = 0;
+  paymentMethods: { label: string; value: string }[] = [];
+  selectedPaymentMethod: string = '';
+  customerCash: number = 0;
+  returnAmount: number = 0;
+
   roomTypeOptions = [
     { type: 'Regular' },
     { type: 'Family' },
@@ -55,7 +65,13 @@ export class CheckOutComponent implements OnInit {
   constructor(
     private bookingService: BookingService,
     private messageService: MessageService,
-  ) {}
+  ) {
+    this.paymentMethods = [
+      { label: 'Cash', value: 'cash' },
+      { label: 'Card', value: 'card' },
+      { label: 'Bank Account', value: 'bank' }
+    ];
+  }
   ngOnInit(): void {
     this.cols = [
       { field: 'bookingId', header: 'Booking ID' },
@@ -120,6 +136,14 @@ export class CheckOutComponent implements OnInit {
     this.selectedCheckOutDetails = null;
   }
 
+  showPaymentDialog(): void {
+    this.paymentDialog = true;
+  }
+
+  hidePaymentDialog(): void {
+    this.paymentDialog = false;
+  }
+
   onGlobalFilter(dt1: any, event: Event): void {
     this.searchTerm = (event.target as HTMLInputElement).value;
     this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
@@ -146,10 +170,47 @@ export class CheckOutComponent implements OnInit {
   }
 
   onCheckOut(): void {
-    console.log('CheckOut clicked');
+    if (this.selectedCheckOutDetails && this.selectedCheckOutDetails.bookingId) {
+      this.bookingService.checkOutAction(this.selectedCheckOutDetails.bookingId).subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Check-out successful!' });
+          this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
+          this.hideCheckOutDetailsDialog();
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Check-out failed!' });
+        }
+      });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No booking selected for check-out!' });
+    }
   }
 
-  onPayment(): void {
-    console.log('Payment clicked');
+  onPaymentMethodChange(): void {
+    this.customerCash = 0;
+    this.returnAmount = 0;
+  }
+
+  calculateReturnAmount(): void {
+    if (this.selectedCheckOutDetails && this.selectedCheckOutDetails.totalPrice) {
+      this.returnAmount = this.customerCash - this.selectedCheckOutDetails.totalPrice;
+    }
+  }
+
+  makePayment(): void {
+    if (this.selectedCheckOutDetails && this.selectedCheckOutDetails.bookingId) {
+      this.bookingService.paymentAction(this.selectedCheckOutDetails.bookingId, this.selectedPaymentMethod).subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Payment successful!' });
+          this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
+          this.hidePaymentDialog();
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Payment failed!' });
+        }
+      });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No booking selected for Payment!' });
+    }
   }
 }
