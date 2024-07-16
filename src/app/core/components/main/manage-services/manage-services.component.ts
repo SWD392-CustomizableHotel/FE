@@ -175,6 +175,9 @@ export class ManageServicesComponent implements OnInit {
     this.serviceDialog = false;
     this.createServiceDialog = false;
     this.submitted = false;
+    this.service = {};
+    this.selectedStaff = [];
+    this.selectedServiceStatus = undefined;
   }
 
   deleteService(service: Service): void {
@@ -306,20 +309,8 @@ export class ManageServicesComponent implements OnInit {
                   updatedService.data.id!,
                   this.selectedStaff.map((s) => s.id)
                 );
-                setTimeout(() => {
-                  window.location.reload();
-                }, 3000);
               } else {
                 this.removeAssignedStaff(updatedService.data.id!);
-                this.messageService.add({
-                  severity: 'success',
-                  summary: 'Successful',
-                  detail: 'Remove assignStaff successfully!',
-                  life: 3000,
-                });
-                setTimeout(() => {
-                  window.location.reload();
-                }, 3000);
               }
               this.messageService.add({
                 severity: 'success',
@@ -327,9 +318,8 @@ export class ManageServicesComponent implements OnInit {
                 detail: 'Service Updated',
                 life: 3000,
               });
-              setTimeout(() => {
-                window.location.reload();
-              }, 3000);
+              this.updateServiceInList(updatedService.data);
+              this.hideDialog();
             },
           });
       } else {
@@ -365,12 +355,8 @@ export class ManageServicesComponent implements OnInit {
                   detail: 'Service Created',
                   life: 3000,
                 });
-                this.loadServices(
-                  this.first / this.rows + 1,
-                  this.rows,
-                  this.serviceStatus,
-                  this.searchTerm
-                );
+                this.services.unshift(createdService.data);
+                this.hideDialog();
               },
               error: (error) => {
                 this.messageService.add({
@@ -383,12 +369,15 @@ export class ManageServicesComponent implements OnInit {
             });
         }
       }
-
-      this.isEdit = false;
-      this.createServiceDialog = false;
-      this.serviceDialog = false;
-      this.service = {};
     }
+  }
+
+  updateServiceInList(updatedService: Service): void {
+    const index = this.services.findIndex((s) => s.id === updatedService.id);
+    if (index !== -1) {
+      this.services.splice(index, 1); // Remove the old service
+    }
+    this.services.unshift(updatedService); // Add the updated service to the top
   }
 
   assignStaffToService(serviceId: number, staffIds: string[]): void {

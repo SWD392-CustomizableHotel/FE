@@ -19,6 +19,7 @@ import { User } from '../interfaces/models/user';
 import { environment } from '../../assets/environments/environment';
 import { Router } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +59,6 @@ export class GoogleCommonService {
   signOutExternal(): void {
     this.externalAuthService.signOut();
     this.setLoggedIn(false);
-    // this.setShowAdditionalInfoForm(false);
     this.clearLocalStorage();
     this.router.navigate(['/login']);
   }
@@ -83,8 +83,20 @@ export class GoogleCommonService {
       .pipe(
         map((res) => {
           if (res.token) {
-            this.authService.setUserValue(res);
-            this.saveSocialUser(res);
+            console.log('Response from server:', res);
+            const decodedToken: any = jwtDecode(res.token);
+            console.log('Decoded Token:', decodedToken);
+            const user: User = {
+              email: decodedToken.email,
+              firstName: decodedToken.FirstName,
+              lastName: decodedToken.LastName,
+              phoneNumber: decodedToken.phoneNumber,
+              token: res.token,
+              role: res.role,
+            };
+
+            this.authService.setUserValue(user);
+            this.saveSocialUser(user);
             this.setLoggedIn(true);
             this.sendAuthStateChangeNotification(true, res.role);
           }
@@ -134,7 +146,6 @@ export class GoogleCommonService {
     );
   }
 
-  //navigate when login with role Admin or Staff
   sendAuthStateChangeNotification(
     isAuthenticated: boolean,
     role: string
