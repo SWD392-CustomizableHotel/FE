@@ -171,7 +171,7 @@
         </p-dialog>
 
         <!--Create Room Dialog-->
-        <p-dialog [(visible)]="createRoomDialog" [style]="{width: '700px'}" header="New Room Details" [modal]="true" class="p-fluid">
+        <p-dialog [(visible)]="createRoomDialog" [style]="{width: '1000px'}" header="New Room Details" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="formgrid grid flex justify-content space-between">
                     <div style="flex: 1; margin-right: 40px;">
@@ -192,9 +192,10 @@
                             <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.roomDescription">Room Description is required.</small>
                         </div>
                         <div class="field">
-                            <label for="startDate">Start Date</label>
-                            <p-calendar id="startDate" [(ngModel)]="room.startDate" dateFormat="yy-mm-dd" showIcon appendTo="body" [minDate]="minStartDate" 
-                            (onSelect)="onStartDateSelect()"></p-calendar>
+                            <label for="dateRange">Date Range</label>
+                            <p-calendar id="dateRange" [(ngModel)]="dateRange" selectionMode="range" dateFormat="yy-mm-dd" showIcon appendTo="body" [minDate]="minStartDate"></p-calendar>
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && (!dateRange || dateRange.length !== 2)">Start Date and End Date are required.</small>
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && dateRange && dateRange[0].getTime() === dateRange[1].getTime()">End Date cannot be the same as Start Date.</small>
                         </div>
                         <div class="field">
                             <label for="imageUpload">Upload Image</label>
@@ -232,11 +233,10 @@
                                 required
                             ></p-dropdown>
                           </div>
-                          <div class="field">
-                            <label for="endDate">End Date</label>
-                            <p-calendar id="endDate" [(ngModel)]="room.endDate" 
-                            dateFormat="yy-mm-dd" showIcon appendTo="body" [minDate]="minEndDate"></p-calendar>
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && room.endDate && room.startDate && room.startDate.getTime() === room.endDate.getTime()">End Date cannot be the same as Start Date.</small>
+                        <div class="field">
+                            <label for="numberOfPeople">Number of People</label>
+                            <input type="number" pInputText id="numberOfPeople" [(ngModel)]="room.numberOfPeople" required [ngClass]="{'ng-invalid ng-dirty' : submitted && !room.numberOfPeople}">
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !room.numberOfPeople">Number of People is required.</small>
                         </div>
                     </div>
                 </div>
@@ -244,8 +244,8 @@
         
             <ng-template pTemplate="footer">
                 <p-button label="Cancel" severity="secondary" icon="pi pi-times" (onClick)="hideDialog()" ></p-button>
-                <p-button label="Save" icon="pi pi-check" (onClick)="saveRoom()" ></p-button>
+                <p-button label="Save" icon="pi pi-check" (onClick)="saveRoom()"[disabled]="isCreating" ></p-button>
             </ng-template>
-        </p-dialog>        
+        </p-dialog>   
     </div>
 </div>

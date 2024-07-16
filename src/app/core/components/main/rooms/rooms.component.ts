@@ -26,6 +26,7 @@ interface PageEvent {
   providers: [MessageService],
 })
 export class RoomsComponent implements OnInit {
+  isCreating: boolean = false;
   isEdit: boolean = false;
   roomDialog: boolean = false;
   createRoomDialog: boolean = false;
@@ -49,6 +50,7 @@ export class RoomsComponent implements OnInit {
   imageFile: File | undefined = undefined;
   minStartDate: Date = new Date();
   minEndDate: Date = new Date();
+  dateRange: Date[] = [];
   roomStatusOptions = [
     { status: 'Available' },
     { status: 'Occupied' },
@@ -142,6 +144,9 @@ export class RoomsComponent implements OnInit {
     this.submitted = false;
     this.createRoomDialog = true;
     this.selectedRoomType = undefined;
+    this.selectedRoomSize = undefined;
+    this.selectedRoomStatus = undefined;
+    this.dateRange = [];
   }
 
   editRoom(room: Room) {
@@ -223,12 +228,12 @@ export class RoomsComponent implements OnInit {
       this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
-        detail: `The following fields must be filled out to create a room: ${emptyFields.join(
-          ', '
-        )}`,
+        detail: `Error: ${emptyFields.join(', ')}`,
         life: 3000,
       });
     } else {
+      this.isCreating = true;
+      const [startDate, endDate] = this.dateRange;
       if (this.room.roomId !== undefined) {
         this.roomService
           .editRoomDetails(
@@ -244,6 +249,7 @@ export class RoomsComponent implements OnInit {
               detail: 'Room Updated',
               life: 3000,
             });
+            this.isCreating = false; // Stop loading
             this.loadRooms(
               this.first / this.rows + 1,
               this.rows,
@@ -262,6 +268,8 @@ export class RoomsComponent implements OnInit {
         if (this.selectedRoomType) {
           this.room.roomType = this.selectedRoomType.value;
         }
+        this.room.startDate = startDate;
+        this.room.endDate = endDate;
         if (
           this.room.roomType &&
           this.room.roomPrice &&
@@ -270,8 +278,7 @@ export class RoomsComponent implements OnInit {
           this.room.roomSize &&
           this.room.hotelId &&
           this.imageFile &&
-          this.room.startDate &&
-          this.room.endDate
+          this.room.numberOfPeople
         ) {
           if (this.selectedRoomStatus) {
             this.room.roomStatus = this.selectedRoomStatus.status;
@@ -286,7 +293,8 @@ export class RoomsComponent implements OnInit {
               this.imageFile!,
               this.room.roomSize,
               this.room.startDate,
-              this.room.endDate
+              this.room.endDate,
+              this.room.numberOfPeople
             )
             .subscribe(
               () => {
@@ -296,6 +304,7 @@ export class RoomsComponent implements OnInit {
                   detail: 'Room Created',
                   life: 3000,
                 });
+                this.isCreating = false; // Stop loading
                 this.loadRooms(
                   this.first / this.rows + 1,
                   this.rows,
@@ -305,6 +314,7 @@ export class RoomsComponent implements OnInit {
                 );
               },
               (error) => {
+                this.isCreating = false; // Stop loading
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -319,6 +329,7 @@ export class RoomsComponent implements OnInit {
     this.isEdit = false;
     this.createRoomDialog = false;
     this.roomDialog = false;
+    this.dateRange = [];
     this.room = {};
   }
 
@@ -391,15 +402,24 @@ export class RoomsComponent implements OnInit {
   private getEmptyFields(): string[] {
     const emptyFields = [];
     if (!this.isEdit) {
-      if (!this.selectedRoomType?.value) emptyFields.push('Room Type');
-      if (!this.room.roomPrice) emptyFields.push('Room Price');
-      if (!this.room.roomDescription) emptyFields.push('Room Description');
-      if (!this.selectedRoomStatus?.status) emptyFields.push('Room Status');
-      if (!this.selectedRoomSize?.value) emptyFields.push('Room Size');
-      if (!this.room.hotelId) emptyFields.push('Hotel');
-      if (!this.imageFile) emptyFields.push('Image');
-      if (!this.room.startDate) emptyFields.push('Start Date');
-      if (!this.room.endDate) emptyFields.push('End Date');
+      if (!this.selectedRoomType?.value) emptyFields.push('Empty Room Type');
+      if (!this.room.roomPrice) emptyFields.push('Empty Room Price');
+      if (!this.room.roomDescription)
+        emptyFields.push('Empty Room Description');
+      if (!this.selectedRoomStatus?.status)
+        emptyFields.push('Empty Room Status');
+      if (!this.selectedRoomSize?.value) emptyFields.push('Empty Room Size');
+      if (!this.room.hotelId) emptyFields.push('Empty Hotel');
+      if (!this.imageFile) emptyFields.push('Empty Image');
+      if (!this.dateRange || this.dateRange.length !== 2)
+        emptyFields.push('Empty Start Date and End Date');
+      if (
+        this.dateRange &&
+        this.dateRange.length === 2 &&
+        this.dateRange[0].getTime() === this.dateRange[1].getTime()
+      ) {
+        emptyFields.push('End Date should not be the same as Start Date');
+      }
     }
     if (this.isEdit) {
       if (this.room.roomType && !this.room.roomType.trim())

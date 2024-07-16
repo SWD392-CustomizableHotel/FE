@@ -19,6 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { PaginatorModule } from 'primeng/paginator';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CalendarModule } from 'primeng/calendar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @NgModule({
   imports: [
     RoomsRoutingModule,
@@ -40,6 +41,7 @@ import { CalendarModule } from 'primeng/calendar';
     PaginatorModule,
     FileUploadModule,
     CalendarModule,
+    ProgressSpinnerModule,
   ],
   declarations: [RoomsComponent],
 })

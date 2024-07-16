@@ -84,7 +84,8 @@ export class RoomService {
     imageFile: File,
     roomSize: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    numberOfPeople: number
   ): Observable<any> {
     const url = `${environment.BACKEND_API_URL}/create-room`;
     const formData = new FormData();
@@ -98,6 +99,7 @@ export class RoomService {
     formData.append('RoomSize', roomSize); // Added RoomSize to formData
     formData.append('StartDate', startDate); // Added StartDate to formData
     formData.append('EndDate', endDate); // Added EndDate to formData
+    formData.append('NumberOfPeople', numberOfPeople.toString());
 
     const user = JSON.parse(localStorage.getItem('user')!);
     const headers = new HttpHeaders({
