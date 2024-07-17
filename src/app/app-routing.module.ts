@@ -119,6 +119,7 @@ const routes: Routes = [
           ),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: 'stripe-payment/:id/:firstName/:lastName/:email',
@@ -132,6 +133,7 @@ const routes: Routes = [
           ),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: 'confirm-payment',
@@ -145,6 +147,7 @@ const routes: Routes = [
           ).then((m) => m.ConfirmPaymentModule),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: '**',
