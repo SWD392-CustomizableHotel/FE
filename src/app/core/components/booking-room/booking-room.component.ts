@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoomService } from '../../../services/view.room.service';
 import { WebSocketService } from '../../../services/web-socket.service';
@@ -11,7 +11,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './booking-room.component.html',
   styleUrl: './booking-room.component.scss',
 })
-export class BookingRoomComponent implements OnInit {
+export class BookingRoomComponent implements OnInit, OnDestroy {
   selectedRoomId?: number;
   selectedRoom?: Room;
   rooms?: Room[];
@@ -36,18 +36,9 @@ export class BookingRoomComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    window.addEventListener('beforeunload', (e: any) => {
-      e.preventDefault();
-    });
-    // window.addEventListener('popstate', (e) => {
-    //   e.preventDefault();
-    // });
-    window.addEventListener('unload', () => {
-      if (localStorage.getItem('socket_connection') !== null) {
-        this.websocketService.sendMessage(localStorage.getItem('socket_connection')!);
-        localStorage.removeItem('socket_connection');
-      }
-    });
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+    window.addEventListener('unload', this.handleUnload);
+    window.addEventListener('popState', this.handleReturnButton);
     const idParam = this.route.snapshot.paramMap.get('id');
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
 
@@ -105,4 +96,38 @@ export class BookingRoomComponent implements OnInit {
       detail: 'File Uploaded with ID',
     });
   }
+
+  handleBeforeUnload(e: any): void {
+    e.preventDefault();
+  }
+
+  handleUnload() : void {
+    if (localStorage.getItem('socket_connection') !== null) {
+      this.websocketService.sendMessage(localStorage.getItem('socket_connection')!);
+      localStorage.removeItem('socket_connection');
+    }
+  }
+
+  handleReturnButton() : void {
+    alert('Bỏ Nguyên luôn');
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event : any) : void {
+    console.log(event);
+    if(confirm('Are you sure ?')) {
+      if (localStorage.getItem('socket_connection') !== null) {
+        this.websocketService.sendMessage(localStorage.getItem('socket_connection')!);
+        localStorage.removeItem('socket_connection');
+      }
+    } else {
+      return;
+    }
+  }
+
+  ngOnDestroy() : void {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    window.removeEventListener('unload', this.handleUnload);
+  }
 }
+

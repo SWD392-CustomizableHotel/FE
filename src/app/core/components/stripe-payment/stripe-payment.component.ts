@@ -38,6 +38,7 @@ export class StripePaymentComponent implements OnInit {
   firstName?: string;
   startDate?: Date;
   endDate?: Date;
+  isCancel?: boolean;
 
   constructor(
     private http: HttpClient,
@@ -60,7 +61,7 @@ export class StripePaymentComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-
+    this.isCancel = false;
     const idParam = this.route.snapshot.paramMap.get('id');
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
     const emailParam = this.route.snapshot.paramMap.get('email');
