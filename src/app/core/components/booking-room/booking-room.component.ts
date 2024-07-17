@@ -130,4 +130,3 @@ export class BookingRoomComponent implements OnInit, OnDestroy {
     window.removeEventListener('unload', this.handleUnload);
   }
 }
-

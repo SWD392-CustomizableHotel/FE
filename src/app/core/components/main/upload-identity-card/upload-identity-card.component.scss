@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.available-rooms-container {
+  gap: 1rem; /* Add spacing between room cards */
+}
+
+.available-room-card {
+  margin-bottom: 1rem;
+  padding: 1rem;
+}

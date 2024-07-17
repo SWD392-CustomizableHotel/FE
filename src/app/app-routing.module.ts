@@ -14,6 +14,7 @@ import { ConfirmPaymentComponent } from './core/components/confirm-payment/confi
 import { ProfileComponent } from './core/components/profile/profile.component';
 import { AuthGuard } from './_helper/auth.guard';
 import { CheckOutComponent } from './core/components/check-out/check-out.component';
+import { UploadIdentityCardComponent } from './core/components/main/upload-identity-card/upload-identity-card.component';
 
 const routes: Routes = [
   {
@@ -162,6 +163,20 @@ const routes: Routes = [
           ).then((m) => m.CheckOutModule),
       },
     ]
+  },
+  {
+    path: 'upload-identity-card',
+    component: UploadIdentityCardComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/main/upload-identity-card/upload-identity-card.module'
+          ).then((m) => m.UploadIdentityCardModule),
+      }
+    ],
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

@@ -92,6 +92,15 @@ export class LoginComponent implements OnInit {
                 this.showAdditionalInfoForm = true;
               }
             });
+          this.googleCommonService
+            .checkUserRegistrationStatus(this.socialUser.idToken)
+            .subscribe((res) => {
+              if (res && res.isSucceed) {
+                this.showAdditionalInfoForm = false;
+              } else {
+                this.showAdditionalInfoForm = true;
+              }
+            });
         }
       }
     });
@@ -165,6 +174,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('userId', this.userId!);
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.isLoggedIn.next(true);
+          // this.router.navigate([returnUrl]);
           if (user.role === 'ADMIN') {
             this.router.navigate(['/dashboard']);
           } else {
@@ -353,3 +363,4 @@ export class LoginComponent implements OnInit {
       });
   }
 }
+

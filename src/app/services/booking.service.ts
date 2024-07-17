@@ -16,6 +16,7 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
   private apiUrl = `${environment.BACKEND_API_URL}/api/booking/history`;
+  private checkInUrl = `${environment.BACKEND_API_URL}/api/booking/check-in`;
   private checkoutUrl = `${environment.BACKEND_API_URL}/api/booking/check-out`;
   getBookingHistory(pageNumber: number, pageSize: number, roomType?: string, searchTerm?: string): Observable<any> {
     let params = new HttpParams()
@@ -25,6 +26,16 @@ export class BookingService {
       params = params.set('searchTerm', searchTerm);
     }
     return this.http.get(this.apiUrl, { params });
+  }
+
+  getBookingByStartDate(pageNumber: number, pageSize: number, roomType?: string, searchTerm?: string): Observable<any> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    if (searchTerm && searchTerm !== '') {
+      params = params.set('searchTerm', searchTerm);
+    }
+    return this.http.get(this.checkInUrl, { params });
   }
 
   createBooking(bookingCode?: string): Observable<any> {
