@@ -13,6 +13,7 @@ import { StripePaymentComponent } from './core/components/stripe-payment/stripe-
 import { ConfirmPaymentComponent } from './core/components/confirm-payment/confirm-payment.component';
 import { ProfileComponent } from './core/components/profile/profile.component';
 import { AuthGuard } from './_helper/auth.guard';
+import { CheckOutComponent } from './core/components/check-out/check-out.component';
 
 const routes: Routes = [
   {
@@ -119,6 +120,7 @@ const routes: Routes = [
           ),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: 'stripe-payment/:id/:firstName/:lastName/:email',
@@ -132,6 +134,7 @@ const routes: Routes = [
           ),
       },
     ],
+    canActivate: [AuthGuard]
   },
   {
     path: 'confirm-payment',
@@ -145,6 +148,20 @@ const routes: Routes = [
           ).then((m) => m.ConfirmPaymentModule),
       },
     ],
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'check-out',
+    component: CheckOutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import(
+            './core/components/check-out/check-out.module'
+          ).then((m) => m.CheckOutModule),
+      },
+    ]
   },
   {
     path: '**',

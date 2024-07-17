@@ -7,4 +7,5 @@ export interface Payment {
     bookingId?: number;
     startDate?: Date;
     endDate?: Date;
+    paymentMethod?: string;
 }
