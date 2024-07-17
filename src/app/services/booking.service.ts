@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../assets/environments/environment';
-import { CheckOutCommand } from '../interfaces/models/CheckOutCommand';
+import { CheckOutCommand } from '../interfaces/models/checkout-command';
 import { BaseResponse } from '../interfaces/models/base-response';
 import { CustomizeRequest } from '../interfaces/models/customize-request';
-import { PaymentCommand } from '../interfaces/models/paymentCommand';
+import { PaymentCommand } from '../interfaces/models/payment-command';
 @Injectable({
   providedIn: 'root'
 })
