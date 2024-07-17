@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoomService } from '../../../services/view.room.service';
+import { WebSocketService } from '../../../services/web-socket.service';
 import { Room } from '../../../interfaces/models/room';
 import { UserBookingService } from '../../../services/user-booking.service';
 import { DatePipe } from '@angular/common';
@@ -30,10 +31,23 @@ export class BookingRoomComponent implements OnInit {
     public router: Router,
     private userBookingData: UserBookingService,
     private datePipe: DatePipe,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private websocketService: WebSocketService
   ) {}
 
   async ngOnInit(): Promise<void> {
+    window.addEventListener('beforeunload', (e: any) => {
+      e.preventDefault();
+    });
+    // window.addEventListener('popstate', (e) => {
+    //   e.preventDefault();
+    // });
+    window.addEventListener('unload', () => {
+      if (localStorage.getItem('socket_connection') !== null) {
+        this.websocketService.sendMessage(localStorage.getItem('socket_connection')!);
+        localStorage.removeItem('socket_connection');
+      }
+    });
     const idParam = this.route.snapshot.paramMap.get('id');
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
 

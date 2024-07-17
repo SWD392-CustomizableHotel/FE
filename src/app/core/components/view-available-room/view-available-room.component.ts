@@ -7,6 +7,7 @@ import { UserBookingService } from '../../../services/user-booking.service';
 import { DatePipe } from '@angular/common';
 import { Hotel } from '../../../interfaces/models/hotels';
 import { MessageService } from 'primeng/api';
+import { WebSocketService } from '../../../services/web-socket.service';
 
 @Component({
   selector: 'app-view-available-room',
@@ -35,6 +36,7 @@ export class ViewAvailableRoomComponent implements OnInit {
   hotelId?: number;
   startDate?: string;
   endDate?: string;
+  booking_room?: number[];
 
   constructor(
     private userBookingData: UserBookingService,
@@ -42,7 +44,8 @@ export class ViewAvailableRoomComponent implements OnInit {
     public router: Router,
     private messageService: MessageService,
     private roomService: RoomService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private WebSocket: WebSocketService
   ) {
     this.NumberOfAdult = 1;
     this.NumberOfChildren = 0;
@@ -52,7 +55,38 @@ export class ViewAvailableRoomComponent implements OnInit {
 
   ngOnInit(): void {
     this.sortType = ['Price Low To High', 'Price High To Low'];
+    // Kiểm tra xem trong có room nào đang book không
+    if(localStorage.getItem('booking_room') !== null) {
+      // nếu có thì láy lại room đang booking đó để filter lại không hiện ra cho user này
+      this.booking_room = JSON.parse(localStorage.getItem('booking_room')!);
+    } else {
+      // nếu không thì khởi tạo nó là 1 mảng rỗng để khi user khác vào thì add nó vào booking_room
+      this.booking_room = [];
+    }
     this.initializeData();
+    this.WebSocket.ws.onmessage = (event: any) : void => {
+      // Sắp xếp theo SocketIO
+      this.WebSocket.data = event.data;
+          console.log(event);
+    if(this.WebSocket.data !== null && this.filteredRooms !== undefined) {
+      const roomId2 = this.WebSocket.data?.split('_')[0];
+      const userId2 = this.WebSocket.data?.split('_')[1];
+      const userId = localStorage.getItem('userId');
+      if(userId2 !== userId) {
+        // Kiểm tra xong roomId2 có nằm trong danh sách của những phòng đang được đặt không
+        if(this.booking_room?.indexOf(parseInt(roomId2!)) !== -1) {
+          // Nếu có thì xóa nó khỏi danh sách phòng đang đặt
+          this.booking_room?.splice(this.booking_room.indexOf(parseInt(roomId2!)), 1);
+        } else {
+          // Nếu không thì đưa nó vào danh sách booking_room
+          this.booking_room?.push(parseInt(roomId2!));
+        }
+        localStorage.setItem('booking_room', JSON.stringify(this.booking_room));
+      }
+      this.filterRooms();
+      console.log(this.booking_room);
+    }
+    };
   }
 
   async initializeData(): Promise<void> {
@@ -187,6 +221,13 @@ export class ViewAvailableRoomComponent implements OnInit {
         this.filteredRooms.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
       }
     }
+
+    // Lọc theo người đặt
+    if(this.booking_room !== undefined) {
+      this.filteredRooms = this.filteredRooms.filter((room) => {
+        return !(this.booking_room?.indexOf(room.id!) !== -1);
+      });
+    }
   }
 
   openModal(id: number | undefined): void {
@@ -208,6 +249,8 @@ export class ViewAvailableRoomComponent implements OnInit {
   toBookingPage(id?: number): void {
     this.selectedRoomId = id;
     this.selectedRoom = this.rooms?.find((room) => room.id === id);
+    const userId = localStorage.getItem('userId');
+    this.sendMessage(`${id}_${userId}`);
     this.router.navigate(['/booking-room', id]);
   }
 
@@ -244,5 +287,11 @@ export class ViewAvailableRoomComponent implements OnInit {
 
   toggleSliders(): void {
     this.showSliders = !this.showSliders;
+  }
+
+  sendMessage(message: string):void {
+    this.WebSocket.sendMessage(message);
+    localStorage.setItem('socket_connection', message);
+    console.log('the button is pressed');
   }
 }

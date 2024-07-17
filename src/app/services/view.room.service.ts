@@ -15,7 +15,7 @@ export class RoomService {
   constructor(private http: HttpClient) { }
 
   getAvailableRoom(): Observable<Room[]> {
-    return this.http.get<BaseResponse<Room[]>>(`${environment.BACKEND_API_URL}/api/ViewAvailableRoom/rooms`)
+    return this.http.get<BaseResponse<Room[]>>(`${environment.BACKEND_API_URL}/api/rooms`)
       .pipe(
         map(response => {
           const results = response.result || [];
