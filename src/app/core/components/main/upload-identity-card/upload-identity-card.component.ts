@@ -59,7 +59,7 @@ export class UploadIdentityCardComponent implements OnInit {
     { label: 20, value: 20 },
   ];
   @ViewChild('filter') filter!: ElementRef;
-
+  roomType?: string;
   constructor(
     private bookingService: BookingService,
     private messageService: MessageService,
@@ -109,7 +109,7 @@ export class UploadIdentityCardComponent implements OnInit {
 
   onGlobalFilter(dt1: any, event: Event): void {
     this.searchTerm = (event.target as HTMLInputElement).value;
-    this.loadBookings(1, this.rows, this.searchTerm);
+    this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
   }
 
   onRowsChange(newRows: number): void {

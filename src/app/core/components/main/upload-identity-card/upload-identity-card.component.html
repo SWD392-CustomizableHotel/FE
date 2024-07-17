@@ -16,16 +16,7 @@
         styleClass="p-datatable-gridlines"
         [globalFilterFields]="[
           'roomDescription',
-          'userName',
           'identityCard.fullName',
-          'roomType',
-          'rating',
-          'userName',
-          'service',
-          'amentities',
-          'payments',
-          'startDate',
-          'endDate'
         ]"
         responsiveLayout="scroll"
       >
@@ -260,18 +251,6 @@
           icon="pi pi-times"
           (click)="closePaymentDialog()"
         ></p-button>
-        <!-- <p-button
-          label="Booking"
-          icon="pi pi-cart-plus"
-          (click)="
-            navigateToBookingRoom(
-              selectedBooking?.bookingId!,
-              selectedBooking?.startDate!,
-              selectedBooking?.endDate!
-            )
-          "
-          *ngIf="selectedBooking?.bookingId"
-        ></p-button> -->
       </ng-template>
     </p-dialog>
 
