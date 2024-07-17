@@ -11,6 +11,7 @@ export interface BookingHistoryDto {
     startDate?: Date;
     endDate?: Date;
     service?: Service;
-    amentities?: Amenity;
+    amenities?: Amenity;
     payments?: Payment;
+    totalPrice?: number;
 }

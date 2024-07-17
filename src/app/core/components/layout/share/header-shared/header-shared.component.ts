@@ -28,6 +28,7 @@ export class HeaderSharedComponent {
           label: 'View Order History',
           icon: 'pi pi-search',
           shortcut: '⌘+S',
+          command: () => this.navigateTo('booking-history'),
         },
       ],
     },
