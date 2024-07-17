@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      role: 'ADMIN'
+      role: 'ADMIN',
     },
     loadChildren: () =>
       import('./core/components/home/home.module').then((m) => m.HomeModule),
@@ -43,8 +43,8 @@ const routes: Routes = [
       },
     ],
     data: {
-      role: 'ADMIN'
-    }
+      role: 'ADMIN',
+    },
   },
   {
     path: 'login',
@@ -65,6 +65,7 @@ const routes: Routes = [
   {
     path: 'update-profile',
     component: ProfileComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'view-available-room',
@@ -91,7 +92,7 @@ const routes: Routes = [
           ).then((m) => m.CustomizingRoomModule),
       },
     ],
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'booking-history',
@@ -171,4 +172,3 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
-

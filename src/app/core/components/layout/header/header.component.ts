@@ -13,8 +13,13 @@ import { LayoutService } from '../services/app.layout.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  cities: string[] = ['Ho Chi Minh City', 'Ha Noi Capital', 'Da Nang City', 'Hue City'];
-  menuItems: string[] = ['Home', 'Features', 'Highlights', 'Pricing'];
+  cities: string[] = [
+    'Ho Chi Minh City',
+    'Ha Noi Capital',
+    'Da Nang City',
+    'Hue City',
+  ];
+
   onMenuItemClick(item: string): void {
     console.log(item + ' clicked');
   }
@@ -24,11 +29,9 @@ export class HeaderComponent implements OnInit {
 
   items!: MenuItem[];
 
-    @ViewChild('menubutton') menuButton!: ElementRef;
-
-    @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
-
-    @ViewChild('topbarmenu') menu!: ElementRef;
+  @ViewChild('menubutton') menuButton!: ElementRef;
+  @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
+  @ViewChild('topbarmenu') menu!: ElementRef;
 
   constructor(
     private themeService: ThemeService,
@@ -36,8 +39,9 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private authService: AuthenticationService
   ) {
-    this.authService.user.subscribe(x => this.user = x);
+    this.authService.user.subscribe((x) => (this.user = x));
   }
+
   ngOnInit(): void {
     this.themeService.setTheme(this.selectedTheme);
   }
@@ -54,5 +58,4 @@ export class HeaderComponent implements OnInit {
   logOut(): void {
     this.authService.logOut();
   }
-
 }
