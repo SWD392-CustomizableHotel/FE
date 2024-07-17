@@ -10,8 +10,8 @@ export interface CombinedBookingHistoryDto {
     rating?: number;
     userName?: string;
     identityCard?: IdentityCardDto;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: any;
+    endDate?: any;
     service?: Service;
     amentities?: Amenity;
     payments?: Payment;

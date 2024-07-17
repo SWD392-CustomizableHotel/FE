@@ -7,7 +7,8 @@ import { Table } from 'primeng/table';
 import { IdentityCardService } from '../../../../services/identity-card.service';
 import { PaymentService } from '../../../../services/payment.service';
 import { CombinedBookingHistoryDto } from '../../../../interfaces/models/combined-booking-dto';
-import { Router } from '@angular/router';
+import { RoomService } from '../../../../services/view.room.service';
+import { Room } from '../../../../interfaces/models/room';
 
 interface PageEvent {
   first?: number;
@@ -25,8 +26,10 @@ export class UploadIdentityCardComponent implements OnInit {
   paymentDialogVisible: boolean = false;
   selectedPayment: Payment[] = [];
   selectedBooking: CombinedBookingHistoryDto  | null = null;
-  // identityCards: IdentityCardDto[] = [];
+  selectedUserId?: string;
+  selectedRoom: Room | null = null;
   bookings: CombinedBookingHistoryDto [] = [];
+  availableRoomsDialogVisible: boolean = false;
   loading: boolean = true;
   totalRecords: number = 0;
   rows: number = 10;
@@ -37,6 +40,14 @@ export class UploadIdentityCardComponent implements OnInit {
   uploadedFiles: any[] = [];
   selectedFile: File | null = null;
   bookingId: number | null = null;
+  startDate?: any;
+  endDate?: any;
+  selectedRoomId?: number;
+  email?: string;
+  firstName?: string;
+  rooms?: Room[];
+  bookingCode?: string;
+  paymentIntentId?: number;
   roomTypeOptions = [
     { type: 'Regular' },
     { type: 'Family' },
@@ -48,8 +59,6 @@ export class UploadIdentityCardComponent implements OnInit {
     { label: 20, value: 20 },
   ];
   @ViewChild('filter') filter!: ElementRef;
-  roomType?: string;
-  payment: Payment = {};
 
   constructor(
     private bookingService: BookingService,
@@ -57,7 +66,7 @@ export class UploadIdentityCardComponent implements OnInit {
     private dialogService: DialogService,
     private identityCardService: IdentityCardService,
     private paymentService: PaymentService,
-    private router: Router
+    private roomService: RoomService,
   ) {}
 
   ngOnInit(): void {
@@ -170,7 +179,7 @@ export class UploadIdentityCardComponent implements OnInit {
         next: (response) => {
           if (response.data) {
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Image uploaded successfully!' });
-            // this.loadBookings(1, this.rows, this.searchTerm);
+            this.loadBookings(1, this.rows, this.searchTerm);
           } else {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Image upload failed!' });
           }
@@ -188,11 +197,94 @@ export class UploadIdentityCardComponent implements OnInit {
     }
   }
 
-  navigateToBookingRoom(bookingId: number | undefined): void {
-    if (bookingId !== undefined) {
-      this.router.navigate([`/booking-room/${bookingId}`]);
-    } else {
-      console.error('Booking ID is undefined');
-    }
+  openAvailableRoomsDialog(): void {
+    this.roomService.getAvailableRoom().subscribe({
+      next: (rooms) => {
+        this.rooms = rooms;
+        this.availableRoomsDialogVisible = true;
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load available rooms' });
+      }
+    });
+  }
+
+  closeAvailableRoomsDialog(): void {
+    this.availableRoomsDialogVisible = false;
+  }
+
+  bookForLater(roomId: number): void {
+    this.bookingCode = 'B_' + Date.now();
+    localStorage.setItem('roomId', roomId.toString());
+
+    this.roomService.getRoomDetails(roomId).subscribe({
+      next: (room: Room) => {
+        const price = room.price;
+
+        this.bookingService.createBooking(this.bookingCode).subscribe(
+          (bookingResponse: any) => {
+            const bookingId = bookingResponse.data;
+
+            this.paymentService
+              .createPaymentForLater(this.bookingCode, price, bookingId, 'Not Yet')
+              .subscribe(
+                (response: any) => {
+                  console.log('Payment Intent created for later:', response);
+                  this.paymentIntentId = response.data;
+
+                  this.messageService.add({
+                    severity: 'success',
+                    summary: 'Booking Created',
+                    detail: 'Your booking has been created.',
+                  });
+
+                  this.paymentService.updateRoomStatusAfterBooking().subscribe({
+                    next: (response2: any) => {
+                      console.log(response2);
+                      this.messageService.add({
+                        severity: 'success',
+                        summary: 'Room Status Updated',
+                        detail: 'Room status updated successfully.',
+                      });
+                    },
+                    error: (error2: any) => {
+                      console.error('Error updating room status:', error2);
+                      this.messageService.add({
+                        severity: 'error',
+                        summary: 'Room Status Update Failed',
+                        detail: 'Failed to update room status. Please try again.',
+                      });
+                    }
+                  });
+                },
+                (error: any) => {
+                  console.error('Error creating payment for later:', error);
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Payment Failed',
+                    detail: 'Failed to create the payment. Please try again.',
+                  });
+                }
+              );
+          },
+          (error: any) => {
+            console.error('Error creating booking:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Booking Failed',
+              detail: 'Failed to create the booking. Please try again.',
+            });
+          }
+        );
+      },
+      error: (error: any) => {
+        console.error('Error fetching room details:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Room Fetch Failed',
+          detail: 'Failed to fetch room details. Please try again.',
+        });
+      }
+    });
   }
 }

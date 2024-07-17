@@ -175,7 +175,7 @@ export class LoginComponent implements OnInit {
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           this.isLoggedIn.next(true);
           // this.router.navigate([returnUrl]);
-          if (user.role === 'ADMIN' || user.role === 'STAFF') {
+          if (user.role === 'ADMIN') {
             this.router.navigate(['/dashboard']);
           } else {
             this.router.navigate([returnUrl]);
