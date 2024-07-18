@@ -12,12 +12,12 @@ export class IdentityCardService {
   constructor(private http: HttpClient) {}
 
   uploadIdentityCard(formData: FormData): Observable<BaseResponse<FPTResponse>> {
-    const url = `${environment.BACKEND_API_URL}/api/IdentityCard/upload-identity-card`;
+    const url = `${environment.BACKEND_API_URL}/api/IdentityCard`;
     return this.http.post<BaseResponse<FPTResponse>>(url, formData);
   }
 
   getAllIdentityCards(): Observable<BaseResponse<IdentityCardDto[]>> {
-    const url = `${environment.BACKEND_API_URL}/api/IdentityCard/get-all-identity-cards`;
+    const url = `${environment.BACKEND_API_URL}/api/IdentityCard`;
     return this.http.get<BaseResponse<IdentityCardDto[]>>(url);
   }
 

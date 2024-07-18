@@ -20,21 +20,21 @@ export class CustomizingRoomService {
     numberOfPeople: number
   ): Observable<BaseResponse<Room>> {
     return this.http.post<BaseResponse<Room>>(
-      `${environment.BACKEND_API_URL}/api/CustomizingRoom/get-all`,
+      `${environment.BACKEND_API_URL}/api/customizingroom`,
       { roomSize: size, numberOfPeople }
     );
   }
 
   getAmenityByType(type: string): Observable<BaseResponse<Amenity>> {
     return this.http.get<BaseResponse<Amenity>>(
-      `${environment.BACKEND_API_URL}/api/CustomizingRoom/get-amenity/${type}`
+      `${environment.BACKEND_API_URL}/api/amenity/type/${type}`
     );
   }
 
   createStripePayment(
     request: CustomizeRequest
   ): Observable<BaseResponse<string>> {
-    const url = `${environment.BACKEND_API_URL}/api/CustomizingRoom/create-payment-intent`;
+    const url = `${environment.BACKEND_API_URL}/api/customizingroom/create-payment-intent`;
     return this.http.post<BaseResponse<string>>(url, {
       items: [
         {
@@ -52,7 +52,7 @@ export class CustomizingRoomService {
   createRoomBookingAndAmenityBooking(
     request: CustomizeBooking
   ): Observable<BaseResponse<string>> {
-    const url = `${environment.BACKEND_API_URL}/api/CustomizingRoom/booking`;
+    const url = `${environment.BACKEND_API_URL}/api/customizingroom/booking`;
     return this.http.post<BaseResponse<string>>(url, request);
   }
 
@@ -64,12 +64,12 @@ export class CustomizingRoomService {
     formData.append('canvasImage', canvasImage);
     formData.append('roomId', roomId.toString());
 
-    const url = `${environment.BACKEND_API_URL}/api/CustomizingRoom/update-room`;
+    const url = `${environment.BACKEND_API_URL}/api/customizingroom/update-room`;
     return this.http.post<BaseResponse<string>>(url, formData);
   }
 
   createPayment(payment: Payment): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Payment/create-payment`;
+    const url = `${environment.BACKEND_API_URL}/api/payment`;
     return this.http.post(url, payment);
   }
 }

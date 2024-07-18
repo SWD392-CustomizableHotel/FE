@@ -261,7 +261,7 @@ export class LoginComponent implements OnInit {
 
   private validateExternalAuth(externalAuth: ExternalAuthDto): void {
     this.googleCommonService
-      .externalLogin('/api/Auth/ExternalLogin', externalAuth)
+      .externalLogin('/api/Auth/external-login', externalAuth)
       .subscribe({
         next: (res) => {
           localStorage.setItem('socialUser', JSON.stringify(res));
