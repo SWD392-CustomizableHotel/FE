@@ -9,6 +9,7 @@ import { PaymentService } from '../../../../services/payment.service';
 import { CombinedBookingHistoryDto } from '../../../../interfaces/models/combined-booking-dto';
 import { RoomService } from '../../../../services/view.room.service';
 import { Room } from '../../../../interfaces/models/room';
+import { Router } from '@angular/router';
 
 interface PageEvent {
   first?: number;
@@ -67,6 +68,7 @@ export class UploadIdentityCardComponent implements OnInit {
     private identityCardService: IdentityCardService,
     private paymentService: PaymentService,
     private roomService: RoomService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -286,5 +288,9 @@ export class UploadIdentityCardComponent implements OnInit {
         });
       }
     });
+  }
+
+  navigateToCheckOut(): void {
+    this.router.navigate(['/check-out']);
   }
 }
