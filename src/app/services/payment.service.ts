@@ -40,7 +40,7 @@ export class PaymentService {
   updateRoomStatusAfterBooking(): Observable<any> {
     const roomId = localStorage.getItem('roomId');
     this.selectedRoomId = roomId ? parseInt(roomId) : undefined;
-    const url = `${environment.BACKEND_API_URL}/status?roomId=${this.selectedRoomId}&status=${this.roomStatus}`;
+    const url = `${environment.BACKEND_API_URL}/api/room/status?roomId=${this.selectedRoomId}&status=${this.roomStatus}`;
     return this.http.put(url, {
       'roomId': this.selectedRoomId,
       'status': this.roomStatus

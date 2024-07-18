@@ -177,6 +177,8 @@ export class LoginComponent implements OnInit {
           // this.router.navigate([returnUrl]);
           if (user.role === 'ADMIN') {
             this.router.navigate(['/dashboard']);
+          } else if (user.role === 'STAFF') {
+            this.router.navigate(['/upload-identity-card']);
           } else {
             this.router.navigate([returnUrl]);
           }
@@ -193,6 +195,8 @@ export class LoginComponent implements OnInit {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     if (role === 'ADMIN') {
       this.router.navigate(['', 'dashboard']);
+    } else if (role === 'STAFF') {
+      this.router.navigate(['', 'upload-identity-card']);
     } else {
       this.router.navigate([returnUrl]);
     }
@@ -363,4 +367,3 @@ export class LoginComponent implements OnInit {
       });
   }
 }
-

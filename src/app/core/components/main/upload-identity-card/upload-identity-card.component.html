@@ -14,10 +14,7 @@
         [rowHover]="true"
         [totalRecords]="totalRecords"
         styleClass="p-datatable-gridlines"
-        [globalFilterFields]="[
-          'roomDescription',
-          'identityCard.fullName',
-        ]"
+        [globalFilterFields]="['roomDescription', 'identityCard.fullName']"
         responsiveLayout="scroll"
       >
         <ng-template pTemplate="caption">
@@ -34,8 +31,15 @@
                 pButton
                 label="Show Available Rooms"
                 icon="pi pi-search"
-                class="p-button-outlined"
+                class="p-button-outlined mr-2"
                 (click)="openAvailableRoomsDialog()"
+              ></button>
+              <button
+                pButton
+                label="Check Out"
+                icon="pi pi-sign-out"
+                class="p-button-outlined"
+                (click)="navigateToCheckOut()"
               ></button>
             </div>
             <span class="p-input-icon-left mb-2">
@@ -283,13 +287,13 @@
                 <div class="flex flex-column mt-3">
                   <div class="flex flex-column" style="width: 100%">
                     <button
-                    pButton
-                    label="Book"
-                    icon="pi pi-shopping-cart"
-                    class="p-button-primary mb-2"
-                    [ngStyle]="{ width: '100%' }"
-                    (click)="bookForLater(room.id!)"
-                  ></button>
+                      pButton
+                      label="Book"
+                      icon="pi pi-shopping-cart"
+                      class="p-button-primary mb-2"
+                      [ngStyle]="{ width: '100%' }"
+                      (click)="bookForLater(room.id!)"
+                    ></button>
                   </div>
                 </div>
               </div>

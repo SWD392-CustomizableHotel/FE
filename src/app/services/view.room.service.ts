@@ -24,7 +24,7 @@ export class RoomService {
       );
   }
   getRoomDetails(roomId: number): Observable<any> {
-    return this.http.get<BaseResponse<Room>>(`${environment.BACKEND_API_URL}/room/${roomId}`)
+    return this.http.get<BaseResponse<Room>>(`${environment.BACKEND_API_URL}/api/room/${roomId}`)
       .pipe(
         map(response => response?.data || [])
       );

@@ -186,7 +186,7 @@
             <ng-container *ngFor="let payment of toArray(selectedCheckOutDetails?.payments)">
               <p-button *ngIf="payment.status === 'Success'" label="CheckOut" icon="pi pi-check"
                 (click)="onCheckOut()"></p-button>
-                <p-button *ngIf="payment.status === 'NotYet'" label="Payment" icon="pi pi-credit-card"
+                <p-button *ngIf="payment.status === 'Not Yet'" label="Payment" icon="pi pi-credit-card"
                 (click)="showPaymentDialog()"></p-button>
             </ng-container>
           </ng-container>

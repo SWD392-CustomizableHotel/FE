@@ -199,9 +199,12 @@ export class CheckOutComponent implements OnInit {
 
   makePayment(): void {
     if (this.selectedCheckOutDetails && this.selectedCheckOutDetails.bookingId) {
+      const bookingDetails = this.selectedCheckOutDetails; // Save current selected check out details
+
       this.bookingService.paymentAction(this.selectedCheckOutDetails.bookingId, this.selectedPaymentMethod).subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Payment successful!' });
+          this.viewCheckOutDetails(bookingDetails); // Reload the check out details
           this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
           this.hidePaymentDialog();
         },
