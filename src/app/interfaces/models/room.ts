@@ -6,6 +6,7 @@ export interface Room {
     price?: number;
     description?: string;
     image?: string;
+    imagePath?: string;
     numberOfPeople?: number;
     startDate?: any;
     endDate?: any;
