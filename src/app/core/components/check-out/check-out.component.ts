@@ -8,6 +8,7 @@ import { Payment } from '../../../interfaces/models/payment';
 import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
+import { Router } from '@angular/router';
 
 interface PageEvent {
   first?: number;
@@ -63,6 +64,7 @@ export class CheckOutComponent implements OnInit {
   }
 
   constructor(
+    private router: Router,
     private bookingService: BookingService,
     private messageService: MessageService,
   ) {
@@ -215,5 +217,9 @@ export class CheckOutComponent implements OnInit {
     } else {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No booking selected for Payment!' });
     }
+  }
+
+  navigateToCheckIn(): void {
+    this.router.navigate(['/upload-identity-card']);
   }
 }
