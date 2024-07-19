@@ -4,7 +4,7 @@ import { HotelService } from '../../../../services/hotel.service';
 import { Hotel } from '../../../../interfaces/models/hotels';
 import { RoomSize } from '../../../../interfaces/models/room-size';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { Message, MessageService } from 'primeng/api';
 import { Room } from '../../../../interfaces/models/room';
 import { CustomizingRoomService } from '../../../../services/customizing-room.service';
 import { CustomizeDataService } from '../../../../services/customize-data.service';
@@ -49,6 +49,7 @@ export class ProgressInformationComponent implements OnInit {
   maxDate: Date | undefined;
   roomList: Room[] = [];
   loading: boolean = false;
+  warningMessage!: Message[];
 
   selectedAmenitiesPackage?: AmenitiesPackage;
   selectedRoomSize?: RoomSize;
@@ -84,13 +85,23 @@ export class ProgressInformationComponent implements OnInit {
 
   ngOnInit(): void {
     const today = new Date();
+    const threeDayOffSet = today.getDate() + 3;
     const year = today.getFullYear();
     const nextYear = year + 1;
 
     this.minDate = new Date();
+    this.minDate.setDate(threeDayOffSet);
 
     this.maxDate = new Date();
     this.maxDate.setFullYear(nextYear);
+
+    this.warningMessage = [
+      {
+        severity: 'warn',
+        summary:
+          'We will need 3 days to setup your customizing room.',
+      },
+    ];
 
     this.roomSizes = [
       { label: 'Small (≤ 2 people)', value: 'small' },
