@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { Hotel } from '../../../../interfaces/models/hotels';
 import { HotelService } from '../../../../services/hotel.service';
+import { format } from 'date-fns';
 
 interface ExpandedRows {
   [key: string]: boolean;
@@ -235,7 +236,6 @@ export class RoomsComponent implements OnInit {
       });
     } else {
       this.isCreating = true;
-      const [startDate, endDate] = this.dateRange;
       if (this.room.roomId !== undefined) {
         this.roomService
           .editRoomDetails(
@@ -261,6 +261,9 @@ export class RoomsComponent implements OnInit {
             );
           });
       } else {
+        const [startDate, endDate] = this.dateRange;
+        const formattedStartDate = format(startDate, "yyyy-MM-dd'T'HH:mm:ss");
+        const formattedEndDate = format(endDate, "yyyy-MM-dd'T'HH:mm:ss");
         if (this.selectedRoomStatus) {
           this.room.roomStatus = this.selectedRoomStatus.status;
         }
@@ -270,8 +273,8 @@ export class RoomsComponent implements OnInit {
         if (this.selectedRoomType) {
           this.room.roomType = this.selectedRoomType.value;
         }
-        this.room.startDate = startDate;
-        this.room.endDate = endDate;
+        this.room.startDate = formattedStartDate;
+        this.room.endDate = formattedEndDate;
         if (
           this.room.roomType &&
           this.room.roomPrice &&

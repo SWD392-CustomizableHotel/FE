@@ -44,7 +44,7 @@ export class AuthenticationService {
 
   register(payload: any): Observable<BaseResponse<User>> {
     return this.http.post<BaseResponse<User>>(
-      `${environment.BACKEND_API_URL}/api/Auth/register`,
+      `${environment.BACKEND_API_URL}/api/${Auth.AUTH}/${Auth.REGISTER}`,
       payload
     );
   }

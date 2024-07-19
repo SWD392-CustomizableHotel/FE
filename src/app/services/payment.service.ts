@@ -20,7 +20,7 @@ export class PaymentService {
   }
 
   createPayment(paymentCode?: string, amount?: number, paymentIntentId?: string, bookingId?: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Payment/create-payment`;
+    const url = `${environment.BACKEND_API_URL}/api/payment`;
     const rangeDate0 = localStorage.getItem('rangeDate[0]');
     const rangeDate1 = localStorage.getItem('rangeDate[1]');
     if(rangeDate0 && rangeDate1) {
@@ -40,7 +40,7 @@ export class PaymentService {
   updateRoomStatusAfterBooking(): Observable<any> {
     const roomId = localStorage.getItem('roomId');
     this.selectedRoomId = roomId ? parseInt(roomId) : undefined;
-    const url = `${environment.BACKEND_API_URL}/update-room-status?roomId=${this.selectedRoomId}&status=${this.roomStatus}`;
+    const url = `${environment.BACKEND_API_URL}/api/room/status?roomId=${this.selectedRoomId}&status=${this.roomStatus}`;
     return this.http.put(url, {
       'roomId': this.selectedRoomId,
       'status': this.roomStatus
@@ -48,12 +48,12 @@ export class PaymentService {
   }
 
   getPaymentByBookingId(bookingId?: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Payment/get-payment?BookingId=${bookingId}`;
+    const url = `${environment.BACKEND_API_URL}/api/payment?BookingId=${bookingId}`;
     return this.http.get<any>(url);
   }
 
   createPaymentForLater(paymentCode?: string, amount?: number, bookingId?: number, paymentIntentId?: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Payment/payment-for-later`;
+    const url = `${environment.BACKEND_API_URL}/api/payment/payment-for-later`;
     const rangeDate0 = localStorage.getItem('rangeDate[0]');
     const rangeDate1 = localStorage.getItem('rangeDate[1]');
     if(rangeDate0 && rangeDate1) {
@@ -71,7 +71,7 @@ export class PaymentService {
   }
 
   updatePaymentStatus(paymentIntentId: string, status: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Payment/update-payment-status`;
+    const url = `${environment.BACKEND_API_URL}/api/payment`;
     return this.http.put(url, {
       'paymentIntentId': paymentIntentId,
       'status': status

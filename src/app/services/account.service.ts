@@ -31,14 +31,14 @@ export class AccountService {
       params = params.set('searchTerm', searchTerm);
     }
     return this.http.get<any>(
-      `${environment.BACKEND_API_URL}/api/Account`,
+      `${environment.BACKEND_API_URL}/api/account`,
       { params }
     );
   }
 
   getAccountDetail(accountId: string): Observable<BaseResponse<Account>> {
     return this.http.get<BaseResponse<Account>>(
-      `${environment.BACKEND_API_URL}/api/Account/${accountId}`
+      `${environment.BACKEND_API_URL}/api/account/${accountId}`
     );
   }
 
@@ -47,14 +47,14 @@ export class AccountService {
     accountToUpdate: Account
   ): Observable<BaseResponse<Account>> {
     return this.http.put<BaseResponse<Account>>(
-      `${environment.BACKEND_API_URL}/api/Account/${accountId}`,
+      `${environment.BACKEND_API_URL}/api/account/${accountId}`,
       accountToUpdate
     );
   }
 
   deleteAccount(accountId: string): Observable<BaseResponse<Account>> {
     return this.http.delete<BaseResponse<Account>>(
-      `${environment.BACKEND_API_URL}/api/Account/${accountId}`
+      `${environment.BACKEND_API_URL}/api/account/${accountId}`
     );
   }
 
@@ -64,7 +64,7 @@ export class AccountService {
       'serviceId': serviceId
     };
     return this.http.post<any>(
-      `${environment.BACKEND_API_URL}/api/AssignService/AssignServiceToStaff`, body
+      `${environment.BACKEND_API_URL}/api/assignservice`, body
     );
   }
 }

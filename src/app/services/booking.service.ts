@@ -39,7 +39,7 @@ export class BookingService {
   }
 
   createBooking(bookingCode?: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Booking/create-booking`;
+    const url = `${environment.BACKEND_API_URL}/api/Booking`;
     const roomId = localStorage.getItem('roomId');
     this.selectedRoomId = roomId ? parseInt(roomId) : undefined;
     const userId = localStorage.getItem('userId');

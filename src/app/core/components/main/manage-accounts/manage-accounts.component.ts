@@ -3,7 +3,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Account } from '../../../../interfaces/models/account';
 import { AccountService } from '../../../../services/account.service';
 import { DynamicDialogRef } from 'primeng/dynamicdialog/dynamicdialog-ref';
-import { AssignServiceComponent } from './assign-service-component/assign-service.component';
 import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
@@ -77,38 +76,38 @@ export class ManageAccountsComponent implements OnInit {
     dt.clear();
   }
 
-  assignService(account: Account): void {
-    this.ref = this.dialogService.open(AssignServiceComponent, {
-      header: 'Select a Service',
-      width: '95%',
-      contentStyle: { overflow: 'auto' },
-      breakpoints: {
-          '960px': '75vw',
-          '640px': '90vw'
-      },
-    });
+  // assignService(account: Account): void {
+  //   this.ref = this.dialogService.open(AssignServiceComponent, {
+  //     header: 'Select a Service',
+  //     width: '95%',
+  //     contentStyle: { overflow: 'auto' },
+  //     breakpoints: {
+  //         '960px': '75vw',
+  //         '640px': '90vw'
+  //     },
+  //   });
 
-    this.ref.onClose.subscribe((data: any) => {
-      if (data) {
-          this.accountService.assignService(account.id, data.id).subscribe(
-            {
-              next: (response) => {
-                if (response.isSucceeded) {
-                  this.messageService.add({ severity: 'success', summary: 'Service Assigned', detail: response.message, life: 3000 });
-                } else {
-                  this.messageService.add({ severity: 'info', summary: 'Failed', detail: response.message, life: 3000 });
-                }
-              },
-              error: (error) => {
-                this.messageService.add({ severity: 'danger', summary: 'Error', detail: error.error, life: 3000 });
-              }
-            }
-          );
-      } else {
-        this.messageService.add({ severity: 'info', summary: 'No Service Selected', detail: '', life: 3000 });
-      }
-    });
-  }
+  //   this.ref.onClose.subscribe((data: any) => {
+  //     if (data) {
+  //         this.accountService.assignService(account.id, data.id).subscribe(
+  //           {
+  //             next: (response) => {
+  //               if (response.isSucceeded) {
+  //                 this.messageService.add({ severity: 'success', summary: 'Service Assigned', detail: response.message, life: 3000 });
+  //               } else {
+  //                 this.messageService.add({ severity: 'info', summary: 'Failed', detail: response.message, life: 3000 });
+  //               }
+  //             },
+  //             error: (error) => {
+  //               this.messageService.add({ severity: 'danger', summary: 'Error', detail: error.error, life: 3000 });
+  //             }
+  //           }
+  //         );
+  //     } else {
+  //       this.messageService.add({ severity: 'info', summary: 'No Service Selected', detail: '', life: 3000 });
+  //     }
+  //   });
+  // }
 
   editAccount(account: Account): void {
     this.account = { ...account };

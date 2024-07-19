@@ -127,7 +127,7 @@ export class GoogleCommonService {
     socialUser: User,
     additionalInfo: any
   ): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Auth/RegisterAdditionalInfo`;
+    const url = `${environment.BACKEND_API_URL}/api/Auth/register-additional-info`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${socialUser.token}`,
@@ -156,7 +156,7 @@ export class GoogleCommonService {
   }
 
   checkUserRegistrationStatus(idToken: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Auth/CheckUserRegistrationStatus?idToken=${idToken}`;
+    const url = `${environment.BACKEND_API_URL}/api/Auth/check-user-registration-status?idToken=${idToken}`;
     return this.http.get<any>(url).pipe(
       map((res: any) => {
         if (res && res.isSucceed) {

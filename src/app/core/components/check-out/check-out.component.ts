@@ -8,6 +8,7 @@ import { Payment } from '../../../interfaces/models/payment';
 import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
+import { Router } from '@angular/router';
 
 interface PageEvent {
   first?: number;
@@ -63,6 +64,7 @@ export class CheckOutComponent implements OnInit {
   }
 
   constructor(
+    private router: Router,
     private bookingService: BookingService,
     private messageService: MessageService,
   ) {
@@ -199,9 +201,12 @@ export class CheckOutComponent implements OnInit {
 
   makePayment(): void {
     if (this.selectedCheckOutDetails && this.selectedCheckOutDetails.bookingId) {
+      const bookingDetails = this.selectedCheckOutDetails; // Save current selected check out details
+
       this.bookingService.paymentAction(this.selectedCheckOutDetails.bookingId, this.selectedPaymentMethod).subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Payment successful!' });
+          this.viewCheckOutDetails(bookingDetails); // Reload the check out details
           this.loadBookings(1, this.rows, this.roomType, this.searchTerm);
           this.hidePaymentDialog();
         },
@@ -212,5 +217,9 @@ export class CheckOutComponent implements OnInit {
     } else {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No booking selected for Payment!' });
     }
+  }
+
+  navigateToCheckIn(): void {
+    this.router.navigate(['/upload-identity-card']);
   }
 }
