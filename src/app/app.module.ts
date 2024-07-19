@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -59,6 +58,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { fakeBackendProvider } from './_helper/fake-backend';
 import { environment } from '../assets/environments/environment';
 import { PaginatorModule } from 'primeng/paginator';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 export function tokenGetter(): any {
   return localStorage.getItem('token');
 }
@@ -105,11 +105,11 @@ export function tokenGetter(): any {
     GoogleSigninButtonModule,
     ButtonModule,
     PaginatorModule,
+    FileUploadModule,
     StripeModule.forRoot(
       'pk_test_51PVP1yP7srpKRMQLK0pKqvXlaDT2Gm9spkU73T9nH43Lq5crcwI1rp0dNOn7VLA6FDKql8BxFn546RdqITdz1RSm00J8e6HLMI'
     ),
     CalendarModule,
-    FileUploadModule,
   ],
   exports: [
     BrowserModule,
@@ -137,7 +137,6 @@ export function tokenGetter(): any {
     ToastModule,
     PasswordModule,
     SocialLoginModule,
-    FileUploadModule,
     PaginatorModule,
     CalendarModule,
     FileUploadModule,

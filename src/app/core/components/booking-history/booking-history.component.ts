@@ -1,4 +1,3 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BookingService } from '../../../services/booking.service';
 import { MessageService } from 'primeng/api';
 import { BookingHistoryDto } from '../../../interfaces/models/booking-history-dto';
@@ -7,6 +6,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Service } from '../../../interfaces/models/service';
 import { Amenity } from '../../../interfaces/models/amenity';
 import { Payment } from '../../../interfaces/models/payment';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 interface PageEvent {
   first?: number;

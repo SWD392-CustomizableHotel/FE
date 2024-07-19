@@ -1,10 +1,10 @@
 <!-- eslint-disable @angular-eslint/template/elements-content -->
- <app-header-shared></app-header-shared>
-<div class="grid">
+<app-header-shared></app-header-shared>
+<div class="grid pt-8">
   <div class="col-12">
     <div class="card px-6 py-6">
       <p-toast></p-toast>
-      <h5>Booking History</h5>
+      <h5>Check In Customer</h5>
       <p-table
         #dt1
         [value]="bookings"
@@ -14,7 +14,7 @@
         [rowHover]="true"
         [totalRecords]="totalRecords"
         styleClass="p-datatable-gridlines"
-        [globalFilterFields]="['bookingId', 'roomType', 'rating', 'userName', 'service', 'amentities', 'payments', 'startDate', 'endDate']"
+        [globalFilterFields]="['roomDescription', 'identityCard.fullName']"
         responsiveLayout="scroll"
       >
         <ng-template pTemplate="caption">
@@ -26,6 +26,20 @@
                 class="p-button-outlined mr-2"
                 icon="pi pi-filter-slash"
                 (click)="clear(dt1)"
+              ></button>
+              <button
+                pButton
+                label="Show Available Rooms"
+                icon="pi pi-search"
+                class="p-button-outlined mr-2"
+                (click)="openAvailableRoomsDialog()"
+              ></button>
+              <button
+                pButton
+                label="Check Out"
+                icon="pi pi-sign-out"
+                class="p-button-outlined"
+                (click)="navigateToCheckOut()"
               ></button>
             </div>
             <span class="p-input-icon-left mb-2">
@@ -55,18 +69,6 @@
                 ></p-columnFilter>
               </div>
             </th>
-            <th style="min-width: 8rem" pSortableColumn="rating">
-              <div class="flex justify-content-between align-items-center">
-                Rating
-                <p-sortIcon field="rating"></p-sortIcon>
-                <p-columnFilter
-                  type="text"
-                  field="rating"
-                  display="menu"
-                  placeholder="Search by Rating"
-                ></p-columnFilter>
-              </div>
-            </th>
             <th style="min-width: 8rem" pSortableColumn="userName">
               <div class="flex justify-content-between align-items-center">
                 User Name
@@ -79,6 +81,48 @@
                 ></p-columnFilter>
               </div>
             </th>
+            <th style="min-width: 8rem" pSortableColumn="identityCard.fullName">
+              <div class="flex justify-content-between align-items-center">
+                Full Name
+                <p-sortIcon field="identityCard.fullName"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="identityCard.fullName"
+                  display="menu"
+                  placeholder="Search by Full Name"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th
+              style="min-width: 8rem"
+              pSortableColumn="identityCard.cardNumber"
+            >
+              <div class="flex justify-content-between align-items-center">
+                Card Number
+                <p-sortIcon field="identityCard.cardNumber"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="identityCard.cardNumber"
+                  display="menu"
+                  placeholder="Search by Card Number"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th
+              style="min-width: 8rem"
+              pSortableColumn="identityCard.dateOfBirth"
+            >
+              <div class="flex justify-content-between align-items-center">
+                Date of Birth
+                <p-sortIcon field="identityCard.dateOfBirth"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="identityCard.dateOfBirth"
+                  display="menu"
+                  placeholder="Search by Date of Birth"
+                ></p-columnFilter>
+              </div>
+            </th>
             <th style="min-width: 8rem" pSortableColumn="startDate">
               <div class="flex justify-content-between align-items-center">
                 Check In Date
@@ -87,43 +131,7 @@
                   type="text"
                   field="startDate"
                   display="menu"
-                  placeholder="Search by Start Date"
-                ></p-columnFilter>
-              </div>
-            </th>
-            <th style="min-width: 8rem" pSortableColumn="endDate">
-              <div class="flex justify-content-between align-items-center">
-                Check Out Date
-                <p-sortIcon field="endDate"></p-sortIcon>
-                <p-columnFilter
-                  type="text"
-                  field="endDate"
-                  display="menu"
-                  placeholder="Search by End Date"
-                ></p-columnFilter>
-              </div>
-            </th>
-            <th style="min-width: 8rem" pSortableColumn="service">
-              <div class="flex justify-content-between align-items-center">
-                Services
-                <p-sortIcon field="service"></p-sortIcon>
-                <p-columnFilter
-                  type="text"
-                  field="service"
-                  display="menu"
-                  placeholder="Search by Services"
-                ></p-columnFilter>
-              </div>
-            </th>
-            <th style="min-width: 8rem" pSortableColumn="amentities">
-              <div class="flex justify-content-between align-items-center">
-                Amenities
-                <p-sortIcon field="amentities"></p-sortIcon>
-                <p-columnFilter
-                  type="text"
-                  field="amentities"
-                  display="menu"
-                  placeholder="Search by Amenities"
+                  placeholder="Search by Check In Date"
                 ></p-columnFilter>
               </div>
             </th>
@@ -144,44 +152,11 @@
         <ng-template pTemplate="body" let-booking>
           <tr>
             <td>{{ booking.roomDescription }}</td>
-            <td>{{ booking.rating }}</td>
             <td>{{ booking.userName }}</td>
+            <td>{{ booking.identityCard?.fullName }}</td>
+            <td>{{ booking.identityCard?.cardNumber }}</td>
+            <td>{{ booking.identityCard?.dateOfBirth | date }}</td>
             <td>{{ booking.startDate }}</td>
-            <td>{{ booking.endDate }}</td>
-            <td>
-              <div class="flex justify-content-between align-items-center">
-                <div>
-                  <span class="mr-2">{{ booking.services.length }}</span>
-                  <ng-container *ngFor="let service of booking.services">
-                    <span class="mr-1">{{ service.code }}</span>
-                  </ng-container>
-                </div>
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-eye"
-                  class="p-button-rounded p-button-info"
-                  (click)="openServiceDialog(booking.services)"
-                ></button>
-              </div>
-            </td>
-            <td>
-              <div class="flex justify-content-between align-items-center">
-                <div>
-                  <span class="mr-2">{{ booking.amenities.length }}</span>
-                  <ng-container *ngFor="let amenity of booking.amenities">
-                    <span class="mr-1">{{ amenity.code }}</span>
-                  </ng-container>
-                </div>
-                <button
-                  pButton
-                  pRipple
-                  icon="pi pi-eye"
-                  class="p-button-rounded p-button-info"
-                  (click)="openAmenityDialog(booking.amenities)"
-                ></button>
-              </div>
-            </td>
             <td>
               <div class="align-items-center">
                 <button
@@ -189,7 +164,7 @@
                   pRipple
                   icon="pi pi-eye"
                   class="p-button-rounded p-button-info"
-                  (click)="openPaymentDialog(booking.payments)"
+                  (click)="openPaymentDialog(booking.payments, booking)"
                 ></button>
               </div>
             </td>
@@ -227,78 +202,6 @@
         ></p-paginator>
       </div>
     </div>
-    <!-- Service Dialog -->
-    <p-dialog
-      [(visible)]="serviceDialogVisible"
-      [style]="{ width: '600px' }"
-      header="Service Details"
-      [modal]="true"
-      class="p-fluid"
-    >
-      <ng-template pTemplate="content">
-        <p-table [value]="selectedService">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-service>
-            <tr>
-              <td>{{ service.code }}</td>
-              <td>{{ service.name }}</td>
-              <td>{{ service.description }}</td>
-              <td>{{ service.price | currency:'USD':'symbol':'1.0-0' }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </ng-template>
-      <ng-template pTemplate="footer">
-        <p-button
-          label="Close"
-          icon="pi pi-times"
-          (click)="closeServiceDialog()"
-        ></p-button>
-      </ng-template>
-    </p-dialog>
-    <!-- Amenity Dialog -->
-    <p-dialog
-      [(visible)]="amenityDialogVisible"
-      [style]="{ width: '600px' }"
-      header="Amenity Details"
-      [modal]="true"
-      class="p-fluid"
-    >
-      <ng-template pTemplate="content">
-        <p-table [value]="selectedAmenity">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-amenity>
-            <tr>
-              <td>{{ amenity.code }}</td>
-              <td>{{ amenity.name }}</td>
-              <td>{{ amenity.description }}</td>
-              <td>{{ amenity.price | currency:'USD':'symbol':'1.0-0'  }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </ng-template>
-      <ng-template pTemplate="footer">
-        <p-button
-          label="Close"
-          icon="pi pi-times"
-          (click)="closeAmenityDialog()"
-        ></p-button>
-      </ng-template>
-    </p-dialog>
 
     <!-- Payment Dialog -->
     <p-dialog
@@ -314,17 +217,37 @@
             <tr>
               <th>Amount</th>
               <th>Status</th>
-              <th>Method</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-payment>
             <tr>
-              <td>{{ payment.amount | currency:'USD':'symbol':'1.0-0'  }}</td>
+              <td>
+                {{ payment.amount | currency : "USD" : "symbol" : "1.0-0" }}
+              </td>
               <td>{{ payment.status }}</td>
-              <td>{{ payment.paymentMedthod }}</td>
             </tr>
           </ng-template>
         </p-table>
+        <p-fileUpload
+          name="demo[]"
+          mode="advanced"
+          chooseLabel="Choose"
+          uploadLabel="Upload"
+          cancelLabel="Cancel"
+          customUpload="true"
+          (uploadHandler)="fetchPaymentAndUpload()"
+          (onSelect)="onFileSelected($event)"
+          accept="image/*"
+          maxFileSize="1000000"
+        >
+          <ng-template pTemplate="content">
+            <ul *ngIf="uploadedFiles.length">
+              <li *ngFor="let file of uploadedFiles">
+                {{ file.name }} - {{ file.size }} bytes
+              </li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
       </ng-template>
       <ng-template pTemplate="footer">
         <p-button
@@ -334,7 +257,57 @@
         ></p-button>
       </ng-template>
     </p-dialog>
+
+    <!-- Available Rooms Dialog -->
+    <p-dialog
+      [(visible)]="availableRoomsDialogVisible"
+      [modal]="true"
+      [style]="{ width: '70vw' }"
+      header="Available Rooms"
+    >
+      <ng-template pTemplate="content">
+        <div class="flex flex-wrap available-rooms-container">
+          <div
+            *ngFor="let room of rooms"
+            class="p-col-12 p-md-6 p-lg-4 available-room-card"
+            style="margin-bottom: 20px; padding: 10px"
+          >
+            <div class="card" style="height: 100%">
+              <div class="card-content">
+                <div class="flex align-items-center">
+                  <div class="flex flex-column ml-3">
+                    <h5>{{ room.type }}</h5>
+                    <p>Room ID: {{ room.id }}</p>
+                    <p>{{ room.description }}</p>
+                    <p>Price: {{ room.price | currency }}</p>
+                    <p>Available From: {{ room.startDate | date }}</p>
+                    <p>Available Until: {{ room.endDate | date }}</p>
+                  </div>
+                </div>
+                <div class="flex flex-column mt-3">
+                  <div class="flex flex-column" style="width: 100%">
+                    <button
+                      pButton
+                      label="Book"
+                      icon="pi pi-shopping-cart"
+                      class="p-button-primary mb-2"
+                      [ngStyle]="{ width: '100%' }"
+                      (click)="bookForLater(room.id!)"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <p-button
+          label="Close"
+          icon="pi pi-times"
+          (click)="closeAvailableRoomsDialog()"
+        ></p-button>
+      </ng-template>
+    </p-dialog>
   </div>
 </div>
-<app-footer-shared></app-footer-shared>
-

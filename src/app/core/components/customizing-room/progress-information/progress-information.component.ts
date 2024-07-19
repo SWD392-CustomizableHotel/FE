@@ -21,7 +21,7 @@ export function dateRangeValidator(): ValidatorFn {
     return null;
   };
 }
-
+// Children (thằng con của customizing room)
 @Component({
   selector: 'app-progress-information',
   templateUrl: './progress-information.component.html',

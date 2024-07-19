@@ -1,17 +1,18 @@
 import { Amenity } from './amenity';
+import { IdentityCardDto } from './identity-card';
 import { Payment } from './payment';
 import { Service } from './service';
 
-export interface BookingHistoryDto {
+export interface CombinedBookingHistoryDto {
     bookingId?: number;
     roomType?: string;
     roomDescription?: string;
     rating?: number;
     userName?: string;
-    startDate?: Date;
-    endDate?: Date;
+    identityCard?: IdentityCardDto;
+    startDate?: any;
+    endDate?: any;
     service?: Service;
-    amenities?: Amenity;
+    amentities?: Amenity;
     payments?: Payment;
-    totalPrice?: number;
 }

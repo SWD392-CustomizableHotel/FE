@@ -42,13 +42,13 @@ export class ServiceService {
     }
 
     return this.http.get<PagedServiceResponse>(
-      `${environment.BACKEND_API_URL}/api/Services/get-all-services`,
+      `${environment.BACKEND_API_URL}/api/Services`,
       { params }
     );
   }
 
   getServiceDetails(serviceId: number): Observable<ServiceResponse> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/get-service-by-id/${serviceId}`;
+    const url = `${environment.BACKEND_API_URL}/api/Services/${serviceId}`;
     return this.http.get<ServiceResponse>(url);
   }
 
@@ -61,7 +61,7 @@ export class ServiceService {
     endDate: string,
     hotelId: number
   ): Observable<ServiceResponse> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/create-service`;
+    const url = `${environment.BACKEND_API_URL}/api/Services`;
     const body = {
       name,
       description,
@@ -82,7 +82,7 @@ export class ServiceService {
     startDate: string,
     endDate: string
   ): Observable<ServiceResponse> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/update-service`;
+    const url = `${environment.BACKEND_API_URL}/api/Services`;
     const body = { serviceId, name, description, price, startDate, endDate };
     return this.http.put<ServiceResponse>(url, body);
   }
@@ -91,17 +91,17 @@ export class ServiceService {
     serviceId: number,
     status: string
   ): Observable<ServiceResponse> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/update-service-status?serviceId=${serviceId}&status=${status}`;
+    const url = `${environment.BACKEND_API_URL}/api/services/status?serviceId=${serviceId}&status=${status}`;
     return this.http.put<ServiceResponse>(url, {});
   }
 
   deleteService(serviceId: number): Observable<void> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/delete-service/${serviceId}`;
+    const url = `${environment.BACKEND_API_URL}/api/services/${serviceId}`;
     return this.http.delete<void>(url);
   }
 
   getServicesByRoomId(roomId: number): Observable<Service[]> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/get-room-service/${roomId}`;
+    const url = `${environment.BACKEND_API_URL}/api/services/room/${roomId}`;
     return this.http.get<Service[]>(url);
   }
 
@@ -109,12 +109,12 @@ export class ServiceService {
     serviceId: number,
     staffIds: string[]
   ): Observable<void> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/assign-staff`;
+    const url = `${environment.BACKEND_API_URL}/api/services/assign-staff`;
     const body = { serviceId, staffIds };
     return this.http.post<void>(url, body);
   }
   removeStaffAssignments(serviceId: number): Observable<void> {
-    const url = `${environment.BACKEND_API_URL}/api/Services/remove-staff-assignments`;
+    const url = `${environment.BACKEND_API_URL}/api/services/remove-staff-assignments`;
     const body = { serviceId };
     return this.http.post<void>(url, body);
   }

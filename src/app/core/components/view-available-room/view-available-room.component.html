@@ -119,14 +119,7 @@
       >
         <div
           class="flex align-items-center flex-wrap"
-          *ngIf="
-            rangeDates &&
-            rangeDates[0] &&
-            rangeDates[1] &&
-            rangeDates[0].getDate() === room.startDate.getDate() &&
-            rangeDates[1].getDate() <= room.endDate.getDate() &&
-            NumberOfAdult + NumberOfChildren === room.numberOfPeople
-          "
+          
         >
           <div class="xl:w-22rem xl:h-16rem w-2 border-round-md">
             <img

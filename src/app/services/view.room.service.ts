@@ -15,22 +15,22 @@ export class RoomService {
   constructor(private http: HttpClient) { }
 
   getAvailableRoom(): Observable<Room[]> {
-    return this.http.get<BaseResponse<Room[]>>(`${environment.BACKEND_API_URL}/api/ViewAvailableRoom/rooms`)
+    return this.http.get<BaseResponse<Room>>(`${environment.BACKEND_API_URL}/api/view-available-room`)
       .pipe(
         map(response => {
-          const results = response.result || [];
+          const results = response.results || [];
           return results;
         })
       );
   }
   getRoomDetails(roomId: number): Observable<any> {
-    return this.http.get<BaseResponse<Room>>(`${environment.BACKEND_API_URL}/get-room-details/${roomId}`)
+    return this.http.get<BaseResponse<Room>>(`${environment.BACKEND_API_URL}/api/room/${roomId}`)
       .pipe(
         map(response => response?.data || [])
       );
   }
   getHotel(): Observable<Hotel[]> {
-    return this.http.get<BaseResponse<Hotel[]>>(`${environment.BACKEND_API_URL}/get-hotels`, {})
+    return this.http.get<BaseResponse<Hotel[]>>(`${environment.BACKEND_API_URL}/api/hotel`, {})
       .pipe(
         map(response => response?.data || [])
       );

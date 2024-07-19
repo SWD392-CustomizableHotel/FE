@@ -10,6 +10,7 @@ import { UserBookingService } from '../../../services/user-booking.service';
 import { firstValueFrom } from 'rxjs';
 import { CancelPaymentService } from '../../../services/cancel-payment.service';
 import { environment } from '../../../../assets/environments/environment';
+import { WebSocketService } from '../../../services/web-socket.service';
 
 @Component({
   selector: 'app-payment',
@@ -37,6 +38,7 @@ export class StripePaymentComponent implements OnInit {
   firstName?: string;
   startDate?: Date;
   endDate?: Date;
+  isCancel?: boolean;
 
   constructor(
     private http: HttpClient,
@@ -46,7 +48,8 @@ export class StripePaymentComponent implements OnInit {
     private roomService: RoomService,
     private userBookingData: UserBookingService,
     private cancelPaymentService: CancelPaymentService,
-    private router: Router
+    private router: Router,
+    private websocketService: WebSocketService
   ) {
     // this.paymentService = new StripePaymentService(new HttpClient();
     this.paymentForm = this.fb.group({
@@ -58,7 +61,7 @@ export class StripePaymentComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-
+    this.isCancel = false;
     const idParam = this.route.snapshot.paramMap.get('id');
     this.selectedRoomId = idParam ? parseInt(idParam, 10) : NaN;
     const emailParam = this.route.snapshot.paramMap.get('email');
@@ -92,7 +95,9 @@ export class StripePaymentComponent implements OnInit {
       this.numberOfRoom = 1;
     }
 
-    if (this.rangeDates === undefined) {
+    console.log(this.rangeDates);
+    if (this.rangeDates === undefined || this.rangeDates === null) {
+      console.log(this.room?.startDate);
       const start = this.room?.startDate ? new Date(this.room.startDate).getTime() : null;
       const end = this.room?.endDate ? new Date(this.room.endDate).getTime() : null;
       if (start !== null && end !== null) {
@@ -101,7 +106,7 @@ export class StripePaymentComponent implements OnInit {
         console.error('startDate or endDate is not valid');
       }
     }
-
+    console.log(this.selectedRoomId, this.room?.price, this.numOfDays, this.numberOfRoom);
     try {
       // Get client secret
       this.paymentItentService
@@ -212,6 +217,12 @@ export class StripePaymentComponent implements OnInit {
       });
     } catch (error) {
       console.error('Error initializing Stripe:', error);
+    }
+
+    // Unload any connection to room
+    if (localStorage.getItem('socket_connection') !== null) {
+      this.websocketService.sendMessage(localStorage.getItem('socket_connection')!);
+      localStorage.removeItem('socket_connection');
     }
   }
 

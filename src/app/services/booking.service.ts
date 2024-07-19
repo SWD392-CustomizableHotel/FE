@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../assets/environments/environment';
+import { CheckOutCommand } from '../interfaces/models/checkout-command';
+import { BaseResponse } from '../interfaces/models/base-response';
+import { CustomizeRequest } from '../interfaces/models/customize-request';
+import { PaymentCommand } from '../interfaces/models/payment-command';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +16,8 @@ export class BookingService {
 
   constructor(private http: HttpClient) {}
   private apiUrl = `${environment.BACKEND_API_URL}/api/booking/history`;
+  private checkInUrl = `${environment.BACKEND_API_URL}/api/booking/check-in`;
+  private checkoutUrl = `${environment.BACKEND_API_URL}/api/booking/check-out`;
   getBookingHistory(pageNumber: number, pageSize: number, roomType?: string, searchTerm?: string): Observable<any> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
@@ -22,8 +28,18 @@ export class BookingService {
     return this.http.get(this.apiUrl, { params });
   }
 
+  getBookingByStartDate(pageNumber: number, pageSize: number, roomType?: string, searchTerm?: string): Observable<any> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    if (searchTerm && searchTerm !== '') {
+      params = params.set('searchTerm', searchTerm);
+    }
+    return this.http.get(this.checkInUrl, { params });
+  }
+
   createBooking(bookingCode?: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Booking/create-booking`;
+    const url = `${environment.BACKEND_API_URL}/api/Booking`;
     const roomId = localStorage.getItem('roomId');
     this.selectedRoomId = roomId ? parseInt(roomId) : undefined;
     const userId = localStorage.getItem('userId');
@@ -44,4 +60,49 @@ export class BookingService {
           'endDate' : this.rangeDates![1]
     });
   }
+  checkout(pageNumber: number, pageSize: number, roomType?: string, searchTerm?: string): Observable<any> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    if (searchTerm && searchTerm !== '') {
+      params = params.set('searchTerm', searchTerm);
+    }
+    return this.http.get(this.checkoutUrl, { params });
+  }
+
+  getCheckOutDetails(id: number): Observable<any> {
+    const url = `${environment.BACKEND_API_URL}/api/Booking/${id}`;
+    return this.http.get(url);
+  }
+
+  checkOutAction(bookingId: number): Observable<any> {
+    const url = `${environment.BACKEND_API_URL}/api/booking/check-out`;
+    const command: CheckOutCommand = { bookingId };
+    return this.http.post(url, command);
+  }
+
+  paymentAction(bookingId: number, paymentMethod: string): Observable<any> {
+    const url = `${environment.BACKEND_API_URL}/api/booking/payment`;
+    const command: PaymentCommand = { bookingId, paymentMethod };
+    return this.http.post(url, command);
+  }
+
+  createStripePayment(
+    request: CustomizeRequest
+  ): Observable<BaseResponse<string>> {
+    const url = `${environment.BACKEND_API_URL}/api/CustomizingRoom/create-payment-intent`;
+    return this.http.post<BaseResponse<string>>(url, {
+      items: [
+        {
+          roomId: request.roomId,
+          roomPrice: request.roomPrice,
+          amenityId: request.amenityId,
+          amenityPrice: request.amenityPrice,
+          numberOfDay: request.numberOfDay,
+          numberOfRoom: request.numberOfRoom,
+        },
+      ],
+    });
+  }
+
 }

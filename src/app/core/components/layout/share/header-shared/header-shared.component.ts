@@ -18,50 +18,9 @@ export class HeaderSharedComponent {
   user?: User | null;
   menuItems: MenuItem[] = [
     { label: 'Home', route: '' },
-    { label: 'View Available Room', route: 'view-available-room' },
-    { label: 'Customizing Room', route: 'customizing-room' },
+    { label: 'Customizing Room', route: 'customizing-room' }
   ];
   profileItems: MenuItem[] = [
-    {
-      label: 'History',
-      items: [
-        {
-          label: 'View Order History',
-          icon: 'pi pi-search',
-          shortcut: '⌘+S',
-        },
-      ],
-    },
-    {
-      label: 'Profile',
-      items: [
-        {
-          label: 'Update Profile',
-          icon: 'pi pi-cog',
-          shortcut: '⌘+O',
-          command: () => this.navigateTo('update-profile'),
-        },
-        {
-          label: 'Logout',
-          icon: 'pi pi-sign-out',
-          shortcut: '⌘+Q',
-          command: () => this.logout(),
-        },
-      ],
-    },
-    {
-      separator: true,
-    },
-    {
-      template: () => `
-        <div class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
-          <span class="inline-flex flex-column">
-            <span class="font-bold">${this.user?.firstName} ${this.user?.lastName}</span>
-            <span class="text-sm">${this.user?.role}</span>
-          </span>
-        </div>
-      `,
-    },
   ];
 
   constructor(
@@ -84,6 +43,139 @@ export class HeaderSharedComponent {
       this.user = x;
       if (this.user) {
         this.setLoggedIn(true);
+        if (this.user.role === 'CUSTOMER') {
+          this.profileItems = [
+            {
+              label: 'History',
+              items: [
+                {
+                  label: 'View Order History',
+                  icon: 'pi pi-search',
+                  shortcut: '⌘+S',
+                  command: (): void => this.navigateTo('booking-history'),
+                },
+              ],
+            },
+            {
+              label: 'Profile',
+              items: [
+                {
+                  label: 'Update Profile',
+                  icon: 'pi pi-cog',
+                  shortcut: '⌘+O',
+                  command: (): void => this.navigateTo('update-profile'),
+                },
+                {
+                  label: 'Logout',
+                  icon: 'pi pi-sign-out',
+                  shortcut: '⌘+Q',
+                  command: (): void => this.logout(),
+                },
+              ],
+            },
+            {
+              separator: true,
+            },
+            {
+              template: (): string => `
+                <div class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
+                  <span class="inline-flex flex-column">
+                    <span class="font-bold">${this.user?.firstName} ${this.user?.lastName}</span>
+                    <span class="text-sm">${this.user?.role}</span>
+                  </span>
+                </div>
+              `,
+            },
+          ];
+        } else if (this.user.role === 'ADMIN') {
+          this.profileItems = [
+            {
+              label: 'Admin',
+              items: [
+                {
+                  label: 'Dashboard',
+                  icon: 'pi pi-briefcase',
+                  shortcut: '⌘+S',
+                  command: (): void => this.navigateTo('dashboard'),
+                },
+              ],
+            },
+            {
+              label: 'Profile',
+              items: [
+                {
+                  label: 'Update Profile',
+                  icon: 'pi pi-cog',
+                  shortcut: '⌘+O',
+                  command: (): void => this.navigateTo('update-profile'),
+                },
+                {
+                  label: 'Logout',
+                  icon: 'pi pi-sign-out',
+                  shortcut: '⌘+Q',
+                  command: (): void => this.logout(),
+                },
+              ],
+            },
+            {
+              separator: true,
+            },
+            {
+              template: (): string => `
+                <div class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
+                  <span class="inline-flex flex-column">
+                    <span class="font-bold">${this.user?.firstName} ${this.user?.lastName}</span>
+                    <span class="text-sm">${this.user?.role}</span>
+                  </span>
+                </div>
+              `,
+            },
+          ];
+        } else if (this.user.role === 'STAFF') {
+          this.profileItems = [
+            {
+              label: 'Staff',
+              items: [
+                {
+                  label: 'Tool',
+                  icon: 'pi pi-credit-card',
+                  shortcut: '⌘+S',
+                  command: (): void => this.navigateTo('upload-identity-card'),
+                },
+              ],
+            },
+            {
+              label: 'Profile',
+              items: [
+                {
+                  label: 'Update Profile',
+                  icon: 'pi pi-cog',
+                  shortcut: '⌘+O',
+                  command: (): void => this.navigateTo('update-profile'),
+                },
+                {
+                  label: 'Logout',
+                  icon: 'pi pi-sign-out',
+                  shortcut: '⌘+Q',
+                  command: (): void => this.logout(),
+                },
+              ],
+            },
+            {
+              separator: true,
+            },
+            {
+              template: (): string => `
+                <div class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
+                  <span class="inline-flex flex-column">
+                    <span class="font-bold">${this.user?.firstName} ${this.user?.lastName}</span>
+                    <span class="text-sm">${this.user?.role}</span>
+                  </span>
+                </div>
+              `,
+            },
+          ];
+        }
       }
     });
   }
@@ -106,11 +198,7 @@ export class HeaderSharedComponent {
   }
 
   navigateTo(route: string): void {
-    if (route === 'view-available-room') {
-      this.router.navigate(['/view-available-room'], {
-        fragment: 'view-available-room',
-      });
-    } else if (route === 'customizing-room') {
+    if (route === 'customizing-room') {
       this.router.navigate(['/customizing-room'], {
         fragment: 'customizing-room',
       });

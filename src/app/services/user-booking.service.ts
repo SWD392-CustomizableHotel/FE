@@ -18,6 +18,9 @@ export class UserBookingService {
   private peopleCountSource = new BehaviorSubject<{ rooms: number, adults: number, children: number }>({ rooms: 0, adults: 0, children: 0 });
   currentPeopleCount = this.peopleCountSource.asObservable();
 
+  private numOfDaysSource = new BehaviorSubject<number>(0);
+  currentNumOfDays = this.numOfDaysSource.asObservable();
+
   getLocation(location: string | undefined) : void {
     if(location)
    this.locationSource.next(location);
@@ -37,5 +40,13 @@ export class UserBookingService {
 
   getPeopleCount(peopleCount: { rooms: number, adults: number, children: number }) :void {
     this.peopleCountSource.next(peopleCount);
+  }
+
+  setNumOfDays(numOfDays: number): void {
+    this.numOfDaysSource.next(numOfDays);
+  }
+
+  getNumOfDays(): number {
+    return this.numOfDaysSource.getValue();
   }
 }

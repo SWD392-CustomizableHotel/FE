@@ -17,10 +17,15 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { BookingHistoryComponent } from './booking-history.component';
-import { sharedModule } from '../layout/share/shared.module';
+import { FileUploadModule } from 'primeng/fileupload';
+import { UploadIdentityCardRoutingModule } from './upload-identity-card.routing.module';
+import { IdentityCardService } from '../../../../services/identity-card.service';
+import { MessageService } from 'primeng/api';
+import { sharedModule } from '../../layout/share/shared.module';
+import { UploadIdentityCardComponent } from './upload-identity-card.component';
 
 @NgModule({
+  declarations: [UploadIdentityCardComponent],
   imports: [
     PaginatorModule,
     CommonModule,
@@ -38,13 +43,13 @@ import { sharedModule } from '../layout/share/shared.module';
     ToastModule,
     ToolbarModule,
     DialogModule,
-    PaginatorModule,
     TagModule,
     DynamicDialogModule,
+    FileUploadModule,
     sharedModule,
+    UploadIdentityCardRoutingModule,
   ],
-  declarations: [BookingHistoryComponent],
-  providers: [],
-  bootstrap: [BookingHistoryComponent]
+  providers: [MessageService, IdentityCardService],
+  bootstrap: [UploadIdentityCardComponent]
 })
-export class BookingHistoryModule {}
+export class UploadIdentityCardModule {}

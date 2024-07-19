@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../assets/environments/environment';
 @Injectable({
   providedIn: 'root',
@@ -8,7 +8,6 @@ import { environment } from '../../assets/environments/environment';
 export class RoomService {
   constructor(private http: HttpClient) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRooms(
     pageNumber: number,
     pageSize: number,
@@ -28,53 +27,66 @@ export class RoomService {
     if (searchTerm && searchTerm !== '') {
       params = params.set('searchTerm', searchTerm);
     }
-    return this.http.get(`${environment.BACKEND_API_URL}/get-rooms`, {
+    return this.http.get(`${environment.BACKEND_API_URL}/api/Room`, {
       params,
     });
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRoomDetails(roomId: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/get-room-details/${roomId}`;
+    const url = `${environment.BACKEND_API_URL}/api/Room/${roomId}`;
     return this.http.get(url);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editRoomDetails(
     roomId: number,
     type: string,
     price: number,
-    imageFile?: File // Added imageFile parameter
+    imageFile?: File
   ): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/edit-room-details/${roomId}`;
+    const url = `${environment.BACKEND_API_URL}/api/room/${roomId}`;
     const formData = new FormData();
 
-    formData.append('Type', type);
-    formData.append('Price', price.toString());
     if (imageFile) {
       formData.append('ImageFile', imageFile, imageFile.name);
     }
 
-    const user = JSON.parse(localStorage.getItem('user')!);
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      console.error('No user found in localStorage');
+      return throwError('User not authenticated');
+    }
+
+    const user = JSON.parse(userString);
+    if (!user || !user.token) {
+      console.error('Invalid user token');
+      return throwError('User not authenticated');
+    }
+
     const headers = new HttpHeaders({
       Authorization: `Bearer ${user.token}`,
     });
 
-    return this.http.put(url, formData, { headers });
+    const params = new HttpParams()
+      .set('type', type)
+      .set('price', price.toString());
+
+    return this.http.put(url, formData, { headers, params }).pipe(
+      catchError((error) => {
+        console.error('Error editing room details', error);
+        return throwError(error);
+      })
+    );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateRoomStatus(roomId: number, status: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/update-room-status?roomId=${roomId}&status=${status}`;
+    const url = `${environment.BACKEND_API_URL}/api/room/status?roomId=${roomId}&status=${status}`;
     return this.http.put(url, {});
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deleteRoom(roomId: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/delete-room/${roomId}`;
+    const url = `${environment.BACKEND_API_URL}/api/room/${roomId}`;
     return this.http.delete(url);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createRoom(
     type: string,
     price: number,
@@ -87,7 +99,7 @@ export class RoomService {
     endDate: string,
     numberOfPeople: number
   ): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/create-room`;
+    const url = `${environment.BACKEND_API_URL}/api/room`;
     const formData = new FormData();
 
     formData.append('Type', type);

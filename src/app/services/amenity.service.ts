@@ -32,18 +32,18 @@ export class AmenityService {
     // }
 
     return this.http.get(
-      `${environment.BACKEND_API_URL}/api/Amenity/get-amenities`,
+      `${environment.BACKEND_API_URL}/api/Amenity`,
       { params }
     );
   }
 
   getAmenityDetails(amenityId: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Amenity/get-amenity-details/${amenityId}`;
+    const url = `${environment.BACKEND_API_URL}/api/Amenity/amenity/${amenityId}`;
     return this.http.get(url);
   }
 
   getAmenitiesByRoomId(roomId: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Amenity/get-room-amenity/${roomId}`;
+    const url = `${environment.BACKEND_API_URL}/api/Amenity/room/${roomId}`;
     return this.http.get(url);
   }
 
@@ -56,7 +56,7 @@ export class AmenityService {
     capacity: number,
     inUse: number
   ): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Amenity/create-amenity`;
+    const url = `${environment.BACKEND_API_URL}/api/Amenity`;
     const body = { name, description, price, status, hotelId, capacity, inUse };
     return this.http.post(url, body);
   }
@@ -69,17 +69,17 @@ export class AmenityService {
     capacity: number,
     inUse: number
   ): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Amenity/update-amenity?amenityId=${amenityId}&name=${name}&description=${description}&price=${price}&capacity=${capacity}&inUse=${inUse}`;
+    const url = `${environment.BACKEND_API_URL}/api/amenity?amenityId=${amenityId}&name=${name}&description=${description}&price=${price}&capacity=${capacity}&inUse=${inUse}`;
     return this.http.put(url, {});
   }
 
   updateAmenityStatus(amenityId: number, status: string): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Amenity/update-amenity-status?amenityId=${amenityId}&status=${status}`;
+    const url = `${environment.BACKEND_API_URL}/api/amenity/status?amenityId=${amenityId}&status=${status}`;
     return this.http.put(url, {});
   }
 
   deleteAmenity(amenityId: number): Observable<any> {
-    const url = `${environment.BACKEND_API_URL}/api/Amenity/delete-amenity/${amenityId}`;
+    const url = `${environment.BACKEND_API_URL}/api/amenity/${amenityId}`;
     return this.http.delete(url);
   }
 }
