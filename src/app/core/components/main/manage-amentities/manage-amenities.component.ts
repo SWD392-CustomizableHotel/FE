@@ -46,18 +46,18 @@ export class ManageAmenitiesComponent implements OnInit {
   searchTerm?: string;
   amenityStatus?: string;
   amenityStatusOptions = [
-    { status: 'Normal' },
-    { status: 'Old' },
-    { status: 'Out Of Stock' },
-    { status: 'Broken' },
-    { status: 'Repairing' },
+    { status: 'Normal', value: 'Normal' },
+    { status: 'Old', value: 'Old' },
+    { status: 'Out Of Stock', value: 'OutOfStock' },
+    { status: 'Broken', value: 'Broken' },
+    { status: 'Repairing', value: 'Repairing' },
   ];
   options = [
     { label: 5, value: 5 },
     { label: 10, value: 10 },
     { label: 20, value: 20 },
   ];
-  selectedAmenityStatus: { status: string } | undefined;
+  selectedAmenityStatus: { status: string, value: string } | undefined;
   @ViewChild('filter') filter!: ElementRef;
   constructor(
     private amenityService: AmenityService,
@@ -118,7 +118,7 @@ export class ManageAmenitiesComponent implements OnInit {
 
   openNew(): void {
     this.amenity = { status: 'Normal' };
-    this.selectedAmenityStatus = { status: 'Normal' };
+    this.selectedAmenityStatus = { status: 'Normal', value: 'Normal' };
     this.submitted = false;
     this.createAmenityDialog = true;
   }
@@ -126,7 +126,7 @@ export class ManageAmenitiesComponent implements OnInit {
   editAmenity(amenity: Amenity): void {
     this.amenity = { ...amenity };
     this.selectedAmenityStatus = this.amenityStatusOptions.find(
-      (option) => option.status === amenity.status
+      (option) => option.value === amenity.status
     );
     this.isEdit = true;
     this.amenityDialog = true;
@@ -299,7 +299,7 @@ export class ManageAmenitiesComponent implements OnInit {
           });
       } else {
         // Create new amenity
-        this.amenity.status = this.selectedAmenityStatus?.status || 'Normal';
+        this.amenity.status = this.selectedAmenityStatus?.value || 'Normal';
         if (
           this.amenity.name &&
           this.amenity.price !== undefined &&
@@ -308,7 +308,7 @@ export class ManageAmenitiesComponent implements OnInit {
           this.amenity.hotelId
         ) {
           if (this.selectedAmenityStatus) {
-            this.amenity.status = this.selectedAmenityStatus.status;
+            this.amenity.status = this.selectedAmenityStatus.value;
           }
           this.amenityService
             .createAmenity(
@@ -355,7 +355,7 @@ export class ManageAmenitiesComponent implements OnInit {
   }
 
   updateAmenityStatus(amenity: Amenity, newStatus: any): void {
-    const statusString = newStatus.status;
+    const statusString = newStatus.value;
     if (amenity.id !== undefined) {
       this.amenityService
         .updateAmenityStatus(amenity.id, statusString)

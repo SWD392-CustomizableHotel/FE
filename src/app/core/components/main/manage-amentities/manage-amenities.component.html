@@ -129,8 +129,8 @@
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-warning"
                   [disabled]="
-                    amenity.amenityStatus.status === 'Broken' ||
-                    amenity.amenityStatus.status === 'Repairing'
+                    amenity.amenityStatus?.status === 'Broken' ||
+                    amenity.amenityStatus?.status === 'Repairing'
                   "
                   (click)="deleteAmenity(amenity)"
                 ></button>
